@@ -1,5 +1,3 @@
-<GenerateWidget type="artifact">
-<Element id="dark-glassmorphism-linktree-folder-indented">
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KurniaLink</title>
  
-    <!-- Favicon PNG (Sesuai dengan gambar icon bola dunia / link) -->
+    <!-- Favicon PNG -->
     <link rel="icon" type="image/png" href="favicon.png">
     <!-- SVG Favicon Fallback agar di browser seluler/laptop tetap langsung muncul tanpa error -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300f3ff'/><path d='M30 50 Q 50 20 70 50 Q 50 80 30 50 Z' fill='none' stroke='%2306070b' stroke-width='8'/><line x1='10' y1='50' x2='90' y2='50' stroke='%2306070b' stroke-width='8'/></svg>">
@@ -247,7 +245,7 @@
             </button>
         </div>
 
-        <!-- Admin Panel (Diperbaiki padding px-3 py-3.5 & box-border agar lebarnya persis sejajar kartu link di bawahnya) -->
+        <!-- Admin Control Form -->
         <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3 sm:p-3.5 mb-4 hidden border-cyan-500/30 box-border">
             <div class="flex items-center justify-between mb-2.5">
                 <h2 class="text-[11px] font-bold uppercase tracking-wider text-neon-cyan flex items-center gap-1.5">
@@ -344,7 +342,6 @@
     <footer class="text-center py-3 text-[11px] text-slate-500">
         <p>Powered by <span class="text-neon-cyan font-semibold">Kurniapedia</span> &copy; 2026</p>
     </footer>
-
 
     <!-- Modal 1: Admin Login Modal -->
     <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
@@ -513,7 +510,7 @@
             writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Dynamic Favicon Injection (Memastikan Icon Tab Browser Selalu Terpasang)
+        // Dynamic Favicon Injection
         function setDynamicFavicon() {
             let favicon = document.querySelector("link[rel*='icon']");
             if (!favicon) {
@@ -521,7 +518,6 @@
                 favicon.rel = 'shortcut icon';
                 document.head.appendChild(favicon);
             }
-            // Gunakan Favicon PNG default
             favicon.href = 'favicon.png';
         }
 
@@ -531,7 +527,7 @@
         let linksList = [];
         let sortableInstances = [];
         let isDraggingActive = false;
-        let openFolders = new Set(); // Menyimpan state folder yang sedang terbuka
+        let openFolders = new Set();
 
         let profileData = {
             name: "Kurniawan Yunianto",
@@ -610,7 +606,7 @@
                 linksList = fetchedLinks;
 
                 updateFolderDropdownOptions();
-                filterLinks(); // Memicu filter dengan nilai search input saat ini
+                filterLinks();
                 
                 document.getElementById('linksLoading').classList.add('hidden');
                 document.getElementById('linksContainer').classList.remove('hidden');
@@ -703,7 +699,7 @@
             }
         }
 
-        // Render Links List (Termasuk Sistem Folder Accordion dengan Indentasi)
+        // Render Links List
         function renderLinks(linksToRender) {
             const container = document.getElementById('linksContainer');
             const emptyState = document.getElementById('emptyState');
@@ -712,7 +708,6 @@
 
             container.innerHTML = '';
 
-            // Filter link/folder yang terlihat berdasarkan visibilitas pengguna
             const visibleItems = linksToRender.filter(item => currentUser || item.visible !== false);
 
             if (visibleItems.length === 0) {
@@ -728,16 +723,13 @@
                 emptyState.classList.add('hidden');
             }
 
-            // Pisahkan item tingkat atas (Root Items)
             const rootItems = visibleItems.filter(item => !item.parentId);
 
             rootItems.forEach(item => {
                 if (item.isFolder) {
-                    // Render Blok Folder
                     const folderCard = createFolderElement(item, visibleItems);
                     container.appendChild(folderCard);
                 } else {
-                    // Render Single Link di Root
                     const linkCard = createSingleLinkElement(item);
                     container.appendChild(linkCard);
                 }
@@ -752,17 +744,14 @@
             const isHidden = folder.visible === false;
             const isOpen = openFolders.has(folder.id);
 
-            // Ambil semua anak link yang dimiliki folder ini
             const childLinks = allVisibleItems.filter(item => item.parentId === folder.id);
 
             folderWrapper.setAttribute('data-id', folder.id);
             folderWrapper.className = `glass-folder rounded-xl overflow-hidden transition-all duration-300 ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
 
             folderWrapper.innerHTML = `
-                <!-- Header Folder (Bisa Diklik) -->
                 <div class="folder-header p-2.5 sm:p-3 flex items-center justify-between cursor-pointer group select-none hover:bg-white/5 transition-colors" onclick="window.toggleFolderOpen('${folder.id}', event)">
                     <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1.5">
-                        <!-- Drag Handle Icon (Admin Only) -->
                         ${currentUser ? `
                             <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" onclick="event.stopPropagation()" title="Tarik untuk merubah urutan">
                                 <i class="fa-solid fa-grip-vertical text-xs"></i>
@@ -788,7 +777,6 @@
                     </div>
 
                     <div class="flex items-center gap-2 flex-shrink-0" onclick="event.stopPropagation()">
-                        <!-- Admin Controls -->
                         ${currentUser ? `
                             <div class="flex items-center gap-0.5 border-r border-white/10 pr-1.5 mr-1">
                                 <button onclick="window.toggleLinkVisibility('${folder.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
@@ -803,16 +791,13 @@
                             </div>
                         ` : ''}
 
-                        <!-- Chevron Arrow -->
                         <div class="w-6 h-6 flex items-center justify-center text-slate-400 group-hover:text-neon-cyan">
                             <i class="fa-solid fa-chevron-down text-xs chevron-icon ${isOpen ? 'rotate-180' : ''}"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Isi Folder dengan Indentasi Masuk ke Kanan (pl-5 sm:pl-6) & Garis Penunjuk Kiri -->
                 <div id="folderContent-${folder.id}" class="folder-content ${isOpen ? 'open' : ''} border-t border-cyan-500/10 bg-black/30 pt-2 pb-2.5 pr-2 pl-5 sm:pl-6 space-y-2 relative">
-                    <!-- Garis penunjuk hirarki/pohon folder -->
                     <div class="absolute left-3.5 top-2 bottom-3.5 w-0.5 bg-gradient-to-b from-cyan-500/40 via-purple-500/20 to-transparent rounded-full pointer-events-none"></div>
 
                     ${childLinks.length === 0 ? `
@@ -821,7 +806,6 @@
                 </div>
             `;
 
-            // Masukkan link anak ke dalam wadah folderContent
             const folderContentDiv = folderWrapper.querySelector(`#folderContent-${folder.id}`);
             childLinks.forEach(child => {
                 const childElement = createSingleLinkElement(child, true);
@@ -841,7 +825,6 @@
             
             card.innerHTML = `
                 <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
-                    <!-- Drag Handle Icon (Admin Only) -->
                     ${currentUser ? `
                         <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" title="Tarik untuk mengubah urutan">
                             <i class="fa-solid fa-grip-vertical text-xs"></i>
@@ -865,12 +848,10 @@
                 </div>
 
                 <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <!-- Click Counter Badge -->
                     <span class="text-[9px] text-slate-400 glass-panel px-1.5 py-0.5 rounded-full flex items-center gap-1 font-mono" title="Jumlah Klik">
                         <i class="fa-solid fa-arrow-pointer text-[8px] text-neon-cyan"></i> ${link.clicks || 0}
                     </span>
 
-                    <!-- Admin Controls -->
                     ${currentUser ? `
                         <div class="flex items-center gap-0.5 border-l border-white/10 pl-1.5">
                             <button onclick="window.toggleLinkVisibility('${link.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
@@ -908,15 +889,13 @@
             }
         };
 
-        // Initialize SortableJS untuk Drag and Drop di Root dan Dalam Folder
+        // Initialize SortableJS
         function initSortable() {
-            // Bersihkan semua instance lama
             sortableInstances.forEach(inst => inst.destroy());
             sortableInstances = [];
 
             if (!currentUser || typeof Sortable === 'undefined') return;
 
-            // Sortable untuk Root Container
             const rootContainer = document.getElementById('linksContainer');
             if (rootContainer) {
                 const rootInst = new Sortable(rootContainer, {
@@ -933,7 +912,6 @@
                 sortableInstances.push(rootInst);
             }
 
-            // Sortable untuk Setiap Dalam Folder
             const folderContentElements = document.querySelectorAll('.folder-content');
             folderContentElements.forEach(folderEl => {
                 const folderId = folderEl.id.replace('folderContent-', '');
@@ -1065,7 +1043,7 @@
             }
         };
 
-        // Add New Item (Link or Folder)
+        // Add New Item
         window.handleAddLink = async function(e) {
             e.preventDefault();
             if (!currentUser) {
@@ -1104,7 +1082,7 @@
                 await addDoc(linksCollectionRef, newItemData);
 
                 document.getElementById('addLinkForm').reset();
-                switchItemType('link'); // Reset back to link
+                switchItemType('link');
                 showToast(isFolder ? 'Folder baru dibuat!' : 'Link baru ditambahkan!');
             } catch (err) {
                 console.error("Error adding item:", err);
@@ -1130,7 +1108,6 @@
                 const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await deleteDoc(docRef);
 
-                // Jika folder dihapus, kembalikan anak-anaknya ke root
                 if (target && target.isFolder) {
                     const children = linksList.filter(i => i.parentId === id);
                     const batch = writeBatch(db);
@@ -1269,13 +1246,12 @@
             document.getElementById('loginModal').classList.add('hidden');
         };
 
-        // Search Filter (Link & Folder Search Fix)
+        // Search Filter
         window.filterLinks = function() {
             const searchInput = document.getElementById('searchInput');
             const clearBtn = document.getElementById('clearSearchBtn');
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-            // Tampilkan atau sembunyikan tombol 'Clear' (X)
             if (clearBtn) {
                 if (query.length > 0) {
                     clearBtn.classList.remove('hidden');
@@ -1289,26 +1265,21 @@
                 return;
             }
 
-            // 1. Cari item yang judul atau deskripsinya mengandung kata kunci query
             const matchedItems = linksList.filter(item => 
                 (item.title && item.title.toLowerCase().includes(query)) || 
                 (item.desc && item.desc.toLowerCase().includes(query))
             );
 
-            // Set untuk menampung ID semua item yang harus ditampilkan (Termasuk folder induknya)
             const matchedIds = new Set();
 
             matchedItems.forEach(item => {
                 matchedIds.add(item.id);
 
-                // Jika item yang cocok adalah anak link di dalam folder,
-                // sertakan ID Folder induknya dan buka foldernya
                 if (item.parentId) {
                     matchedIds.add(item.parentId);
                     openFolders.add(item.parentId);
                 }
 
-                // Jika item yang cocok adalah Folder, sertakan semua anak link di dalamnya
                 if (item.isFolder) {
                     openFolders.add(item.id);
                     linksList.forEach(child => {
@@ -1319,13 +1290,12 @@
                 }
             });
 
-            // Filter daftar utama berdasarkan ID yang terindikasi cocok
             const filteredList = linksList.filter(item => matchedIds.has(item.id));
 
             renderLinks(filteredList);
         };
 
-        // Reset/Clear Search Field
+        // Reset Search
         window.clearSearch = function() {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
@@ -1405,5 +1375,3 @@
     </script>
 </body>
 </html>
-</Element>
-</GenerateWidget>
