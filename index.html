@@ -1,5 +1,5 @@
 <GenerateWidget type="artifact">
-<Element id="dark-glassmorphism-linktree-pro">
+<Element id="dark-glassmorphism-linktree-folder-system">
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -73,6 +73,19 @@
                         inset 0 0 10px rgba(0, 243, 255, 0.05);
         }
 
+        .glass-folder {
+            background: rgba(0, 243, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-folder:hover {
+            border-color: rgba(0, 243, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+        }
+
         .glass-input {
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -107,6 +120,28 @@
             cursor: grabbing;
         }
 
+        /* Folder Accordion Transition */
+        .folder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out;
+            opacity: 0;
+        }
+
+        .folder-content.open {
+            max-height: 1200px;
+            opacity: 1;
+        }
+
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .folder-content.open + .folder-header .chevron-icon,
+        .folder-header.active .chevron-icon {
+            transform: rotate(180deg);
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
@@ -125,7 +160,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-4 py-6 font-sans">
 
-    <!-- Main Container dengan max-w-[420px] & padding samping presisi agar tidak melebar -->
+    <!-- Main Container dengan max-w-[420px] -->
     <div class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
@@ -149,7 +184,7 @@
         <div id="adminBadge" class="hidden w-full mb-5 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20">
             <div class="flex items-center gap-2 text-xs text-emerald-300 font-medium">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-[11px]">Mode Admin (Bisa Drag & Drop)</span>
+                <span class="text-[11px]">Mode Admin (Folder & Drag-Drop)</span>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="openEditProfileModal()" class="px-2.5 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
@@ -200,40 +235,82 @@
         <!-- Search Bar -->
         <div class="w-full mb-4 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-            <input type="text" id="searchInput" oninput="filterLinks()" placeholder="Cari link..." 
+            <input type="text" id="searchInput" oninput="filterLinks()" placeholder="Cari link atau folder..." 
                    class="w-full glass-input text-xs pl-9 pr-3.5 py-2 rounded-xl placeholder:text-slate-500">
         </div>
 
-        <!-- Admin Control Form (Add Link) -->
+        <!-- Admin Control Form (Add Link / Folder) -->
         <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3.5 mb-4 hidden border-cyan-500/30">
             <div class="flex items-center justify-between mb-2.5">
                 <h2 class="text-[11px] font-bold uppercase tracking-wider text-neon-cyan flex items-center gap-1.5">
-                    <i class="fa-solid fa-plus-circle"></i> Tambah Link Baru
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Item Baru
                 </h2>
-                <span class="text-[9px] text-slate-400">Tarik ikon <i class="fa-solid fa-grip-vertical text-neon-cyan mx-0.5"></i> geser urutan</span>
+                <span class="text-[9px] text-slate-400">Tarik <i class="fa-solid fa-grip-vertical text-neon-cyan mx-0.5"></i> geser urutan</span>
             </div>
+
+            <!-- Toggle Jenis Item (Single Link / Folder) -->
+            <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-900/80 rounded-lg mb-3 border border-white/5">
+                <button type="button" id="typeLinkBtn" onclick="switchItemType('link')" class="py-1.5 rounded-md text-[11px] font-semibold transition-all bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm">
+                    <i class="fa-solid fa-link mr-1"></i> Single Link
+                </button>
+                <button type="button" id="typeFolderBtn" onclick="switchItemType('folder')" class="py-1.5 rounded-md text-[11px] font-semibold transition-all text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-folder text-neon-purple mr-1"></i> Folder / Grup Link
+                </button>
+            </div>
+
             <form id="addLinkForm" onsubmit="handleAddLink(event)" class="space-y-2.5">
-                <input type="text" id="linkTitle" placeholder="Judul Link (contoh: Website Portfolio)" required class="w-full glass-input text-xs p-2 rounded-lg">
-                <input type="url" id="linkUrl" placeholder="URL Lengkap (https://...)" required class="w-full glass-input text-xs p-2 rounded-lg">
-                <input type="text" id="linkDesc" placeholder="Deskripsi Singkat (opsional)" class="w-full glass-input text-xs p-2 rounded-lg">
+                <!-- Tipe Item Terpilih -->
+                <input type="hidden" id="itemType" value="link">
+
+                <!-- Input Khusus Link / Nama Folder -->
+                <div>
+                    <label id="titleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block">Judul Link</label>
+                    <input type="text" id="linkTitle" placeholder="Judul Link (contoh: TARTILIKU)" required class="w-full glass-input text-xs p-2 rounded-lg">
+                </div>
+
+                <!-- Input URL (Hanya untuk Single Link) -->
+                <div id="urlInputContainer">
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">URL Tujuan</label>
+                    <input type="url" id="linkUrl" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
+                </div>
+
+                <!-- Pilihan Folder Induk (Untuk memasukkan link ke folder tertentu) -->
+                <div id="folderParentContainer">
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Masukkan ke Dalam Folder (Opsional)</label>
+                    <select id="linkFolderParent" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
+                        <option value="">-- Tanpa Folder (Halaman Utama) --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Deskripsi Singkat (Opsional)</label>
+                    <input type="text" id="linkDesc" placeholder="Penjelasan singkat" class="w-full glass-input text-xs p-2 rounded-lg">
+                </div>
                 
                 <div class="grid grid-cols-2 gap-2">
-                    <select id="linkIcon" class="glass-input text-xs p-2 rounded-lg bg-slate-900">
-                        <option value="fa-solid fa-globe">🌐 Web / Custom</option>
-                        <option value="fa-brands fa-github">🐙 GitHub</option>
-                        <option value="fa-brands fa-instagram">📸 Instagram</option>
-                        <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
-                        <option value="fa-brands fa-youtube">▶️ YouTube</option>
-                        <option value="fa-brands fa-tiktok">🎵 TikTok</option>
-                        <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
-                        <option value="fa-solid fa-briefcase">💼 Portfolio</option>
-                        <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                        <option value="fa-solid fa-paper-plane">✈️ Telegram</option>
-                    </select>
+                    <div>
+                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Ikon</label>
+                        <select id="linkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
+                            <option value="fa-solid fa-globe">🌐 Web / Custom</option>
+                            <option value="fa-solid fa-folder">📁 Folder Umum</option>
+                            <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
+                            <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
+                            <option value="fa-brands fa-github">🐙 GitHub</option>
+                            <option value="fa-brands fa-instagram">📸 Instagram</option>
+                            <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
+                            <option value="fa-brands fa-youtube">▶️ YouTube</option>
+                            <option value="fa-brands fa-tiktok">🎵 TikTok</option>
+                            <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
+                            <option value="fa-solid fa-briefcase">💼 Portfolio</option>
+                            <option value="fa-solid fa-store">🛍️ Toko Online</option>
+                        </select>
+                    </div>
 
-                    <button type="submit" id="submitAddLinkBtn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-save"></i> Simpan Link
-                    </button>
+                    <div class="flex items-end">
+                        <button type="submit" id="submitAddLinkBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-save"></i> Simpan
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -244,13 +321,13 @@
             <div class="glass-card rounded-xl p-3 h-14 animate-pulse"></div>
         </div>
 
-        <!-- Dynamic Links List (Compact & Professional) -->
+        <!-- Dynamic Links & Folders List -->
         <div id="linksContainer" class="w-full space-y-2.5 hidden"></div>
 
         <!-- Empty State Message -->
         <div id="emptyState" class="hidden text-center py-8 w-full">
             <i class="fa-solid fa-link-slash text-2xl text-slate-600 mb-2"></i>
-            <p class="text-xs text-slate-400">Belum ada link yang tersedia.</p>
+            <p class="text-xs text-slate-400">Belum ada link atau folder yang tersedia.</p>
         </div>
 
     </div>
@@ -294,12 +371,12 @@
         </div>
     </div>
 
-    <!-- Modal 2: Edit Link Modal -->
+    <!-- Modal 2: Edit Item (Link / Folder) Modal -->
     <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
         <div class="glass-panel w-full max-w-xs rounded-2xl p-4 border-purple-500/30">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-bold text-neon-purple flex items-center gap-1.5">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit Link
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Item
                 </h3>
                 <button onclick="closeEditModal()" class="text-slate-400 hover:text-white">
                     <i class="fa-solid fa-xmark"></i>
@@ -307,22 +384,37 @@
             </div>
             <form onsubmit="handleSaveEdit(event)" class="space-y-2.5">
                 <input type="hidden" id="editLinkId">
+                <input type="hidden" id="editIsFolder" value="false">
+
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Judul Link</label>
+                    <label id="editTitleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block">Judul / Nama Folder</label>
                     <input type="text" id="editLinkTitle" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
-                <div>
+                
+                <div id="editUrlContainer">
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">URL Link</label>
-                    <input type="url" id="editLinkUrl" required class="w-full glass-input text-xs p-2 rounded-lg">
+                    <input type="url" id="editLinkUrl" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
+
+                <div id="editFolderParentContainer">
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Pindahkan ke Folder</label>
+                    <select id="editLinkFolderParent" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
+                        <option value="">-- Halaman Utama (Tanpa Folder) --</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Deskripsi</label>
                     <input type="text" id="editLinkDesc" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
+
                 <div>
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Ikon</label>
                     <select id="editLinkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
                         <option value="fa-solid fa-globe">🌐 Web / Custom</option>
+                        <option value="fa-solid fa-folder">📁 Folder Umum</option>
+                        <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
+                        <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
                         <option value="fa-brands fa-github">🐙 GitHub</option>
                         <option value="fa-brands fa-instagram">📸 Instagram</option>
                         <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
@@ -331,9 +423,9 @@
                         <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
                         <option value="fa-solid fa-briefcase">💼 Portfolio</option>
                         <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                        <option value="fa-solid fa-paper-plane">✈️ Telegram</option>
                     </select>
                 </div>
+
                 <div class="flex gap-2 pt-1.5">
                     <button type="button" onclick="closeEditModal()" class="w-1/2 glass-panel text-xs py-2 rounded-lg text-slate-300 hover:text-white">
                         Batal
@@ -417,8 +509,9 @@
         let app, auth, db;
         let currentUser = null;
         let linksList = [];
-        let sortableInstance = null;
+        let sortableInstances = [];
         let isDraggingActive = false;
+        let openFolders = new Set(); // Menyimpan state folder yang sedang terbuka
 
         let profileData = {
             name: "Kurniawan Yunianto",
@@ -462,8 +555,6 @@
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 updateAdminUI(user);
-                
-                // Fetch or Subscribe to Public Link Data in Firestore
                 subscribeToFirestoreData();
             });
         }
@@ -479,7 +570,7 @@
             if (linksUnsubscribe) linksUnsubscribe();
             if (profileUnsubscribe) profileUnsubscribe();
 
-            // Realtime Links Listener
+            // Realtime Links & Folders Listener
             linksUnsubscribe = onSnapshot(linksCollectionRef, (snapshot) => {
                 if (isDraggingActive) return;
 
@@ -488,7 +579,7 @@
                     fetchedLinks.push({ id: docItem.id, ...docItem.data() });
                 });
 
-                // Sort links by 'order' property ascending
+                // Sort items by order property ascending
                 fetchedLinks.sort((a, b) => {
                     const orderA = typeof a.order === 'number' ? a.order : 0;
                     const orderB = typeof b.order === 'number' ? b.order : 0;
@@ -498,7 +589,9 @@
 
                 linksList = fetchedLinks;
 
+                updateFolderDropdownOptions();
                 renderLinks(linksList);
+                
                 document.getElementById('linksLoading').classList.add('hidden');
                 document.getElementById('linksContainer').classList.remove('hidden');
             }, (error) => {
@@ -506,7 +599,7 @@
                 loadFallbackLocalData();
             });
 
-            // Realtime Profile Header Listener
+            // Realtime Profile Listener
             profileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
                 if (docSnap.exists()) {
                     profileData = docSnap.data();
@@ -520,6 +613,61 @@
                 renderProfile(profileData);
             });
         }
+
+        // Update Dropdown Pilihan Folder di Form Admin
+        function updateFolderDropdownOptions() {
+            const addSelect = document.getElementById('linkFolderParent');
+            const editSelect = document.getElementById('editLinkFolderParent');
+            
+            const folders = linksList.filter(item => item.isFolder === true && (currentUser || item.visible !== false));
+            
+            let optionsHtml = '<option value="">-- Halaman Utama (Tanpa Folder) --</option>';
+            folders.forEach(f => {
+                optionsHtml += `<option value="${f.id}">📁 Folder: ${escapeHtml(f.title)}</option>`;
+            });
+
+            if (addSelect) addSelect.innerHTML = optionsHtml;
+            if (editSelect) editSelect.innerHTML = optionsHtml;
+        }
+
+        // Switch Item Type Form (Single Link vs Folder)
+        window.switchItemType = function(type) {
+            const itemTypeInput = document.getElementById('itemType');
+            const typeLinkBtn = document.getElementById('typeLinkBtn');
+            const typeFolderBtn = document.getElementById('typeFolderBtn');
+            const urlContainer = document.getElementById('urlInputContainer');
+            const folderParentContainer = document.getElementById('folderParentContainer');
+            const titleLabel = document.getElementById('titleLabel');
+            const linkUrlInput = document.getElementById('linkUrl');
+            const linkTitleInput = document.getElementById('linkTitle');
+            const linkIconSelect = document.getElementById('linkIcon');
+
+            itemTypeInput.value = type;
+
+            if (type === 'folder') {
+                typeFolderBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm";
+                typeLinkBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all text-slate-400 hover:text-white";
+                
+                urlContainer.classList.add('hidden');
+                folderParentContainer.classList.add('hidden');
+                linkUrlInput.removeAttribute('required');
+                
+                titleLabel.innerText = "Nama Folder / Kategori";
+                linkTitleInput.placeholder = "Contoh: Aplikasi Saya, Portofolio";
+                linkIconSelect.value = "fa-solid fa-folder";
+            } else {
+                typeLinkBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm";
+                typeFolderBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all text-slate-400 hover:text-white";
+                
+                urlContainer.classList.remove('hidden');
+                folderParentContainer.classList.remove('hidden');
+                linkUrlInput.setAttribute('required', 'true');
+                
+                titleLabel.innerText = "Judul Link";
+                linkTitleInput.placeholder = "Judul Link (contoh: TARTILIKU)";
+                linkIconSelect.value = "fa-solid fa-globe";
+            }
+        };
 
         // Render Profile Info
         function renderProfile(data) {
@@ -535,127 +683,249 @@
             }
         }
 
-        // Render Links List (Sleek & Pro Layout)
+        // Render Links List (Termasuk Sistem Folder Accordion)
         function renderLinks(linksToRender) {
             const container = document.getElementById('linksContainer');
             const emptyState = document.getElementById('emptyState');
 
             container.innerHTML = '';
 
-            const visibleLinks = linksToRender.filter(l => currentUser || l.visible !== false);
+            // Filter link/folder yang terlihat
+            const visibleItems = linksToRender.filter(item => currentUser || item.visible !== false);
 
-            if (visibleLinks.length === 0) {
+            if (visibleItems.length === 0) {
                 emptyState.classList.remove('hidden');
                 return;
             } else {
                 emptyState.classList.add('hidden');
             }
 
-            visibleLinks.forEach(link => {
-                const card = document.createElement('div');
-                const isHidden = link.visible === false;
-                
-                card.setAttribute('data-id', link.id);
-                // Ukuran padding disesuaikan (p-2.5 sm:p-3) agar ramping & pas di smartphone
-                card.className = `glass-card rounded-xl p-2.5 sm:p-3 flex items-center justify-between group relative overflow-hidden ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
-                
-                card.innerHTML = `
-                    <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1.5">
-                        <!-- Drag Handle Icon (Admin Only) -->
-                        ${currentUser ? `
-                            <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" title="Tarik untuk mengubah urutan">
-                                <i class="fa-solid fa-grip-vertical text-xs"></i>
-                            </div>
-                        ` : ''}
+            // Pisahkan item tingkat atas (Root Items) & item di dalam folder
+            const rootItems = visibleItems.filter(item => !item.parentId);
 
-                        <a href="${escapeHtml(link.url)}" target="_blank" onclick="window.trackClick('${link.id}', event)" class="flex items-center gap-2.5 flex-1 min-w-0">
-                            <!-- Icon Box Lebih Ringkas -->
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
-                                <i class="${escapeHtml(link.icon || 'fa-solid fa-globe')}"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-1.5">
-                                    <h3 class="font-semibold text-xs sm:text-[13px] text-slate-100 group-hover:text-neon-cyan transition-colors truncate">
-                                        ${escapeHtml(link.title)}
-                                    </h3>
-                                    ${isHidden ? '<span class="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded border border-slate-700">Hidden</span>' : ''}
-                                </div>
-                                ${link.desc ? `<p class="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5 font-light">${escapeHtml(link.desc)}</p>` : ''}
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="flex items-center gap-1.5 flex-shrink-0">
-                        <!-- Click Counter Badge Compact -->
-                        <span class="text-[9px] text-slate-400 glass-panel px-1.5 py-0.5 rounded-full flex items-center gap-1 font-mono" title="Jumlah Klik">
-                            <i class="fa-solid fa-arrow-pointer text-[8px] text-neon-cyan"></i> ${link.clicks || 0}
-                        </span>
-
-                        <!-- Admin Controls -->
-                        ${currentUser ? `
-                            <div class="flex items-center gap-0.5 border-l border-white/10 pl-1.5">
-                                <button onclick="window.toggleLinkVisibility('${link.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
-                                    <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                                </button>
-                                <button onclick="window.openEditModal('${link.id}')" class="p-1 text-slate-400 hover:text-neon-purple transition-colors text-[11px]" title="Edit">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button onclick="window.deleteLink('${link.id}')" class="p-1 text-slate-400 hover:text-neon-pink transition-colors text-[11px]" title="Hapus">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-
-                container.appendChild(card);
+            rootItems.forEach(item => {
+                if (item.isFolder) {
+                    // Render Blok Folder
+                    const folderCard = createFolderElement(item, visibleItems);
+                    container.appendChild(folderCard);
+                } else {
+                    // Render Single Link di Root
+                    const linkCard = createSingleLinkElement(item);
+                    container.appendChild(linkCard);
+                }
             });
 
             initSortable();
         }
 
-        // Initialize SortableJS for Drag and Drop
-        function initSortable() {
-            const container = document.getElementById('linksContainer');
+        // Membuat Element Blok Folder
+        function createFolderElement(folder, allVisibleItems) {
+            const folderWrapper = document.createElement('div');
+            const isHidden = folder.visible === false;
+            const isOpen = openFolders.has(folder.id);
+
+            // Ambil semua anak link yang dimiliki folder ini
+            const childLinks = allVisibleItems.filter(item => item.parentId === folder.id);
+
+            folderWrapper.setAttribute('data-id', folder.id);
+            folderWrapper.className = `glass-folder rounded-xl overflow-hidden transition-all duration-300 ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+
+            folderWrapper.innerHTML = `
+                <!-- Header Folder (Bisa Diklik) -->
+                <div class="folder-header p-2.5 sm:p-3 flex items-center justify-between cursor-pointer group select-none hover:bg-white/5 transition-colors" onclick="window.toggleFolderOpen('${folder.id}', event)">
+                    <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1.5">
+                        <!-- Drag Handle Icon (Admin Only) -->
+                        ${currentUser ? `
+                            <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" onclick="event.stopPropagation()" title="Tarik untuk merubah urutan">
+                                <i class="fa-solid fa-grip-vertical text-xs"></i>
+                            </div>
+                        ` : ''}
+
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="${escapeHtml(folder.icon || 'fa-solid fa-folder')}"></i>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <h3 class="font-bold text-xs sm:text-[13px] text-white group-hover:text-neon-cyan transition-colors truncate">
+                                    ${escapeHtml(folder.title)}
+                                </h3>
+                                <span class="text-[9px] bg-purple-950/60 text-purple-300 px-1.5 py-0.2 rounded border border-purple-500/30">
+                                    ${childLinks.length} Item
+                                </span>
+                                ${isHidden ? '<span class="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded border border-slate-700">Hidden</span>' : ''}
+                            </div>
+                            ${folder.desc ? `<p class="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5 font-light">${escapeHtml(folder.desc)}</p>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-shrink-0" onclick="event.stopPropagation()">
+                        <!-- Admin Controls -->
+                        ${currentUser ? `
+                            <div class="flex items-center gap-0.5 border-r border-white/10 pr-1.5 mr-1">
+                                <button onclick="window.toggleLinkVisibility('${folder.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
+                                    <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                </button>
+                                <button onclick="window.openEditModal('${folder.id}')" class="p-1 text-slate-400 hover:text-neon-purple transition-colors text-[11px]" title="Edit Folder">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="window.deleteLink('${folder.id}')" class="p-1 text-slate-400 hover:text-neon-pink transition-colors text-[11px]" title="Hapus Folder">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+
+                        <!-- Chevron Arrow -->
+                        <div class="w-6 h-6 flex items-center justify-center text-slate-400 group-hover:text-neon-cyan">
+                            <i class="fa-solid fa-chevron-down text-xs chevron-icon ${isOpen ? 'rotate-180' : ''}"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Isi Isi Folder (Daftar Link di Dalam) -->
+                <div id="folderContent-${folder.id}" class="folder-content ${isOpen ? 'open' : ''} border-t border-cyan-500/10 bg-black/20 p-2 space-y-2">
+                    ${childLinks.length === 0 ? `
+                        <p class="text-[10px] text-slate-500 italic text-center py-2">Folder ini masih kosong.</p>
+                    ` : ''}
+                </div>
+            `;
+
+            // Masukkan link anak ke dalam wadah folderContent
+            const folderContentDiv = folderWrapper.querySelector(`#folderContent-${folder.id}`);
+            childLinks.forEach(child => {
+                const childElement = createSingleLinkElement(child, true);
+                folderContentDiv.appendChild(childElement);
+            });
+
+            return folderWrapper;
+        }
+
+        // Membuat Element Single Link
+        function createSingleLinkElement(link, isInsideFolder = false) {
+            const card = document.createElement('div');
+            const isHidden = link.visible === false;
             
-            if (sortableInstance) {
-                sortableInstance.destroy();
-                sortableInstance = null;
+            card.setAttribute('data-id', link.id);
+            card.className = `glass-card rounded-xl p-2.5 sm:p-3 flex items-center justify-between group relative overflow-hidden ${isInsideFolder ? 'bg-slate-900/40 border-slate-800' : ''} ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+            
+            card.innerHTML = `
+                <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1.5">
+                    <!-- Drag Handle Icon (Admin Only) -->
+                    ${currentUser ? `
+                        <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" title="Tarik untuk mengubah urutan">
+                            <i class="fa-solid fa-grip-vertical text-xs"></i>
+                        </div>
+                    ` : ''}
+
+                    <a href="${escapeHtml(link.url)}" target="_blank" onclick="window.trackClick('${link.id}', event)" class="flex items-center gap-2.5 flex-1 min-w-0">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="${escapeHtml(link.icon || 'fa-solid fa-globe')}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <h3 class="font-semibold text-xs sm:text-[13px] text-slate-100 group-hover:text-neon-cyan transition-colors truncate">
+                                    ${escapeHtml(link.title)}
+                                </h3>
+                                ${isHidden ? '<span class="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded border border-slate-700">Hidden</span>' : ''}
+                            </div>
+                            ${link.desc ? `<p class="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5 font-light">${escapeHtml(link.desc)}</p>` : ''}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <!-- Click Counter Badge -->
+                    <span class="text-[9px] text-slate-400 glass-panel px-1.5 py-0.5 rounded-full flex items-center gap-1 font-mono" title="Jumlah Klik">
+                        <i class="fa-solid fa-arrow-pointer text-[8px] text-neon-cyan"></i> ${link.clicks || 0}
+                    </span>
+
+                    <!-- Admin Controls -->
+                    ${currentUser ? `
+                        <div class="flex items-center gap-0.5 border-l border-white/10 pl-1.5">
+                            <button onclick="window.toggleLinkVisibility('${link.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
+                                <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                            </button>
+                            <button onclick="window.openEditModal('${link.id}')" class="p-1 text-slate-400 hover:text-neon-purple transition-colors text-[11px]" title="Edit Link">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="window.deleteLink('${link.id}')" class="p-1 text-slate-400 hover:text-neon-pink transition-colors text-[11px]" title="Hapus Link">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Toggle Expand / Collapse Folder
+        window.toggleFolderOpen = function(folderId, event) {
+            const folderContentDiv = document.getElementById(`folderContent-${folderId}`);
+            if (!folderContentDiv) return;
+
+            const chevron = event.currentTarget.querySelector('.chevron-icon');
+
+            if (openFolders.has(folderId)) {
+                openFolders.delete(folderId);
+                folderContentDiv.classList.remove('open');
+                if (chevron) chevron.classList.remove('rotate-180');
+            } else {
+                openFolders.add(folderId);
+                folderContentDiv.classList.add('open');
+                if (chevron) chevron.classList.add('rotate-180');
             }
+        };
+
+        // Initialize SortableJS untuk Drag and Drop di Root dan Dalam Folder
+        function initSortable() {
+            // Bersihkan semua instance lama
+            sortableInstances.forEach(inst => inst.destroy());
+            sortableInstances = [];
 
             if (!currentUser || typeof Sortable === 'undefined') return;
 
-            sortableInstance = new Sortable(container, {
-                animation: 200,
-                handle: '.drag-handle',
-                ghostClass: 'sortable-ghost',
-                dragClass: 'sortable-drag',
-                onStart: function() {
-                    isDraggingActive = true;
-                },
-                onEnd: async function(evt) {
-                    isDraggingActive = false;
-                    
-                    const itemElements = Array.from(container.children);
-                    const newOrderedIds = itemElements.map(el => el.getAttribute('data-id')).filter(Boolean);
+            // Sortable untuk Root Container
+            const rootContainer = document.getElementById('linksContainer');
+            if (rootContainer) {
+                const rootInst = new Sortable(rootContainer, {
+                    animation: 200,
+                    handle: '.drag-handle',
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    onStart: () => { isDraggingActive = true; },
+                    onEnd: async () => {
+                        isDraggingActive = false;
+                        await updateOrderFromDOM(rootContainer, null);
+                    }
+                });
+                sortableInstances.push(rootInst);
+            }
 
-                    const reorderedList = [];
-                    newOrderedIds.forEach((id, index) => {
-                        const item = linksList.find(l => l.id === id);
-                        if (item) {
-                            item.order = index;
-                            reorderedList.push(item);
-                        }
-                    });
-
-                    linksList = reorderedList;
-                    await saveNewLinkOrder(newOrderedIds);
-                }
+            // Sortable untuk Setiap Dalam Folder
+            const folderContentElements = document.querySelectorAll('.folder-content');
+            folderContentElements.forEach(folderEl => {
+                const folderId = folderEl.id.replace('folderContent-', '');
+                const folderInst = new Sortable(folderEl, {
+                    animation: 200,
+                    handle: '.drag-handle',
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    onStart: () => { isDraggingActive = true; },
+                    onEnd: async () => {
+                        isDraggingActive = false;
+                        await updateOrderFromDOM(folderEl, folderId);
+                    }
+                });
+                sortableInstances.push(folderInst);
             });
         }
 
-        // Save new reordered indices to Firestore
-        async function saveNewLinkOrder(orderedIds) {
+        // Update Urutan Baru Ke Firestore
+        async function updateOrderFromDOM(containerEl, parentFolderId) {
+            const itemElements = Array.from(containerEl.children);
+            const orderedIds = itemElements.map(el => el.getAttribute('data-id')).filter(Boolean);
+
             try {
                 const batch = writeBatch(db);
                 orderedIds.forEach((id, index) => {
@@ -664,11 +934,10 @@
                 });
 
                 await batch.commit();
-                showToast('Urutan link berhasil disimpan!');
+                showToast('Urutan baru tersimpan!');
             } catch (err) {
                 console.error("Error saving new order:", err);
-                localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
-                showToast('Urutan disimpan secara lokal', 'info');
+                showToast('Gagal menyimpan urutan', 'error');
             }
         }
 
@@ -682,12 +951,13 @@
                 linksList = JSON.parse(savedLocal);
             } else {
                 linksList = [
-                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Aplikasi Digital Belajar Membaca Al Quran', icon: 'fa-solid fa-globe', clicks: 0, visible: true, order: 0 },
-                    { id: '2', title: 'INFAQU', url: 'https://example.com', desc: 'Aplikasi Pencatatan Infaq', icon: 'fa-solid fa-globe', clicks: 0, visible: true, order: 1 },
-                    { id: '3', title: 'TALQINKU', url: 'https://example.com', desc: 'Aplikasi Digital Membantu Menghafal Al Quran', icon: 'fa-solid fa-globe', clicks: 0, visible: true, order: 2 },
-                    { id: '4', title: 'Tahfizhku', url: 'https://example.com', desc: 'Aplikasi Progres Hafalan Al Quran', icon: 'fa-solid fa-globe', clicks: 0, visible: true, order: 3 }
+                    { id: 'f1', title: 'Aplikasi Al Quran Digital', desc: 'Kumpulan aplikasi belajar & hafalan Al Quran', icon: 'fa-solid fa-folder', isFolder: true, clicks: 0, visible: true, order: 0 },
+                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Belajar Membaca Al Quran', icon: 'fa-solid fa-globe', clicks: 12, visible: true, parentId: 'f1', order: 0 },
+                    { id: '2', title: 'TALQINKU', url: 'https://example.com', desc: 'Membantu Menghafal Al Quran', icon: 'fa-solid fa-globe', clicks: 8, visible: true, parentId: 'f1', order: 1 },
+                    { id: '3', title: 'INFAQU', url: 'https://example.com', desc: 'Aplikasi Pencatatan Infaq', icon: 'fa-solid fa-globe', clicks: 15, visible: true, order: 1 }
                 ];
             }
+            updateFolderDropdownOptions();
             renderLinks(linksList);
             renderProfile(profileData);
         }
@@ -714,7 +984,7 @@
             renderLinks(linksList);
         }
 
-        // Track Click
+        // Track Click Count
         window.trackClick = async function(id, event) {
             const link = linksList.find(l => l.id === id);
             if (!link) return;
@@ -748,7 +1018,7 @@
             } catch (err) {
                 console.error("Login error:", err);
                 errorMsg.classList.remove('hidden');
-                errorMsg.innerText = 'Gagal Login: Email atau password salah/tidak terdaftar.';
+                errorMsg.innerText = 'Gagal Login: Email atau password salah.';
             } finally {
                 submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
             }
@@ -764,7 +1034,7 @@
             }
         };
 
-        // Add New Link
+        // Add New Item (Link or Folder)
         window.handleAddLink = async function(e) {
             e.preventDefault();
             if (!currentUser) {
@@ -772,21 +1042,26 @@
                 return;
             }
 
+            const itemType = document.getElementById('itemType').value;
             const title = document.getElementById('linkTitle').value.trim();
             const url = document.getElementById('linkUrl').value.trim();
             const desc = document.getElementById('linkDesc').value.trim();
             const icon = document.getElementById('linkIcon').value;
+            const parentId = document.getElementById('linkFolderParent').value;
             const btn = document.getElementById('submitAddLinkBtn');
 
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
 
+            const isFolder = itemType === 'folder';
             const nextOrder = linksList.length;
 
-            const newLinkData = {
+            const newItemData = {
                 title,
-                url,
+                url: isFolder ? '' : url,
                 desc,
                 icon,
+                isFolder: isFolder,
+                parentId: isFolder ? '' : (parentId || ''),
                 clicks: 0,
                 visible: true,
                 order: nextOrder,
@@ -795,28 +1070,49 @@
 
             try {
                 const linksCollectionRef = collection(db, 'biolink', 'public', 'links');
-                await addDoc(linksCollectionRef, newLinkData);
+                await addDoc(linksCollectionRef, newItemData);
 
                 document.getElementById('addLinkForm').reset();
-                showToast('Link baru berhasil ditambahkan!');
+                switchItemType('link'); // Reset back to link
+                showToast(isFolder ? 'Folder baru dibuat!' : 'Link baru ditambahkan!');
             } catch (err) {
-                console.error("Error adding link:", err);
-                showToast('Gagal menyimpan link ke database cloud', 'error');
+                console.error("Error adding item:", err);
+                showToast('Gagal menyimpan data ke cloud', 'error');
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Link';
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan';
             }
         };
 
-        // Delete Link
+        // Delete Link / Folder
         window.deleteLink = async function(id) {
             if (!currentUser) return;
             
+            const target = linksList.find(i => i.id === id);
+            if (target && target.isFolder) {
+                const hasChildren = linksList.some(i => i.parentId === id);
+                if (hasChildren && !confirm("Folder ini berisi link. Menghapus folder juga akan mengeluarkan link di dalamnya ke halaman utama. Lanjutkan?")) {
+                    return;
+                }
+            }
+
             try {
                 const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await deleteDoc(docRef);
-                showToast('Link berhasil dihapus.');
+
+                // Jika folder dihapus, kembalikan anak-anaknya ke root
+                if (target && target.isFolder) {
+                    const children = linksList.filter(i => i.parentId === id);
+                    const batch = writeBatch(db);
+                    children.forEach(c => {
+                        const childRef = doc(db, 'biolink', 'public', 'links', c.id);
+                        batch.update(childRef, { parentId: '' });
+                    });
+                    await batch.commit();
+                }
+
+                showToast('Item berhasil dihapus.');
             } catch (err) {
-                showToast('Gagal menghapus link', 'error');
+                showToast('Gagal menghapus item', 'error');
             }
         };
 
@@ -827,22 +1123,38 @@
             try {
                 const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await updateDoc(docRef, { visible: newVisibility });
-                showToast(newVisibility ? 'Link ditampilkan' : 'Link disembunyikan');
+                showToast(newVisibility ? 'Item ditampilkan' : 'Item disembunyikan');
             } catch(e) {
-                showToast('Gagal mengubah status link', 'error');
+                showToast('Gagal mengubah status', 'error');
             }
         };
 
-        // Edit Link Modal
+        // Edit Modal Open & Actions
         window.openEditModal = function(id) {
-            const link = linksList.find(l => l.id === id);
-            if (!link) return;
+            const item = linksList.find(l => l.id === id);
+            if (!item) return;
 
-            document.getElementById('editLinkId').value = link.id;
-            document.getElementById('editLinkTitle').value = link.title || '';
-            document.getElementById('editLinkUrl').value = link.url || '';
-            document.getElementById('editLinkDesc').value = link.desc || '';
-            document.getElementById('editLinkIcon').value = link.icon || 'fa-solid fa-globe';
+            document.getElementById('editLinkId').value = item.id;
+            document.getElementById('editIsFolder').value = item.isFolder ? 'true' : 'false';
+            document.getElementById('editLinkTitle').value = item.title || '';
+            document.getElementById('editLinkUrl').value = item.url || '';
+            document.getElementById('editLinkDesc').value = item.desc || '';
+            document.getElementById('editLinkIcon').value = item.icon || (item.isFolder ? 'fa-solid fa-folder' : 'fa-solid fa-globe');
+            document.getElementById('editLinkFolderParent').value = item.parentId || '';
+
+            const editUrlContainer = document.getElementById('editUrlContainer');
+            const editFolderParentContainer = document.getElementById('editFolderParentContainer');
+            const editTitleLabel = document.getElementById('editTitleLabel');
+
+            if (item.isFolder) {
+                editUrlContainer.classList.add('hidden');
+                editFolderParentContainer.classList.add('hidden');
+                editTitleLabel.innerText = "Nama Folder";
+            } else {
+                editUrlContainer.classList.remove('hidden');
+                editFolderParentContainer.classList.remove('hidden');
+                editTitleLabel.innerText = "Judul Link";
+            }
 
             document.getElementById('editModal').classList.remove('hidden');
         };
@@ -854,23 +1166,33 @@
         window.handleSaveEdit = async function(e) {
             e.preventDefault();
             const id = document.getElementById('editLinkId').value;
+            const isFolder = document.getElementById('editIsFolder').value === 'true';
             const title = document.getElementById('editLinkTitle').value.trim();
             const url = document.getElementById('editLinkUrl').value.trim();
             const desc = document.getElementById('editLinkDesc').value.trim();
             const icon = document.getElementById('editLinkIcon').value;
+            const parentId = document.getElementById('editLinkFolderParent').value;
 
             try {
                 const docRef = doc(db, 'biolink', 'public', 'links', id);
-                await updateDoc(docRef, { title, url, desc, icon });
+                const updatedData = {
+                    title,
+                    desc,
+                    icon,
+                    url: isFolder ? '' : url,
+                    parentId: isFolder ? '' : parentId
+                };
+
+                await updateDoc(docRef, updatedData);
 
                 closeEditModal();
-                showToast('Perubahan link tersimpan!');
+                showToast('Perubahan berhasil disimpan!');
             } catch (err) {
-                showToast('Gagal memperbarui link', 'error');
+                showToast('Gagal memperbarui item', 'error');
             }
         };
 
-        // Edit Profile Modal
+        // Edit Profile Header
         window.openEditProfileModal = function() {
             document.getElementById('editProfileName').value = profileData.name || '';
             document.getElementById('editProfileBio').value = profileData.bio || '';
@@ -916,14 +1238,26 @@
             document.getElementById('loginModal').classList.add('hidden');
         };
 
-        // Search Filter
+        // Search Filter (Link & Folder Search)
         window.filterLinks = function() {
             const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) {
+                renderLinks(linksList);
+                return;
+            }
+
+            // Jika ada pencarian, buka otomatis semua folder yang cocok
             const filtered = linksList.filter(l => 
                 (l.title && l.title.toLowerCase().includes(query)) || 
                 (l.desc && l.desc.toLowerCase().includes(query))
             );
-            renderLinks(filtered);
+
+            // Buka folder yang memiliki anak hasil pencarian
+            filtered.forEach(item => {
+                if (item.parentId) openFolders.add(item.parentId);
+            });
+
+            renderLinks(linksList);
         };
 
         // Share Profile
