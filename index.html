@@ -1,3 +1,5 @@
+<GenerateWidget type="artifact">
+<Element id="dark-glassmorphism-linktree">
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -116,10 +118,9 @@
         
         <!-- Top Navigation Bar -->
         <div class="w-full flex justify-between items-center mb-6 px-1">
-            <button id="configModalBtn" onclick="openConfigModal()" class="px-3 py-1.5 rounded-full text-xs font-medium glass-panel flex items-center gap-1.5 hover:border-cyan-400/50 transition-all text-slate-300 hover:text-white" title="Firebase Setup">
-                <i class="fa-solid fa-sliders text-neon-cyan text-xs"></i>
-                <span class="text-[11px]">Firebase Config</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold tracking-wider text-neon-cyan uppercase">KurniaLink</span>
+            </div>
 
             <div class="flex items-center gap-2">
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold glass-panel flex items-center gap-2 hover:border-purple-500/50 transition-all text-slate-300 hover:text-white">
@@ -263,7 +264,7 @@
             <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
                 <div>
                     <label class="text-[10px] uppercase font-semibold text-slate-400 mb-1 block">Email Admin</label>
-                    <input type="email" id="loginEmail" required placeholder="a*********t70.com" class="w-full glass-input text-xs p-2.5 rounded-lg">
+                    <input type="email" id="loginEmail" required placeholder="email@domain.com" class="w-full glass-input text-xs p-2.5 rounded-lg">
                 </div>
                 <div>
                     <label class="text-[10px] uppercase font-semibold text-slate-400 mb-1 block">Password</label>
@@ -372,59 +373,6 @@
         </div>
     </div>
 
-    <!-- Modal 4: Firebase Credentials Setup Modal -->
-    <div id="configModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border-cyan-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-bold text-neon-cyan flex items-center gap-2">
-                    <i class="fa-solid fa-fire"></i> Pengaturan Firebase Config
-                </h3>
-                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <p class="text-[11px] text-slate-300 leading-relaxed mb-4">
-                Masukkan kredensial <b>Firebase Console Project</b> Anda agar data tersimpan permanen di cloud dan otentikasi login admin berfungsi secara utuh.
-            </p>
-
-            <form onsubmit="saveFirebaseConfig(event)" class="space-y-2.5">
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">apiKey</label>
-                    <input type="text" id="cfgApiKey" required placeholder="AIzaSy..." class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">authDomain</label>
-                    <input type="text" id="cfgAuthDomain" required placeholder="your-app.firebaseapp.com" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">projectId</label>
-                    <input type="text" id="cfgProjectId" required placeholder="your-app-id" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">storageBucket</label>
-                    <input type="text" id="cfgStorageBucket" placeholder="your-app.appspot.com" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">messagingSenderId</label>
-                    <input type="text" id="cfgMessagingSenderId" placeholder="123456789" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">appId</label>
-                    <input type="text" id="cfgAppId" required placeholder="1:123456:web:abcd" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
-                </div>
-
-                <div class="flex gap-2 pt-3">
-                    <button type="button" onclick="clearConfigAndFallback()" class="w-1/3 glass-panel text-[11px] py-2.5 rounded-lg text-pink-400 hover:text-pink-300">
-                        Reset Config
-                    </button>
-                    <button type="submit" class="w-2/3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-lg shadow-cyan-500/20">
-                        Simpan & Hubungkan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-panel px-4 py-2.5 rounded-full text-xs font-medium text-white border-cyan-400/40 shadow-xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 z-50">
         <i id="toastIcon" class="fa-solid fa-circle-check text-neon-cyan"></i>
@@ -438,8 +386,7 @@
             signInWithEmailAndPassword, 
             signOut, 
             onAuthStateChanged,
-            signInWithCustomToken,
-            signInAnonymously
+            signInWithCustomToken
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { 
             getFirestore, 
@@ -466,35 +413,15 @@
         let linksUnsubscribe = null;
         let profileUnsubscribe = null;
 
-        // Fallback Default Config (Mock or Environment provided)
-        const defaultAppId = typeof __app_id !== 'undefined' ? __app_id : 'lynk-neon-default';
-        let firebaseConfig = null;
-
-        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-            try {
-                firebaseConfig = JSON.parse(__firebase_config);
-            } catch(e) { console.error("Error parsing environment firebaseConfig", e); }
-        }
-
-        // Check LocalStorage for custom User-configured Firebase Credentials
-        const savedConfig = localStorage.getItem('custom_firebase_config');
-        if (savedConfig) {
-            try {
-                firebaseConfig = JSON.parse(savedConfig);
-            } catch(e) { console.error("Error parsing saved custom config", e); }
-        }
-
-        // Fallback placeholder if none exists
-        if (!firebaseConfig) {
-            firebaseConfig = {
-                apiKey: "AIzaSyDemoKeyConfig1234567890",
-                authDomain: "lynk-neon-demo.firebaseapp.com",
-                projectId: "lynk-neon-demo",
-                storageBucket: "lynk-neon-demo.appspot.com",
-                messagingSenderId: "1234567890",
-                appId: "1:1234567890:web:demo"
-            };
-        }
+        // Firebase Configuration
+       const firebaseConfig = {
+  apiKey: "AIzaSyBls1lMf1IBcnLQhUsCOvWnG53Tpd08mVM",
+  authDomain: "kurnialink-73c9b.firebaseapp.com",
+  projectId: "kurnialink-73c9b",
+  storageBucket: "kurnialink-73c9b.firebasestorage.app",
+  messagingSenderId: "812035410453",
+  appId: "1:812035410453:web:32d495b7e3007d6afb1c1c"
+        };
 
         // Initialize Firebase
         function initFirebase() {
@@ -507,7 +434,6 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Authenticate (Token / Anonymous / Email Auth Listener)
                 setupAuthListeners();
             } catch (err) {
                 console.warn("Firebase Init Notice:", err);
@@ -517,15 +443,6 @@
         }
 
         async function setupAuthListeners() {
-            // Check for custom environment token if available
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                try {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } catch(e) {
-                    console.log("Custom token signin fallback");
-                }
-            }
-
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 updateAdminUI(user);
@@ -535,13 +452,10 @@
             });
         }
 
-        // Subscribe to Firestore Public Collection Path according to strict rules
+        // Subscribe to Firestore Public Collection
         function subscribeToFirestoreData() {
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            
-            // Collection Path Rule: /artifacts/{appId}/public/data/links
-            const linksCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'links');
-            const profileDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'profile', 'header');
+            const linksCollectionRef = collection(db, 'biolink', 'public', 'links');
+            const profileDocRef = doc(db, 'biolink', 'public', 'profile', 'header');
 
             document.getElementById('linksLoading').classList.remove('hidden');
             document.getElementById('linksContainer').classList.add('hidden');
@@ -557,7 +471,7 @@
                     fetchedLinks.push({ id: docItem.id, ...docItem.data() });
                 });
 
-                // Sort links locally by timestamp or order (avoiding compound query restrictions)
+                // Sort links locally by timestamp
                 fetchedLinks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 linksList = fetchedLinks;
 
@@ -647,7 +561,7 @@
                         <!-- Admin Controls -->
                         ${currentUser ? `
                             <div class="flex items-center gap-1 ml-1 border-l border-white/10 pl-2">
-                                <button onclick="window.toggleLinkVisibility('${link.id}', ${!isHidden})" class="p-1.5 text-slate-400 hover:text-neon-cyan transition-colors text-xs" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
+                                <button onclick="window.toggleLinkVisibility('${link.id}',${!isHidden})" class="p-1.5 text-slate-400 hover:text-neon-cyan transition-colors text-xs" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
                                     <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
                                 </button>
                                 <button onclick="window.openEditModal('${link.id}')" class="p-1.5 text-slate-400 hover:text-neon-purple transition-colors text-xs" title="Edit">
@@ -715,16 +629,13 @@
             link.clicks = newClicks;
             
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await updateDoc(docRef, { clicks: newClicks });
             } catch(e) {
-                // Fallback local storage
                 localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
             }
         };
 
-        
         // Handle Admin Login Submission
         window.handleLoginSubmit = async function(e) {
             e.preventDefault();
@@ -786,8 +697,7 @@
             };
 
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const linksCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'links');
+                const linksCollectionRef = collection(db, 'biolink', 'public', 'links');
                 await addDoc(linksCollectionRef, newLinkData);
 
                 document.getElementById('addLinkForm').reset();
@@ -805,8 +715,7 @@
             if (!currentUser) return;
             
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await deleteDoc(docRef);
                 showToast('Link berhasil dihapus.');
             } catch (err) {
@@ -819,8 +728,7 @@
             if (!currentUser) return;
 
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await updateDoc(docRef, { visible: newVisibility });
                 showToast(newVisibility ? 'Link ditampilkan' : 'Link disembunyikan');
             } catch(e) {
@@ -855,8 +763,7 @@
             const icon = document.getElementById('editLinkIcon').value;
 
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                const docRef = doc(db, 'biolink', 'public', 'links', id);
                 await updateDoc(docRef, { title, url, desc, icon });
 
                 closeEditModal();
@@ -890,8 +797,7 @@
             const updatedProfile = { name, bio, avatar, verified };
 
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const profileDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'profile', 'header');
+                const profileDocRef = doc(db, 'biolink', 'public', 'profile', 'header');
                 await setDoc(profileDocRef, updatedProfile, { merge: true });
 
                 closeEditProfileModal();
@@ -901,49 +807,9 @@
             }
         };
 
-        // Firebase Config Modal Controls
-        window.openConfigModal = function() {
-            if (firebaseConfig) {
-                document.getElementById('cfgApiKey').value = firebaseConfig.apiKey || '';
-                document.getElementById('cfgAuthDomain').value = firebaseConfig.authDomain || '';
-                document.getElementById('cfgProjectId').value = firebaseConfig.projectId || '';
-                document.getElementById('cfgStorageBucket').value = firebaseConfig.storageBucket || '';
-                document.getElementById('cfgMessagingSenderId').value = firebaseConfig.messagingSenderId || '';
-                document.getElementById('cfgAppId').value = firebaseConfig.appId || '';
-            }
-            document.getElementById('configModal').classList.remove('hidden');
-        };
-
-        window.closeConfigModal = function() {
-            document.getElementById('configModal').classList.add('hidden');
-        };
-
-        window.saveFirebaseConfig = function(e) {
-            e.preventDefault();
-            const newCfg = {
-                apiKey: document.getElementById('cfgApiKey').value.trim(),
-                authDomain: document.getElementById('cfgAuthDomain').value.trim(),
-                projectId: document.getElementById('cfgProjectId').value.trim(),
-                storageBucket: document.getElementById('cfgStorageBucket').value.trim(),
-                messagingSenderId: document.getElementById('cfgMessagingSenderId').value.trim(),
-                appId: document.getElementById('cfgAppId').value.trim()
-            };
-
-            localStorage.setItem('custom_firebase_config', JSON.stringify(newCfg));
-            showToast('Config disimpan! Memuat ulang...', 'success');
-            setTimeout(() => { window.location.reload(); }, 1200);
-        };
-
-        window.clearConfigAndFallback = function() {
-            localStorage.removeItem('custom_firebase_config');
-            showToast('Kredensial direset!', 'info');
-            setTimeout(() => { window.location.reload(); }, 1000);
-        };
-
         // Handle Admin Top Button Click
         window.handleAdminBtnClick = function() {
             if (currentUser) {
-                // Scroll smoothly to Admin Panel
                 document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
             } else {
                 document.getElementById('loginModal').classList.remove('hidden');
@@ -1034,3 +900,5 @@
     </script>
 </body>
 </html>
+</Element>
+</GenerateWidget>
