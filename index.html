@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KurniaLink</title>
  
-    <!-- Favicon dengan SVG Data URI untuk kepastian icon halaman selalu muncul -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2306070b'/><circle cx='50' cy='50' r='38' stroke='%2300f3ff' stroke-width='6' fill='none'/><path d='M35 50 L45 60 L65 40' stroke='%23b026ff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
-    <!-- Fallback favicon jika file lokal favicon.png tersedia -->
-    <link rel="alternate icon" href="favicon.png">
+    <!-- Favicon PNG (Sesuai dengan gambar icon bola dunia / link) -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- SVG Favicon Fallback agar di browser seluler/laptop tetap langsung muncul tanpa error -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300f3ff'/><path d='M30 50 Q 50 20 70 50 Q 50 80 30 50 Z' fill='none' stroke='%2306070b' stroke-width='8'/><line x1='10' y1='50' x2='90' y2='50' stroke='%2306070b' stroke-width='8'/></svg>">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -163,9 +163,9 @@
         }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-4 py-6 font-sans">
+<body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
-    <!-- Main Container dengan max-w-[420px] konsisten untuk seluruh halaman -->
+    <!-- Main Container dengan max-w-[420px] konsisten dengan padding sejajar -->
     <div class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
@@ -241,14 +241,14 @@
         <div class="w-full mb-4 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
             <input type="text" id="searchInput" oninput="filterLinks()" placeholder="Cari link atau folder..." 
-                   class="w-full glass-input text-xs pl-9 pr-8 py-2 rounded-xl placeholder:text-slate-500">
+                   class="w-full glass-input text-xs pl-9 pr-8 py-2.5 rounded-xl placeholder:text-slate-500">
             <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
-        <!-- Admin Control Form (Add Link / Folder) - Lebar disesuaikan persis max-w-[420px] -->
-        <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3.5 mb-4 hidden border-cyan-500/30 box-border">
+        <!-- Admin Panel (Diperbaiki padding px-3 py-3.5 & box-border agar lebarnya persis sejajar kartu link di bawahnya) -->
+        <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3 sm:p-3.5 mb-4 hidden border-cyan-500/30 box-border">
             <div class="flex items-center justify-between mb-2.5">
                 <h2 class="text-[11px] font-bold uppercase tracking-wider text-neon-cyan flex items-center gap-1.5">
                     <i class="fa-solid fa-plus-circle"></i> Tambah Item Baru
@@ -272,32 +272,32 @@
 
                 <!-- Input Khusus Link / Nama Folder -->
                 <div>
-                    <label id="titleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block">Judul Link</label>
+                    <label id="titleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Judul Link</label>
                     <input type="text" id="linkTitle" placeholder="Judul Link (contoh: TARTILIKU)" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
                 <!-- Input URL (Hanya untuk Single Link) -->
                 <div id="urlInputContainer">
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">URL Tujuan</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">URL Tujuan</label>
                     <input type="url" id="linkUrl" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
                 <!-- Pilihan Folder Induk (Untuk memasukkan link ke folder tertentu) -->
                 <div id="folderParentContainer">
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Masukkan ke Dalam Folder (Opsional)</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Masukkan ke Dalam Folder (Opsional)</label>
                     <select id="linkFolderParent" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
-                        <option value="">-- Tanpa Folder (Halaman Utama) --</option>
+                        <option value="">-- Halaman Utama (Tanpa Folder) --</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Deskripsi Singkat (Opsional)</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Deskripsi Singkat (Opsional)</label>
                     <input type="text" id="linkDesc" placeholder="Penjelasan singkat" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Ikon</label>
+                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Ikon</label>
                         <select id="linkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
                             <option value="fa-solid fa-globe">🌐 Web / Custom</option>
                             <option value="fa-solid fa-folder">📁 Folder Umum</option>
@@ -395,29 +395,29 @@
                 <input type="hidden" id="editIsFolder" value="false">
 
                 <div>
-                    <label id="editTitleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block">Judul / Nama Folder</label>
+                    <label id="editTitleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Judul / Nama Folder</label>
                     <input type="text" id="editLinkTitle" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 
                 <div id="editUrlContainer">
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">URL Link</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">URL Link</label>
                     <input type="url" id="editLinkUrl" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
                 <div id="editFolderParentContainer">
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Pindahkan ke Folder</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Pindahkan ke Folder</label>
                     <select id="editLinkFolderParent" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
                         <option value="">-- Halaman Utama (Tanpa Folder) --</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Deskripsi</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Deskripsi</label>
                     <input type="text" id="editLinkDesc" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Ikon</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Ikon</label>
                     <select id="editLinkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
                         <option value="fa-solid fa-globe">🌐 Web / Custom</option>
                         <option value="fa-solid fa-folder">📁 Folder Umum</option>
@@ -459,15 +459,15 @@
             </div>
             <form onsubmit="handleSaveProfile(event)" class="space-y-2.5">
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Nama Tampilan</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Nama Tampilan</label>
                     <input type="text" id="editProfileName" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">Bio / Deskripsi Profil</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Bio / Deskripsi Profil</label>
                     <textarea id="editProfileBio" rows="2" class="w-full glass-input text-xs p-2 rounded-lg resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block">URL Foto Avatar</label>
+                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">URL Foto Avatar</label>
                     <input type="url" id="editProfileAvatar" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 <div class="flex items-center gap-2 pt-0.5">
@@ -512,6 +512,18 @@
             onSnapshot,
             writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Dynamic Favicon Injection (Memastikan Icon Tab Browser Selalu Terpasang)
+        function setDynamicFavicon() {
+            let favicon = document.querySelector("link[rel*='icon']");
+            if (!favicon) {
+                favicon = document.createElement('link');
+                favicon.rel = 'shortcut icon';
+                document.head.appendChild(favicon);
+            }
+            // Gunakan Favicon PNG default
+            favicon.href = 'favicon.png';
+        }
 
         // Global State Variables
         let app, auth, db;
@@ -970,10 +982,10 @@
                 linksList = JSON.parse(savedLocal);
             } else {
                 linksList = [
-                    { id: 'f1', title: 'Aplikasi Al Quran Digital', desc: 'Kumpulan aplikasi belajar & hafalan Al Quran', icon: 'fa-solid fa-folder', isFolder: true, clicks: 0, visible: true, order: 0 },
-                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Belajar Membaca Al Quran', icon: 'fa-solid fa-globe', clicks: 12, visible: true, parentId: 'f1', order: 0 },
-                    { id: '2', title: 'TALQINKU', url: 'https://example.com', desc: 'Membantu Menghafal Al Quran', icon: 'fa-solid fa-globe', clicks: 8, visible: true, parentId: 'f1', order: 1 },
-                    { id: '3', title: 'INFAQU', url: 'https://example.com', desc: 'Aplikasi Pencatatan Infaq', icon: 'fa-solid fa-globe', clicks: 15, visible: true, order: 1 }
+                    { id: 'f1', title: 'TARTILI', desc: 'Tartili Jilid 1 - 6, Gharib, Tahfidz', icon: 'fa-solid fa-layer-group', isFolder: true, clicks: 0, visible: true, order: 0 },
+                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Tartili 1 - 6 | Setoran Membaca Tartili Online', icon: 'fa-solid fa-globe', clicks: 12, visible: true, parentId: 'f1', order: 0 },
+                    { id: '2', title: 'TALQINKU', url: 'https://example.com', desc: 'Aplikasi Digital Membantu Menghafal Al Quran', icon: 'fa-solid fa-globe', clicks: 8, visible: true, parentId: 'f1', order: 1 },
+                    { id: '3', title: 'INFAQU', url: 'https://example.com', desc: 'Aplikasi Sistem Manajemen Infaq Digital', icon: 'fa-solid fa-globe', clicks: 15, visible: true, order: 1 }
                 ];
             }
             updateFolderDropdownOptions();
@@ -1387,6 +1399,7 @@
 
         // Initialize Application
         window.onload = function() {
+            setDynamicFavicon();
             initFirebase();
         };
     </script>
