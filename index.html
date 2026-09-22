@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lynk Neon - Dark Glassmorphism Biolink</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        neon: {
+                            cyan: '#00f3ff',
+                            purple: '#b026ff',
+                            pink: '#ff007f',
+                            green: '#00ff66'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #08090e;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(176, 38, 255, 0.22) 0px, transparent 55%),
+                radial-gradient(at 85% 25%, rgba(0, 243, 255, 0.18) 0px, transparent 55%),
+                radial-gradient(at 50% 85%, rgba(255, 0, 127, 0.16) 0px, transparent 55%);
+            background-attachment: fixed;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(18, 20, 29, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.25),
+                        inset 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            border-color: #00f3ff;
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+            outline: none;
+        }
+
+        /* Neon Text & Glow Effects */
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+        .neon-text-purple {
+            text-shadow: 0 0 10px rgba(176, 38, 255, 0.7), 0 0 20px rgba(176, 38, 255, 0.3);
+        }
+
+        .neon-avatar {
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4), 0 0 10px rgba(176, 38, 255, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 10, 15, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 243, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 243, 255, 0.6);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 font-sans">
+
+    <div class="w-full max-w-md mx-auto flex-1 flex flex-col items-center pt-4 pb-12">
+        
+        <!-- Top Navigation Bar -->
+        <div class="w-full flex justify-between items-center mb-6 px-1">
+            <button id="configModalBtn" onclick="openConfigModal()" class="px-3 py-1.5 rounded-full text-xs font-medium glass-panel flex items-center gap-1.5 hover:border-cyan-400/50 transition-all text-slate-300 hover:text-white" title="Firebase Setup">
+                <i class="fa-solid fa-sliders text-neon-cyan text-xs"></i>
+                <span class="text-[11px]">Firebase Config</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold glass-panel flex items-center gap-2 hover:border-purple-500/50 transition-all text-slate-300 hover:text-white">
+                    <i id="adminStatusIcon" class="fa-solid fa-lock text-neon-purple"></i>
+                    <span id="adminStatusText">Admin Login</span>
+                </button>
+                <button onclick="shareProfile()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold glass-panel flex items-center gap-2 hover:border-pink-500/50 transition-all text-slate-300 hover:text-white" title="Bagikan Profile">
+                    <i class="fa-solid fa-share-nodes text-neon-pink"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Admin Mode Indicator Badge (Hidden by default) -->
+        <div id="adminBadge" class="hidden w-full mb-4 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20">
+            <div class="flex items-center gap-2 text-xs text-emerald-300 font-medium">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Mode Admin Aktif</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openEditProfileModal()" class="px-2.5 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                    <i class="fa-solid fa-user-pen mr-1 text-neon-cyan"></i> Edit Profil
+                </button>
+                <button onclick="handleLogout()" class="px-2.5 py-1 rounded-lg text-[11px] bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 transition">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center w-full flex flex-col items-center mb-6">
+            <div class="relative group mb-3">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <img id="profileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" 
+                     alt="Avatar" 
+                     class="relative w-24 h-24 rounded-full object-cover border-2 border-slate-900 neon-avatar"
+                     onerror="this.src='https://placehold.co/150x150/111827/00f3ff?text=User'">
+                <span class="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full" title="Active Now"></span>
+            </div>
+            
+            <h1 id="profileName" class="font-display font-bold text-2xl tracking-wide text-white mb-1 flex items-center justify-center gap-2">
+                Alex Developer
+                <i id="profileVerified" class="fa-solid fa-circle-check text-neon-cyan text-sm" title="Verified Profile"></i>
+            </h1>
+            <p id="profileBio" class="text-xs text-slate-400 max-w-xs px-4 mb-3 font-light leading-relaxed">
+                Full-stack Developer & UI/UX Enthusiast. Building aesthetic web apps.
+            </p>
+
+            <!-- Social Media Icon Bar -->
+            <div id="socialMediaRow" class="flex items-center gap-3 mt-1">
+                <a href="https://instagram.com" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan transition-all text-sm">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://github.com" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple transition-all text-sm">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://youtube.com" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink transition-all text-sm">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://wa.me/" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-green hover:border-neon-green transition-all text-sm">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="w-full mb-5 relative px-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="searchInput" oninput="filterLinks()" placeholder="Cari link..." 
+                   class="w-full glass-input text-xs pl-10 pr-4 py-2.5 rounded-xl placeholder:text-slate-500">
+        </div>
+
+        <!-- Admin Control Form (Add Link) -->
+        <div id="adminPanel" class="w-full glass-panel rounded-2xl p-4 mb-5 hidden border-cyan-500/30">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-neon-cyan flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Link Baru
+                </h2>
+            </div>
+            <form id="addLinkForm" onsubmit="handleAddLink(event)" class="space-y-3">
+                <input type="text" id="linkTitle" placeholder="Judul Link (contoh: Website Portfolio)" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                <input type="url" id="linkUrl" placeholder="URL Lengkap (https://...)" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                <input type="text" id="linkDesc" placeholder="Deskripsi Singkat (opsional)" class="w-full glass-input text-xs p-2.5 rounded-lg">
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <select id="linkIcon" class="glass-input text-xs p-2.5 rounded-lg bg-slate-900">
+                        <option value="fa-solid fa-globe">🌐 Web / Custom</option>
+                        <option value="fa-brands fa-github">🐙 GitHub</option>
+                        <option value="fa-brands fa-instagram">📸 Instagram</option>
+                        <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
+                        <option value="fa-brands fa-youtube">▶️ YouTube</option>
+                        <option value="fa-brands fa-tiktok">🎵 TikTok</option>
+                        <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
+                        <option value="fa-solid fa-briefcase">💼 Portfolio</option>
+                        <option value="fa-solid fa-store">🛍️ Toko Online</option>
+                        <option value="fa-solid fa-paper-plane">✈️ Telegram</option>
+                    </select>
+
+                    <button type="submit" id="submitAddLinkBtn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-save"></i> Simpan Link
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="linksLoading" class="w-full space-y-3">
+            <div class="glass-card rounded-2xl p-4 h-16 animate-pulse"></div>
+            <div class="glass-card rounded-2xl p-4 h-16 animate-pulse"></div>
+            <div class="glass-card rounded-2xl p-4 h-16 animate-pulse"></div>
+        </div>
+
+        <!-- Dynamic Links List -->
+        <div id="linksContainer" class="w-full space-y-3.5 hidden"></div>
+
+        <!-- Empty State Message -->
+        <div id="emptyState" class="hidden text-center py-10 w-full">
+            <i class="fa-solid fa-link-slash text-3xl text-slate-600 mb-2"></i>
+            <p class="text-xs text-slate-400">Belum ada link yang tersedia.</p>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-[11px] text-slate-500">
+        <p>Powered by <span class="text-neon-cyan font-semibold">Lynk Neon</span> &copy; 2026</p>
+    </footer>
+
+
+    <!-- Modal 1: Admin Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border-purple-500/30 shadow-2xl relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 rounded-full glass-panel mx-auto flex items-center justify-center text-neon-purple text-xl mb-2">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Login Admin</h3>
+                <p class="text-[11px] text-slate-400">Masuk untuk mengedit dan mengelola daftar link</p>
+            </div>
+
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 mb-1 block">Email Admin</label>
+                    <input type="email" id="loginEmail" required placeholder="admin@domain.com" class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 mb-1 block">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                
+                <div id="loginErrorMsg" class="hidden text-[11px] text-pink-400 bg-pink-950/40 p-2 rounded border border-pink-500/30 text-center"></div>
+
+                <button type="submit" id="loginSubmitBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-xs py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Edit Link Modal -->
+    <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border-purple-500/30">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-bold text-neon-purple flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Link
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveEdit(event)" class="space-y-3">
+                <input type="hidden" id="editLinkId">
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">Judul Link</label>
+                    <input type="text" id="editLinkTitle" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">URL Link</label>
+                    <input type="url" id="editLinkUrl" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">Deskripsi</label>
+                    <input type="text" id="editLinkDesc" class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">Ikon</label>
+                    <select id="editLinkIcon" class="w-full glass-input text-xs p-2.5 rounded-lg bg-slate-900">
+                        <option value="fa-solid fa-globe">🌐 Web / Custom</option>
+                        <option value="fa-brands fa-github">🐙 GitHub</option>
+                        <option value="fa-brands fa-instagram">📸 Instagram</option>
+                        <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
+                        <option value="fa-brands fa-youtube">▶️ YouTube</option>
+                        <option value="fa-brands fa-tiktok">🎵 TikTok</option>
+                        <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
+                        <option value="fa-solid fa-briefcase">💼 Portfolio</option>
+                        <option value="fa-solid fa-store">🛍️ Toko Online</option>
+                        <option value="fa-solid fa-paper-plane">✈️ Telegram</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeEditModal()" class="w-1/2 glass-panel text-xs py-2.5 rounded-lg text-slate-300 hover:text-white">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-lg shadow-purple-500/20">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Edit Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border-cyan-500/30">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-bold text-neon-cyan flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear"></i> Edit Profil Header
+                </h3>
+                <button onclick="closeEditProfileModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveProfile(event)" class="space-y-3">
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">Nama Tampilan</label>
+                    <input type="text" id="editProfileName" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">Bio / Deskripsi Profil</label>
+                    <textarea id="editProfileBio" rows="2" class="w-full glass-input text-xs p-2.5 rounded-lg resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 mb-1 block">URL Foto Avatar</label>
+                    <input type="url" id="editProfileAvatar" required class="w-full glass-input text-xs p-2.5 rounded-lg">
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="editProfileVerified" class="rounded accent-cyan-400">
+                    <label for="editProfileVerified" class="text-xs text-slate-300">Tampilkan Lencana Terverifikasi (Centang Biru)</label>
+                </div>
+
+                <div class="flex gap-2 pt-3">
+                    <button type="button" onclick="closeEditProfileModal()" class="w-1/2 glass-panel text-xs py-2.5 rounded-lg text-slate-300 hover:text-white">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-lg shadow-cyan-500/20">
+                        Simpan Profil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Firebase Credentials Setup Modal -->
+    <div id="configModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border-cyan-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-neon-cyan flex items-center gap-2">
+                    <i class="fa-solid fa-fire"></i> Pengaturan Firebase Config
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed mb-4">
+                Masukkan kredensial <b>Firebase Console Project</b> Anda agar data tersimpan permanen di cloud dan otentikasi login admin berfungsi secara utuh.
+            </p>
+
+            <form onsubmit="saveFirebaseConfig(event)" class="space-y-2.5">
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">apiKey</label>
+                    <input type="text" id="cfgApiKey" required placeholder="AIzaSy..." class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">authDomain</label>
+                    <input type="text" id="cfgAuthDomain" required placeholder="your-app.firebaseapp.com" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">projectId</label>
+                    <input type="text" id="cfgProjectId" required placeholder="your-app-id" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">storageBucket</label>
+                    <input type="text" id="cfgStorageBucket" placeholder="your-app.appspot.com" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">messagingSenderId</label>
+                    <input type="text" id="cfgMessagingSenderId" placeholder="123456789" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-semibold text-slate-400 block mb-0.5">appId</label>
+                    <input type="text" id="cfgAppId" required placeholder="1:123456:web:abcd" class="w-full glass-input text-xs p-2 rounded-lg font-mono">
+                </div>
+
+                <div class="flex gap-2 pt-3">
+                    <button type="button" onclick="clearConfigAndFallback()" class="w-1/3 glass-panel text-[11px] py-2.5 rounded-lg text-pink-400 hover:text-pink-300">
+                        Reset Config
+                    </button>
+                    <button type="submit" class="w-2/3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-lg shadow-cyan-500/20">
+                        Simpan & Hubungkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-panel px-4 py-2.5 rounded-full text-xs font-medium text-white border-cyan-400/40 shadow-xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 z-50">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-neon-cyan"></i>
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged,
+            signInWithCustomToken,
+            signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            addDoc, 
+            updateDoc, 
+            deleteDoc, 
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global State Variables
+        let app, auth, db;
+        let currentUser = null;
+        let linksList = [];
+        let profileData = {
+            name: "Alex Developer",
+            bio: "Full-stack Developer & UI/UX Enthusiast. Building aesthetic web apps.",
+            avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+            verified: true
+        };
+        let linksUnsubscribe = null;
+        let profileUnsubscribe = null;
+
+        // Fallback Default Config (Mock or Environment provided)
+        const defaultAppId = typeof __app_id !== 'undefined' ? __app_id : 'lynk-neon-default';
+        let firebaseConfig = null;
+
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            try {
+                firebaseConfig = JSON.parse(__firebase_config);
+            } catch(e) { console.error("Error parsing environment firebaseConfig", e); }
+        }
+
+        // Check LocalStorage for custom User-configured Firebase Credentials
+        const savedConfig = localStorage.getItem('custom_firebase_config');
+        if (savedConfig) {
+            try {
+                firebaseConfig = JSON.parse(savedConfig);
+            } catch(e) { console.error("Error parsing saved custom config", e); }
+        }
+
+        // Fallback placeholder if none exists
+        if (!firebaseConfig) {
+            firebaseConfig = {
+                apiKey: "AIzaSyDemoKeyConfig1234567890",
+                authDomain: "lynk-neon-demo.firebaseapp.com",
+                projectId: "lynk-neon-demo",
+                storageBucket: "lynk-neon-demo.appspot.com",
+                messagingSenderId: "1234567890",
+                appId: "1:1234567890:web:demo"
+            };
+        }
+
+        // Initialize Firebase
+        function initFirebase() {
+            try {
+                if (!getApps().length) {
+                    app = initializeApp(firebaseConfig);
+                } else {
+                    app = getApps()[0];
+                }
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authenticate (Token / Anonymous / Email Auth Listener)
+                setupAuthListeners();
+            } catch (err) {
+                console.warn("Firebase Init Notice:", err);
+                showToast("Firebase menggunakan mode demo/lokal", "info");
+                loadFallbackLocalData();
+            }
+        }
+
+        async function setupAuthListeners() {
+            // Check for custom environment token if available
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } catch(e) {
+                    console.log("Custom token signin fallback");
+                }
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                updateAdminUI(user);
+                
+                // Fetch or Subscribe to Public Link Data in Firestore
+                subscribeToFirestoreData();
+            });
+        }
+
+        // Subscribe to Firestore Public Collection Path according to strict rules
+        function subscribeToFirestoreData() {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            
+            // Collection Path Rule: /artifacts/{appId}/public/data/links
+            const linksCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'links');
+            const profileDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'profile', 'header');
+
+            document.getElementById('linksLoading').classList.remove('hidden');
+            document.getElementById('linksContainer').classList.add('hidden');
+
+            // Unsubscribe existing listeners if any
+            if (linksUnsubscribe) linksUnsubscribe();
+            if (profileUnsubscribe) profileUnsubscribe();
+
+            // Realtime Links Listener
+            linksUnsubscribe = onSnapshot(linksCollectionRef, (snapshot) => {
+                const fetchedLinks = [];
+                snapshot.forEach((docItem) => {
+                    fetchedLinks.push({ id: docItem.id, ...docItem.data() });
+                });
+
+                // Sort links locally by timestamp or order (avoiding compound query restrictions)
+                fetchedLinks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                linksList = fetchedLinks;
+
+                renderLinks(linksList);
+                document.getElementById('linksLoading').classList.add('hidden');
+                document.getElementById('linksContainer').classList.remove('hidden');
+            }, (error) => {
+                console.error("Firestore links snapshot error:", error);
+                loadFallbackLocalData();
+            });
+
+            // Realtime Profile Header Listener
+            profileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    profileData = docSnap.data();
+                    renderProfile(profileData);
+                } else {
+                    // Seed initial profile if doc doesn't exist
+                    setDoc(profileDocRef, profileData).catch(() => {});
+                    renderProfile(profileData);
+                }
+            }, (error) => {
+                console.error("Profile snapshot error:", error);
+                renderProfile(profileData);
+            });
+        }
+
+        // Render Profile Info
+        function renderProfile(data) {
+            document.getElementById('profileName').childNodes[0].nodeValue = (data.name || 'User Name') + ' ';
+            document.getElementById('profileBio').innerText = data.bio || '';
+            document.getElementById('profileAvatar').src = data.avatar || 'https://placehold.co/150x150/111827/00f3ff?text=User';
+            
+            const verifiedBadge = document.getElementById('profileVerified');
+            if (data.verified) {
+                verifiedBadge.classList.remove('hidden');
+            } else {
+                verifiedBadge.classList.add('hidden');
+            }
+        }
+
+        // Render Links List
+        function renderLinks(linksToRender) {
+            const container = document.getElementById('linksContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            container.innerHTML = '';
+
+            // Filter out hidden links if not logged in as admin
+            const visibleLinks = linksToRender.filter(l => currentUser || l.visible !== false);
+
+            if (visibleLinks.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            visibleLinks.forEach(link => {
+                const card = document.createElement('div');
+                const isHidden = link.visible === false;
+                
+                card.className = `glass-card rounded-2xl p-4 flex items-center justify-between group relative overflow-hidden ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+                
+                card.innerHTML = `
+                    <a href="${escapeHtml(link.url)}" target="_blank" onclick="window.trackClick('${link.id}', event)" class="flex items-center gap-3.5 flex-1 min-w-0 pr-2">
+                        <div class="w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-neon-cyan text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="${escapeHtml(link.icon || 'fa-solid fa-globe')}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-sm text-slate-100 group-hover:text-neon-cyan transition-colors truncate">
+                                    ${escapeHtml(link.title)}
+                                </h3>
+                                ${isHidden ? '<span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">Tersembunyi</span>' : ''}
+                            </div>
+                            ${link.desc ? `<p class="text-[11px] text-slate-400 truncate mt-0.5">${escapeHtml(link.desc)}</p>` : ''}
+                        </div>
+                    </a>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Click Counter Badge -->
+                        <span class="text-[10px] text-slate-400 glass-panel px-2 py-1 rounded-full flex items-center gap-1 font-mono" title="Jumlah Klik">
+                            <i class="fa-solid fa-arrow-pointer text-[9px] text-neon-cyan"></i> ${link.clicks || 0}
+                        </span>
+
+                        <!-- Admin Controls -->
+                        ${currentUser ? `
+                            <div class="flex items-center gap-1 ml-1 border-l border-white/10 pl-2">
+                                <button onclick="window.toggleLinkVisibility('${link.id}', ${!isHidden})" class="p-1.5 text-slate-400 hover:text-neon-cyan transition-colors text-xs" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
+                                    <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                </button>
+                                <button onclick="window.openEditModal('${link.id}')" class="p-1.5 text-slate-400 hover:text-neon-purple transition-colors text-xs" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="window.deleteLink('${link.id}')" class="p-1.5 text-slate-400 hover:text-neon-pink transition-colors text-xs" title="Hapus">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Fallback for offline or unconfigured Firebase
+        function loadFallbackLocalData() {
+            document.getElementById('linksLoading').classList.add('hidden');
+            document.getElementById('linksContainer').classList.remove('hidden');
+            
+            const savedLocal = localStorage.getItem('fallback_lynk_links');
+            if (savedLocal) {
+                linksList = JSON.parse(savedLocal);
+            } else {
+                linksList = [
+                    { id: '1', title: 'Personal Portfolio', url: 'https://example.com', desc: 'Portofolio web & karya terbaru', icon: 'fa-solid fa-briefcase', clicks: 142, visible: true },
+                    { id: '2', title: 'GitHub Profile', url: 'https://github.com', desc: 'Repositori open source & projek koding', icon: 'fa-brands fa-github', clicks: 88, visible: true },
+                    { id: '3', title: 'Instagram Feed', url: 'https://instagram.com', desc: 'Update harian & foto aktivitas', icon: 'fa-brands fa-instagram', clicks: 201, visible: true }
+                ];
+            }
+            renderLinks(linksList);
+            renderProfile(profileData);
+        }
+
+        // Admin State UI Update
+        function updateAdminUI(user) {
+            const adminBadge = document.getElementById('adminBadge');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminStatusText = document.getElementById('adminStatusText');
+            const adminStatusIcon = document.getElementById('adminStatusIcon');
+
+            if (user) {
+                adminBadge.classList.remove('hidden');
+                adminPanel.classList.remove('hidden');
+                adminStatusText.innerText = 'Admin Active';
+                adminStatusIcon.className = 'fa-solid fa-user-check text-neon-green';
+            } else {
+                adminBadge.classList.add('hidden');
+                adminPanel.classList.add('hidden');
+                adminStatusText.innerText = 'Admin Login';
+                adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
+            }
+        }
+
+        // Track Click & Update Firestore
+        window.trackClick = async function(id, event) {
+            const link = linksList.find(l => l.id === id);
+            if (!link) return;
+
+            const newClicks = (link.clicks || 0) + 1;
+            
+            // Local UI Update
+            link.clicks = newClicks;
+            
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                await updateDoc(docRef, { clicks: newClicks });
+            } catch(e) {
+                // Fallback local storage
+                localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
+            }
+        };
+
+        
+        // Handle Admin Login Submission
+        window.handleLoginSubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorMsg = document.getElementById('loginErrorMsg');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            errorMsg.classList.add('hidden');
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Memproses...';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+                showToast('Berhasil masuk sebagai Admin!');
+            } catch (err) {
+                console.error("Login error:", err);
+                errorMsg.classList.remove('hidden');
+                errorMsg.innerText = 'Gagal Login: Email atau password salah/tidak terdaftar.';
+            } finally {
+                submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+            }
+        };
+
+        // Handle Logout
+        window.handleLogout = async function() {
+            try {
+                await signOut(auth);
+                showToast('Berhasil logout admin.');
+            } catch(e) {
+                showToast('Logout gagal', 'error');
+            }
+        };
+
+        // Add New Link
+        window.handleAddLink = async function(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                showToast('Anda harus login sebagai Admin!', 'error');
+                return;
+            }
+
+            const title = document.getElementById('linkTitle').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            const desc = document.getElementById('linkDesc').value.trim();
+            const icon = document.getElementById('linkIcon').value;
+            const btn = document.getElementById('submitAddLinkBtn');
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+
+            const newLinkData = {
+                title,
+                url,
+                desc,
+                icon,
+                clicks: 0,
+                visible: true,
+                createdAt: Date.now()
+            };
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const linksCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'links');
+                await addDoc(linksCollectionRef, newLinkData);
+
+                document.getElementById('addLinkForm').reset();
+                showToast('Link baru berhasil ditambahkan!');
+            } catch (err) {
+                console.error("Error adding link:", err);
+                showToast('Gagal menyimpan link ke database cloud', 'error');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Link';
+            }
+        };
+
+        // Delete Link
+        window.deleteLink = async function(id) {
+            if (!currentUser) return;
+            
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                await deleteDoc(docRef);
+                showToast('Link berhasil dihapus.');
+            } catch (err) {
+                showToast('Gagal menghapus link', 'error');
+            }
+        };
+
+        // Toggle Visibility (Hide / Show)
+        window.toggleLinkVisibility = async function(id, newVisibility) {
+            if (!currentUser) return;
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                await updateDoc(docRef, { visible: newVisibility });
+                showToast(newVisibility ? 'Link ditampilkan' : 'Link disembunyikan');
+            } catch(e) {
+                showToast('Gagal mengubah status link', 'error');
+            }
+        };
+
+        // Edit Link Modal Actions
+        window.openEditModal = function(id) {
+            const link = linksList.find(l => l.id === id);
+            if (!link) return;
+
+            document.getElementById('editLinkId').value = link.id;
+            document.getElementById('editLinkTitle').value = link.title || '';
+            document.getElementById('editLinkUrl').value = link.url || '';
+            document.getElementById('editLinkDesc').value = link.desc || '';
+            document.getElementById('editLinkIcon').value = link.icon || 'fa-solid fa-globe';
+
+            document.getElementById('editModal').classList.remove('hidden');
+        };
+
+        window.closeEditModal = function() {
+            document.getElementById('editModal').classList.add('hidden');
+        };
+
+        window.handleSaveEdit = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editLinkId').value;
+            const title = document.getElementById('editLinkTitle').value.trim();
+            const url = document.getElementById('editLinkUrl').value.trim();
+            const desc = document.getElementById('editLinkDesc').value.trim();
+            const icon = document.getElementById('editLinkIcon').value;
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'links', id);
+                await updateDoc(docRef, { title, url, desc, icon });
+
+                closeEditModal();
+                showToast('Perubahan link tersimpan!');
+            } catch (err) {
+                showToast('Gagal memperbarui link', 'error');
+            }
+        };
+
+        // Edit Profile Modal Actions
+        window.openEditProfileModal = function() {
+            document.getElementById('editProfileName').value = profileData.name || '';
+            document.getElementById('editProfileBio').value = profileData.bio || '';
+            document.getElementById('editProfileAvatar').value = profileData.avatar || '';
+            document.getElementById('editProfileVerified').checked = !!profileData.verified;
+
+            document.getElementById('profileModal').classList.remove('hidden');
+        };
+
+        window.closeEditProfileModal = function() {
+            document.getElementById('profileModal').classList.add('hidden');
+        };
+
+        window.handleSaveProfile = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('editProfileName').value.trim();
+            const bio = document.getElementById('editProfileBio').value.trim();
+            const avatar = document.getElementById('editProfileAvatar').value.trim();
+            const verified = document.getElementById('editProfileVerified').checked;
+
+            const updatedProfile = { name, bio, avatar, verified };
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const profileDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'profile', 'header');
+                await setDoc(profileDocRef, updatedProfile, { merge: true });
+
+                closeEditProfileModal();
+                showToast('Profil header berhasil diperbarui!');
+            } catch (err) {
+                showToast('Gagal memperbarui profil', 'error');
+            }
+        };
+
+        // Firebase Config Modal Controls
+        window.openConfigModal = function() {
+            if (firebaseConfig) {
+                document.getElementById('cfgApiKey').value = firebaseConfig.apiKey || '';
+                document.getElementById('cfgAuthDomain').value = firebaseConfig.authDomain || '';
+                document.getElementById('cfgProjectId').value = firebaseConfig.projectId || '';
+                document.getElementById('cfgStorageBucket').value = firebaseConfig.storageBucket || '';
+                document.getElementById('cfgMessagingSenderId').value = firebaseConfig.messagingSenderId || '';
+                document.getElementById('cfgAppId').value = firebaseConfig.appId || '';
+            }
+            document.getElementById('configModal').classList.remove('hidden');
+        };
+
+        window.closeConfigModal = function() {
+            document.getElementById('configModal').classList.add('hidden');
+        };
+
+        window.saveFirebaseConfig = function(e) {
+            e.preventDefault();
+            const newCfg = {
+                apiKey: document.getElementById('cfgApiKey').value.trim(),
+                authDomain: document.getElementById('cfgAuthDomain').value.trim(),
+                projectId: document.getElementById('cfgProjectId').value.trim(),
+                storageBucket: document.getElementById('cfgStorageBucket').value.trim(),
+                messagingSenderId: document.getElementById('cfgMessagingSenderId').value.trim(),
+                appId: document.getElementById('cfgAppId').value.trim()
+            };
+
+            localStorage.setItem('custom_firebase_config', JSON.stringify(newCfg));
+            showToast('Config disimpan! Memuat ulang...', 'success');
+            setTimeout(() => { window.location.reload(); }, 1200);
+        };
+
+        window.clearConfigAndFallback = function() {
+            localStorage.removeItem('custom_firebase_config');
+            showToast('Kredensial direset!', 'info');
+            setTimeout(() => { window.location.reload(); }, 1000);
+        };
+
+        // Handle Admin Top Button Click
+        window.handleAdminBtnClick = function() {
+            if (currentUser) {
+                // Scroll smoothly to Admin Panel
+                document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('loginModal').classList.remove('hidden');
+            }
+        };
+
+        window.closeLoginModal = function() {
+            document.getElementById('loginModal').classList.add('hidden');
+        };
+
+        // Search Filter
+        window.filterLinks = function() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = linksList.filter(l => 
+                (l.title && l.title.toLowerCase().includes(query)) || 
+                (l.desc && l.desc.toLowerCase().includes(query))
+            );
+            renderLinks(filtered);
+        };
+
+        // Share Profile Feature
+        window.shareProfile = function() {
+            const profileUrl = window.location.href;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(profileUrl).then(() => {
+                    showToast('Link profil berhasil disalin!');
+                }).catch(() => {
+                    fallbackCopy(profileUrl);
+                });
+            } else {
+                fallbackCopy(profileUrl);
+            }
+        };
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Link profil disalin!');
+            } catch (err) {
+                showToast('Gagal menyalin link');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-circle-exclamation text-neon-pink';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-neon-cyan';
+            }
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2600);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Initialize Application
+        window.onload = function() {
+            initFirebase();
+        };
+    </script>
+</body>
+</html>
