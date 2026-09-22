@@ -236,7 +236,10 @@
         <div class="w-full mb-4 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
             <input type="text" id="searchInput" oninput="filterLinks()" placeholder="Cari link atau folder..." 
-                   class="w-full glass-input text-xs pl-9 pr-3.5 py-2 rounded-xl placeholder:text-slate-500">
+                   class="w-full glass-input text-xs pl-9 pr-8 py-2 rounded-xl placeholder:text-slate-500">
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
         <!-- Admin Control Form (Add Link / Folder) -->
@@ -327,7 +330,7 @@
         <!-- Empty State Message -->
         <div id="emptyState" class="hidden text-center py-8 w-full">
             <i class="fa-solid fa-link-slash text-2xl text-slate-600 mb-2"></i>
-            <p class="text-xs text-slate-400">Belum ada link atau folder yang tersedia.</p>
+            <p id="emptyStateText" class="text-xs text-slate-400">Belum ada link atau folder yang tersedia.</p>
         </div>
 
     </div>
@@ -590,7 +593,7 @@
                 linksList = fetchedLinks;
 
                 updateFolderDropdownOptions();
-                renderLinks(linksList);
+                filterLinks(); // Memicu filter dengan nilai search input saat ini
                 
                 document.getElementById('linksLoading').classList.add('hidden');
                 document.getElementById('linksContainer').classList.remove('hidden');
@@ -687,20 +690,28 @@
         function renderLinks(linksToRender) {
             const container = document.getElementById('linksContainer');
             const emptyState = document.getElementById('emptyState');
+            const searchInput = document.getElementById('searchInput');
+            const isSearching = searchInput && searchInput.value.trim().length > 0;
 
             container.innerHTML = '';
 
-            // Filter link/folder yang terlihat
+            // Filter link/folder yang terlihat berdasarkan visibilitas pengguna
             const visibleItems = linksToRender.filter(item => currentUser || item.visible !== false);
 
             if (visibleItems.length === 0) {
                 emptyState.classList.remove('hidden');
+                const emptyText = document.getElementById('emptyStateText');
+                if (emptyText) {
+                    emptyText.innerText = isSearching 
+                        ? 'Tidak ada link atau folder yang cocok dengan pencarian.' 
+                        : 'Belum ada link atau folder yang tersedia.';
+                }
                 return;
             } else {
                 emptyState.classList.add('hidden');
             }
 
-            // Pisahkan item tingkat atas (Root Items) & item di dalam folder
+            // Pisahkan item tingkat atas (Root Items)
             const rootItems = visibleItems.filter(item => !item.parentId);
 
             rootItems.forEach(item => {
@@ -961,7 +972,7 @@
                 ];
             }
             updateFolderDropdownOptions();
-            renderLinks(linksList);
+            filterLinks();
             renderProfile(profileData);
         }
 
@@ -984,7 +995,7 @@
                 adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
             }
 
-            renderLinks(linksList);
+            filterLinks();
         }
 
         // Track Click Count
@@ -1241,26 +1252,69 @@
             document.getElementById('loginModal').classList.add('hidden');
         };
 
-        // Search Filter (Link & Folder Search)
+        // Search Filter (Link & Folder Search Fix)
         window.filterLinks = function() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            // Tampilkan atau sembunyikan tombol 'Clear' (X)
+            if (clearBtn) {
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            }
+
             if (!query) {
                 renderLinks(linksList);
                 return;
             }
 
-            // Jika ada pencarian, buka otomatis semua folder yang cocok
-            const filtered = linksList.filter(l => 
-                (l.title && l.title.toLowerCase().includes(query)) || 
-                (l.desc && l.desc.toLowerCase().includes(query))
+            // 1. Cari item yang judul atau deskripsinya mengandung kata kunci query
+            const matchedItems = linksList.filter(item => 
+                (item.title && item.title.toLowerCase().includes(query)) || 
+                (item.desc && item.desc.toLowerCase().includes(query))
             );
 
-            // Buka folder yang memiliki anak hasil pencarian
-            filtered.forEach(item => {
-                if (item.parentId) openFolders.add(item.parentId);
+            // Set untuk menampung ID semua item yang harus ditampilkan (Termasuk folder induknya)
+            const matchedIds = new Set();
+
+            matchedItems.forEach(item => {
+                matchedIds.add(item.id);
+
+                // Jika item yang cocok adalah anak link di dalam folder,
+                // sertakan ID Folder induknya dan buka foldernya
+                if (item.parentId) {
+                    matchedIds.add(item.parentId);
+                    openFolders.add(item.parentId);
+                }
+
+                // Jika item yang cocok adalah Folder, sertakan semua anak link di dalamnya
+                if (item.isFolder) {
+                    openFolders.add(item.id);
+                    linksList.forEach(child => {
+                        if (child.parentId === item.id) {
+                            matchedIds.add(child.id);
+                        }
+                    });
+                }
             });
 
-            renderLinks(linksList);
+            // Filter daftar utama berdasarkan ID yang terindikasi cocok
+            const filteredList = linksList.filter(item => matchedIds.has(item.id));
+
+            renderLinks(filteredList);
+        };
+
+        // Reset/Clear Search Field
+        window.clearSearch = function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                filterLinks();
+            }
         };
 
         // Share Profile
