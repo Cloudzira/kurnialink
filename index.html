@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KurniaLink</title>
  
+    <!-- Favicon dengan SVG Data URI untuk kepastian icon halaman selalu muncul -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2306070b'/><circle cx='50' cy='50' r='38' stroke='%2300f3ff' stroke-width='6' fill='none'/><path d='M35 50 L45 60 L65 40' stroke='%23b026ff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+    <!-- Fallback favicon jika file lokal favicon.png tersedia -->
+    <link rel="alternate icon" href="favicon.png">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons CDN -->
@@ -14,7 +19,6 @@
     <!-- SortableJS CDN untuk Drag & Drop Reordering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <!-- Google Fonts: Inter & Outfit -->
-    <link rel="icon" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -161,7 +165,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-4 py-6 font-sans">
 
-    <!-- Main Container dengan max-w-[420px] -->
+    <!-- Main Container dengan max-w-[420px] konsisten untuk seluruh halaman -->
     <div class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
@@ -182,7 +186,7 @@
         </div>
 
         <!-- Admin Mode Indicator Badge (Hidden by default) -->
-        <div id="adminBadge" class="hidden w-full mb-5 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20">
+        <div id="adminBadge" class="hidden w-full mb-4 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20 box-border">
             <div class="flex items-center gap-2 text-xs text-emerald-300 font-medium">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-[11px]">Mode Admin</span>
@@ -243,8 +247,8 @@
             </button>
         </div>
 
-        <!-- Admin Control Form (Add Link / Folder) -->
-        <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3.5 mb-4 hidden border-cyan-500/30">
+        <!-- Admin Control Form (Add Link / Folder) - Lebar disesuaikan persis max-w-[420px] -->
+        <div id="adminPanel" class="w-full glass-panel rounded-2xl p-3.5 mb-4 hidden border-cyan-500/30 box-border">
             <div class="flex items-center justify-between mb-2.5">
                 <h2 class="text-[11px] font-bold uppercase tracking-wider text-neon-cyan flex items-center gap-1.5">
                     <i class="fa-solid fa-plus-circle"></i> Tambah Item Baru
@@ -344,7 +348,7 @@
 
     <!-- Modal 1: Admin Login Modal -->
     <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-panel w-full max-w-xs rounded-2xl p-5 border-purple-500/30 shadow-2xl relative">
+        <div class="glass-panel w-full max-w-[360px] rounded-2xl p-5 border-purple-500/30 shadow-2xl relative">
             <button onclick="closeLoginModal()" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-white">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
@@ -377,7 +381,7 @@
 
     <!-- Modal 2: Edit Item (Link / Folder) Modal -->
     <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-panel w-full max-w-xs rounded-2xl p-4 border-purple-500/30">
+        <div class="glass-panel w-full max-w-[360px] rounded-2xl p-4 border-purple-500/30">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-bold text-neon-purple flex items-center gap-1.5">
                     <i class="fa-solid fa-pen-to-square"></i> Edit Item
@@ -444,7 +448,7 @@
 
     <!-- Modal 3: Edit Profile Modal -->
     <div id="profileModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-panel w-full max-w-xs rounded-2xl p-4 border-cyan-500/30">
+        <div class="glass-panel w-full max-w-[360px] rounded-2xl p-4 border-cyan-500/30">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-bold text-neon-cyan flex items-center gap-1.5">
                     <i class="fa-solid fa-user-gear"></i> Edit Profil Header
