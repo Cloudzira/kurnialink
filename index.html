@@ -6,7 +6,7 @@
     <title>KurniaLink</title>
  
     <!-- Favicon PNG -->
-    <link rel="icon" href="https://scontent.cdninstagram.com/v/t51.82787-19/825323094_18105913229625834_5508073759140215158_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=8RF60hRxtUUQ7kNvwHTrhKs&_nc_oc=AdpQkG-xZX1yrSw5a9LcrjzNbcCi4V3i5p0iaP2PsaxQEJVd_WvIxkptB7qEOF2pbF8&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=amAh_eDa8cbsz-UbLy-YFw&_nc_ss=7b689&oh=00_AQNBQkF4hPK19v0Y6oMlactA1gRxbXnUSX-Qe0HEq4rPTg&oe=6AC1211C">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306070b'/%3E%3Cpath d='M18 14h10v16l15-16h13L38 31l19 19H43L28 35v15H18z' fill='%2300f3ff'/%3E%3C/svg%3E">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -267,11 +267,11 @@
 
             <div class="flex items-center gap-2">
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="px-3 py-1.5 rounded-full text-[11px] font-semibold glass-panel flex items-center gap-1.5 hover:border-purple-500/50 transition-all text-slate-300 hover:text-white">
-                    <i id="adminStatusIcon" class="fa-solid fa-lock text-neon-red text-[11px]"></i>
+                    <i id="adminStatusIcon" class="fa-solid fa-lock text-neon-purple text-[11px]"></i>
                     <span id="adminStatusText">Cloudzone</span>
                 </button>
                 <button onclick="shareProfile()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-pink-500/50 transition-all text-slate-300 hover:text-white" title="Bagikan Profile">
-                    <i class="fa-solid fa-share-nodes text-neon-red"></i>
+                    <i class="fa-solid fa-share-nodes text-neon-purple"></i>
                 </button>
             </div>
         </div>
@@ -296,10 +296,10 @@
         <div class="text-center w-full flex flex-col items-center mb-6">
             <div id="profileFrame" class="relative group mb-3">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur opacity-70 group-hover:opacity-100 transition duration-700"></div>
-                <img id="profileAvatar" src="https://scontent.cdninstagram.com/v/t51.82787-19/791560992_18101928758625834_6014568661686217029_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=OKCi955aXnIQ7kNvwGjBcC7&_nc_oc=AdoES0ZOyi95w2nVejLUE4xyJXP_H4wC4mSAdfNayH9qqI7yf73MbNszlDwBAoUCMH0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=2mfJo92H1YjYPPCZyEVG3Q&_nc_ss=7b689&oh=00_AQJyjQDHnHz9C2CwLM0wz0KbjgZjTShLlbfF8qFSx3Ehbg&oe=6AB85EA4" 
+                <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E" 
                      alt="Avatar" 
                      class="relative w-20 h-20 rounded-full object-cover border-2 border-slate-900 neon-avatar"
-                     onerror="this.src='https://placehold.co/150x150/111827/00f3ff?text=Awan'">
+                     >
                 <span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full" title="Active Now"></span>
             </div>
             
@@ -609,11 +609,13 @@
                 favicon.rel = 'shortcut icon';
                 document.head.appendChild(favicon);
             }
-            favicon.href = 'favicon.png';
+            favicon.href = DEFAULT_FAVICON;
         }
 
         // Global State Variables
         let app, auth, db;
+        const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E";
+        const DEFAULT_FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306070b'/%3E%3Cpath d='M18 14h10v16l15-16h13L38 31l19 19H43L28 35v15H18z' fill='%2300f3ff'/%3E%3C/svg%3E";
         let currentUser = null;
         let linksList = [];
         let sortableInstances = [];
@@ -832,7 +834,20 @@
         function renderProfile(data) {
             document.getElementById('profileName').childNodes[0].nodeValue = (data.name || 'User Name') + ' ';
             document.getElementById('profileBio').innerText = data.bio || '';
-            document.getElementById('profileAvatar').src = data.avatar || 'https://placehold.co/150x150/111827/00f3ff?text=User';
+            const avatar = document.getElementById('profileAvatar');
+            const avatarUrl = data.avatar || DEFAULT_AVATAR;
+            try {
+                const avatarHost = new URL(avatarUrl, window.location.href).hostname.toLowerCase();
+                avatar.src = avatarHost === 'cdninstagram.com' || avatarHost.endsWith('.cdninstagram.com')
+                    ? DEFAULT_AVATAR
+                    : avatarUrl;
+            } catch {
+                avatar.src = DEFAULT_AVATAR;
+            }
+            avatar.onerror = () => {
+                avatar.onerror = null;
+                avatar.src = DEFAULT_AVATAR;
+            };
             
             const verifiedBadge = document.getElementById('profileVerified');
             if (data.verified) {
@@ -1138,7 +1153,7 @@
                 adminBadge.classList.add('hidden');
                 adminPanel.classList.add('hidden');
                 adminStatusText.innerText = 'Cloudzone';
-                adminStatusIcon.className = 'fa-solid fa-lock text-neon-red';
+                adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
             }
 
             filterLinks();
