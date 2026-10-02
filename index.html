@@ -29,10 +29,10 @@
                     },
                     colors: {
                         neon: {
-                            cyan: '#00f3ff',
-                            purple: '#b026ff',
-                            pink: '#ff007f',
-                            green: '#00ff66'
+                            cyan: '#47e8df',
+                            purple: '#a88bff',
+                            pink: '#ff8e72',
+                            green: '#65e0ad'
                         }
                     }
                 }
@@ -157,12 +157,239 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(0, 243, 255, 0.5);
         }
+
+        :root {
+            --link-ink: #080d13;
+            --link-cyan: #47e8df;
+            --link-lilac: #a88bff;
+            --link-coral: #ff8e72;
+            --link-green: #65e0ad;
+        }
+
+        body {
+            background-color: var(--link-ink);
+            background-image:
+                linear-gradient(132deg, rgba(71, 232, 223, 0.08), transparent 34%, rgba(255, 142, 114, 0.045) 72%, transparent),
+                repeating-linear-gradient(0deg, transparent 0 39px, rgba(210, 235, 241, 0.018) 40px),
+                repeating-linear-gradient(90deg, transparent 0 39px, rgba(210, 235, 241, 0.018) 40px);
+            background-size: auto, 40px 40px, 40px 40px;
+        }
+
+        .glass-panel {
+            background: linear-gradient(145deg, rgba(19, 29, 38, 0.92), rgba(10, 15, 22, 0.88));
+            border-color: rgba(176, 211, 220, 0.12);
+            box-shadow: 0 14px 38px rgba(0, 0, 0, 0.32), inset 0 1px rgba(255, 255, 255, 0.035);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(21, 32, 40, 0.9), rgba(12, 18, 25, 0.94));
+            border-color: rgba(176, 211, 220, 0.12);
+            border-radius: 15px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(71, 232, 223, 0.4);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26), 0 0 18px rgba(71, 232, 223, 0.08);
+        }
+
+        .glass-folder {
+            background: linear-gradient(145deg, rgba(18, 34, 38, 0.8), rgba(11, 18, 24, 0.92));
+            border-color: rgba(71, 232, 223, 0.2);
+            border-radius: 16px;
+        }
+
+        .glass-folder:hover {
+            border-color: rgba(71, 232, 223, 0.48);
+            box-shadow: 0 0 22px rgba(71, 232, 223, 0.11);
+        }
+
+        .glass-input {
+            min-height: 42px;
+            background: rgba(6, 11, 16, 0.78);
+            border-color: rgba(176, 211, 220, 0.16);
+            border-radius: 13px;
+        }
+
+        .glass-input:focus {
+            border-color: var(--link-cyan);
+            box-shadow: 0 0 0 3px rgba(71, 232, 223, 0.1), 0 0 18px rgba(71, 232, 223, 0.12);
+        }
+
+        #profileShell {
+            max-width: 440px;
+            padding-top: 12px;
+            padding-bottom: 28px;
+        }
+
+        #adminStatusBtn {
+            min-height: 36px;
+            border-color: rgba(176, 211, 220, 0.15);
+            background: rgba(13, 20, 27, 0.82);
+        }
+
+        #profileFrame { isolation: isolate; }
+
+        #profileFrame::before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            inset: -4px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0 56%, var(--link-cyan) 66%, var(--link-lilac) 76%, var(--link-coral) 85%, transparent 96% 100%);
+            animation: neon-orbit 7s linear infinite;
+            pointer-events: none;
+        }
+
+        #profileFrame > #profileAvatar {
+            z-index: 1;
+            border-color: var(--link-ink);
+            box-shadow: 0 0 24px rgba(71, 232, 223, 0.2);
+        }
+
+        #profileFrame > span { z-index: 2; }
+
+        #profileName {
+            font-size: 23px;
+            line-height: 1.15;
+        }
+
+        #profileBio {
+            max-width: 340px;
+            color: #a7b5bd;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        #socialMediaRow { gap: 11px; margin-top: 2px; }
+
+        #socialMediaRow .kurnia-icon {
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(176, 211, 220, 0.15);
+            background: rgba(16, 24, 31, 0.78);
+            font-size: 13px;
+        }
+
+        #searchInput {
+            min-height: 46px;
+            font-size: 13px;
+            padding-left: 42px;
+            border-radius: 14px;
+        }
+
+        #adminPanel {
+            position: relative;
+            border-color: rgba(71, 232, 223, 0.22);
+            background: linear-gradient(145deg, rgba(13, 27, 31, 0.96), rgba(10, 16, 22, 0.96));
+        }
+
+        #adminPanel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 18px;
+            right: 18px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--link-cyan), var(--link-lilac), var(--link-coral), transparent);
+            background-size: 220% 100%;
+            animation: neon-flow 4.5s linear infinite;
+            pointer-events: none;
+        }
+
+        #linksContainer { gap: 12px; }
+
+        #linksContainer > .glass-card {
+            min-height: 68px;
+            padding: 12px 14px;
+        }
+
+        #linksContainer .glass-folder { border-radius: 16px; }
+
+        #linksContainer .folder-header {
+            min-height: 70px;
+            padding: 12px 14px;
+        }
+
+        #linksContainer .glass-card h3,
+        #linksContainer .folder-header h3 {
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        #linksContainer .glass-card p,
+        #linksContainer .folder-header p {
+            font-size: 11px;
+            line-height: 1.45;
+            color: #9aaab3;
+        }
+
+        #linksContainer > * { animation: link-arrive 0.38s ease both; }
+        #linksContainer > *:nth-child(2) { animation-delay: 45ms; }
+        #linksContainer > *:nth-child(3) { animation-delay: 90ms; }
+        #linksContainer > *:nth-child(4) { animation-delay: 135ms; }
+
+        #linksContainer .glass-card { position: relative; }
+
+        #linksContainer .glass-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(110deg, transparent 25%, rgba(71, 232, 223, 0.12) 49%, rgba(168, 139, 255, 0.08) 54%, transparent 75%);
+            background-size: 220% 100%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #linksContainer .glass-card:hover::after {
+            opacity: 1;
+            animation: neon-flow 1.4s ease-out;
+        }
+
+        #emptyState {
+            padding: 42px 20px;
+            border: 1px dashed rgba(176, 211, 220, 0.18);
+            border-radius: 18px;
+            background: rgba(14, 21, 28, 0.48);
+        }
+
+        #loginModal > div,
+        #editModal > div,
+        #profileModal > div {
+            border-color: rgba(176, 211, 220, 0.16);
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(19, 29, 38, 0.98), rgba(9, 14, 20, 0.98));
+        }
+
+        @keyframes neon-orbit {
+            to { transform: rotate(1turn); }
+        }
+
+        @keyframes neon-flow {
+            from { background-position: 100% center; }
+            to { background-position: -120% center; }
+        }
+
+        @keyframes link-arrive {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #profileFrame::before,
+            #adminPanel::before,
+            #linksContainer > *,
+            #linksContainer .glass-card:hover::after {
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
     <!-- Main Container dengan max-w-[420px] konsisten dengan padding sejajar -->
-    <div class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
+    <div id="profileShell" class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
         <div class="w-full flex justify-between items-center mb-6">
@@ -199,7 +426,7 @@
 
         <!-- Header Profile Section -->
         <div class="text-center w-full flex flex-col items-center mb-6">
-            <div class="relative group mb-3">
+            <div id="profileFrame" class="relative group mb-3">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur opacity-70 group-hover:opacity-100 transition duration-700"></div>
                 <img id="profileAvatar" src="https://scontent.cdninstagram.com/v/t51.82787-19/791560992_18101928758625834_6014568661686217029_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=OKCi955aXnIQ7kNvwGjBcC7&_nc_oc=AdoES0ZOyi95w2nVejLUE4xyJXP_H4wC4mSAdfNayH9qqI7yf73MbNszlDwBAoUCMH0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=2mfJo92H1YjYPPCZyEVG3Q&_nc_ss=7b689&oh=00_AQJyjQDHnHz9C2CwLM0wz0KbjgZjTShLlbfF8qFSx3Ehbg&oe=6AB85EA4" 
                      alt="Avatar" 
