@@ -200,10 +200,14 @@
         }
 
         #linksContainer .glass-card:hover {
-            box-shadow: 0 6px 20px rgba(0, 243, 255, 0.12),
-                        0 0 22px rgba(0, 255, 102, 0.08),
-                        0 0 28px rgba(255, 0, 127, 0.07),
-                        inset 0 0 10px rgba(176, 38, 255, 0.06);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2),
+                        0 0 20px var(--link-light-glow, rgba(0, 243, 255, 0.14));
+        }
+
+        @property --link-light-angle {
+            syntax: "<angle>";
+            inherits: false;
+            initial-value: 0deg;
         }
 
         #linksContainer .glass-card::before {
@@ -213,23 +217,26 @@
             inset: 0;
             padding: 1px;
             border-radius: inherit;
-            background: conic-gradient(from 0deg, transparent 0 52%, #00f3ff 58%, #00ff9d 64%, #d8ff64 70%, #ffbf69 76%, #ff648f 82%, #b026ff 90%, #4d8dff 96%, transparent 100%);
+            background: conic-gradient(from var(--link-light-angle), transparent 0 58%, var(--link-light-color, #00f3ff) 65%, var(--link-light-highlight, #00ff9d) 72%, transparent 80% 100%);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0.24;
-            animation: neon-orbit 9s linear infinite;
+            animation: link-light-orbit var(--link-light-speed, 12s) linear var(--link-light-delay, 0s) infinite;
             pointer-events: none;
         }
 
         #linksContainer .glass-card:hover::before {
-            opacity: 0.9;
-            animation-duration: 4.5s;
+            opacity: 0.68;
         }
 
         @keyframes neon-orbit {
             to { transform: rotate(1turn); }
+        }
+
+        @keyframes link-light-orbit {
+            to { --link-light-angle: 360deg; }
         }
 
         @keyframes neon-flow {
@@ -612,6 +619,17 @@
         let sortableInstances = [];
         let isDraggingActive = false;
         let openFolders = new Set();
+        const linkLightHues = new Map();
+        let nextLinkLightHue = Math.random() * 360;
+
+        function getLinkLightHue(linkId) {
+            const key = String(linkId);
+            if (!linkLightHues.has(key)) {
+                linkLightHues.set(key, nextLinkLightHue);
+                nextLinkLightHue = (nextLinkLightHue + 137.508) % 360;
+            }
+            return linkLightHues.get(key);
+        }
 
         let profileData = {
             name: "Kurniawan Yunianto",
@@ -903,9 +921,16 @@
         function createSingleLinkElement(link, isInsideFolder = false) {
             const card = document.createElement('div');
             const isHidden = link.visible === false;
+            const lightHue = getLinkLightHue(link.id);
+            const highlightHue = (lightHue + 48) % 360;
             
             card.setAttribute('data-id', link.id);
             card.className = `glass-card rounded-xl p-2 sm:p-2.5 flex items-center justify-between group relative overflow-hidden ${isInsideFolder ? 'bg-slate-900/60 border-slate-700/60 shadow-inner' : ''} ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+            card.style.setProperty('--link-light-color', `hsl(${lightHue} 92% 64%)`);
+            card.style.setProperty('--link-light-highlight', `hsl(${highlightHue} 96% 68%)`);
+            card.style.setProperty('--link-light-glow', `hsla(${lightHue} 92% 64% / 0.16)`);
+            card.style.setProperty('--link-light-speed', `${(7 + Math.random() * 9).toFixed(2)}s`);
+            card.style.setProperty('--link-light-delay', `${(-Math.random() * 12).toFixed(2)}s`);
             
             card.innerHTML = `
                 <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
