@@ -194,7 +194,10 @@
             pointer-events: none;
         }
 
-        #linksContainer .glass-card { position: relative; }
+        #linksContainer .glass-card {
+            position: relative;
+            isolation: isolate;
+        }
 
         #linksContainer .glass-card:hover {
             box-shadow: 0 6px 20px rgba(0, 243, 255, 0.12),
@@ -206,35 +209,23 @@
         #linksContainer .glass-card::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 14px;
-            right: 14px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #00f3ff, #00ff66, #d8ff64, #ffbf69, #ff007f, #b026ff, transparent);
-            background-size: 260% 100%;
-            opacity: 0;
+            z-index: 0;
+            inset: 0;
+            padding: 1px;
+            border-radius: inherit;
+            background: conic-gradient(from 0deg, transparent 0 52%, #00f3ff 58%, #00ff9d 64%, #d8ff64 70%, #ffbf69 76%, #ff648f 82%, #b026ff 90%, #4d8dff 96%, transparent 100%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.24;
+            animation: neon-orbit 9s linear infinite;
             pointer-events: none;
         }
 
         #linksContainer .glass-card:hover::before {
-            opacity: 1;
-            animation: neon-flow 1.6s ease-out;
-        }
-
-        #linksContainer .glass-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: linear-gradient(110deg, transparent 18%, rgba(0, 243, 255, 0.12) 34%, rgba(0, 255, 102, 0.08) 43%, rgba(255, 208, 92, 0.09) 51%, rgba(255, 0, 127, 0.1) 60%, rgba(176, 38, 255, 0.09) 68%, transparent 82%);
-            background-size: 260% 100%;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #linksContainer .glass-card:hover::after {
-            opacity: 1;
-            animation: neon-flow 1.4s ease-out;
+            opacity: 0.9;
+            animation-duration: 4.5s;
         }
 
         @keyframes neon-orbit {
@@ -250,7 +241,7 @@
             #profileFrame::before,
             #adminPanel::before,
             #linksContainer .glass-card:hover::before,
-            #linksContainer .glass-card:hover::after {
+            #linksContainer .glass-card::before {
                 animation: none !important;
             }
         }
