@@ -6,7 +6,7 @@
     <title>KurniaLink</title>
  
     <!-- Favicon PNG -->
-    <link rel="icon" href="https://scontent.cdninstagram.com/v/t51.82787-19/825323094_18105913229625834_5508073759140215158_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3AhUeJ7W8goQ7kNvwGoefvf&_nc_oc=AdrEWaX3lHl-nk_bThZC85T3yZFg5yr22uy2H-EBIFnHTkCCF3XXCV-B7jG3OCPEuR0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=UnEPZbXnHYJeYWvhUXzdVQ&_nc_ss=7b689&oh=00_AQM_-_qX_bIfeu4dm0lLhdA7n19Nc49atMQUYHsiLgWeXg&oe=6AC5159C">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306070b'/%3E%3Cpath d='M18 14h10v16l15-16h13L38 31l19 19H43L28 35v15H18z' fill='%2300f3ff'/%3E%3C/svg%3E">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -555,8 +555,18 @@
                     <textarea id="editProfileBio" rows="2" class="w-full glass-input text-xs p-2 rounded-lg resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">URL Foto Avatar</label>
-                    <input type="url" id="editProfileAvatar" required class="w-full glass-input text-xs p-2 rounded-lg">
+                    <label class="text-[9px] uppercase text-slate-400 mb-1 block font-semibold">Foto Profil</label>
+                    <div class="flex items-center gap-3">
+                        <img id="editProfileAvatarPreview" alt="Pratinjau foto profil" class="w-14 h-14 rounded-full object-cover border border-cyan-400/40 bg-slate-900 flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <input type="file" id="editProfileAvatarFile" accept="image/*" onchange="previewSelectedAvatar(event)" class="w-full glass-input text-[10px] p-1.5 rounded-lg file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-cyan-500/20 file:text-cyan-200">
+                            <p id="avatarUploadStatus" class="text-[9px] text-slate-500 mt-1">Pilih foto dari galeri, maks. 12 MB.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="editProfileAvatar" class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Atau URL Foto</label>
+                    <input type="url" id="editProfileAvatar" oninput="previewAvatarUrl(this.value)" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 <div class="flex items-center gap-2 pt-0.5">
                     <input type="checkbox" id="editProfileVerified" class="rounded accent-cyan-400">
@@ -567,7 +577,7 @@
                     <button type="button" onclick="closeEditProfileModal()" class="w-1/2 glass-panel text-xs py-2 rounded-lg text-slate-300 hover:text-white">
                         Batal
                     </button>
-                    <button type="submit" class="w-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20">
+                    <button type="submit" id="saveProfileBtn" class="w-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20">
                         Simpan Profil
                     </button>
                 </div>
@@ -616,6 +626,9 @@
         let app, auth, db;
         const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E";
         const DEFAULT_FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306070b'/%3E%3Cpath d='M18 14h10v16l15-16h13L38 31l19 19H43L28 35v15H18z' fill='%2300f3ff'/%3E%3C/svg%3E";
+        const MAX_AVATAR_UPLOAD_BYTES = 12 * 1024 * 1024;
+        const MAX_AVATAR_DATA_URL_LENGTH = 650000;
+        let avatarPreviewObjectUrl = null;
         let currentUser = null;
         let linksList = [];
         let sortableInstances = [];
@@ -835,15 +848,7 @@
             document.getElementById('profileName').childNodes[0].nodeValue = (data.name || 'User Name') + ' ';
             document.getElementById('profileBio').innerText = data.bio || '';
             const avatar = document.getElementById('profileAvatar');
-            const avatarUrl = data.avatar || DEFAULT_AVATAR;
-            try {
-                const avatarHost = new URL(avatarUrl, window.location.href).hostname.toLowerCase();
-                avatar.src = avatarHost === 'cdninstagram.com' || avatarHost.endsWith('.cdninstagram.com')
-                    ? DEFAULT_AVATAR
-                    : avatarUrl;
-            } catch {
-                avatar.src = DEFAULT_AVATAR;
-            }
+            avatar.src = getSafeAvatarUrl(data.avatar);
             avatar.onerror = () => {
                 avatar.onerror = null;
                 avatar.src = DEFAULT_AVATAR;
@@ -854,6 +859,91 @@
                 verifiedBadge.classList.remove('hidden');
             } else {
                 verifiedBadge.classList.add('hidden');
+            }
+        }
+
+        function getSafeAvatarUrl(value) {
+            if (!value) return DEFAULT_AVATAR;
+            try {
+                const host = new URL(value, window.location.href).hostname.toLowerCase();
+                return host === 'cdninstagram.com' || host.endsWith('.cdninstagram.com')
+                    ? DEFAULT_AVATAR
+                    : value;
+            } catch {
+                return DEFAULT_AVATAR;
+            }
+        }
+
+        function releaseAvatarPreviewUrl() {
+            if (!avatarPreviewObjectUrl) return;
+            URL.revokeObjectURL(avatarPreviewObjectUrl);
+            avatarPreviewObjectUrl = null;
+        }
+
+        function previewSelectedAvatar(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const fileInput = event.target;
+            if (!file.type.startsWith('image/')) {
+                fileInput.value = '';
+                showToast('Pilih file gambar yang valid.', 'error');
+                return;
+            }
+            if (file.size > MAX_AVATAR_UPLOAD_BYTES) {
+                fileInput.value = '';
+                showToast('Ukuran foto maksimal 12 MB.', 'error');
+                return;
+            }
+
+            releaseAvatarPreviewUrl();
+            document.getElementById('editProfileAvatar').value = '';
+            avatarPreviewObjectUrl = URL.createObjectURL(file);
+            document.getElementById('editProfileAvatarPreview').src = avatarPreviewObjectUrl;
+            document.getElementById('avatarUploadStatus').innerText = `Foto dipilih: ${file.name}`;
+        }
+
+        function previewAvatarUrl(value) {
+            if (!value.trim()) return;
+            releaseAvatarPreviewUrl();
+            document.getElementById('editProfileAvatarFile').value = '';
+            document.getElementById('editProfileAvatarPreview').src = getSafeAvatarUrl(value.trim());
+            document.getElementById('avatarUploadStatus').innerText = 'Pratinjau dari URL foto.';
+        }
+
+        async function compressAvatarFile(file) {
+            const sourceUrl = URL.createObjectURL(file);
+            try {
+                const image = new Image();
+                await new Promise((resolve, reject) => {
+                    image.onload = resolve;
+                    image.onerror = () => reject(new Error('Foto tidak dapat dibuka.'));
+                    image.src = sourceUrl;
+                });
+
+                const sourceSize = Math.max(image.naturalWidth, image.naturalHeight);
+                if (!sourceSize) throw new Error('Ukuran foto tidak valid.');
+
+                let maxDimension = 512;
+                for (const quality of [0.8, 0.68, 0.56]) {
+                    const scale = Math.min(1, maxDimension / sourceSize);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+                    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+                    const context = canvas.getContext('2d');
+                    if (!context) throw new Error('Kompresi foto tidak didukung browser.');
+                    context.fillStyle = '#06070b';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                    const compressed = canvas.toDataURL('image/jpeg', quality);
+                    if (compressed.length <= MAX_AVATAR_DATA_URL_LENGTH) return compressed;
+                    maxDimension = Math.round(maxDimension * 0.75);
+                }
+
+                throw new Error('Foto tetap terlalu besar setelah dikompres.');
+            } finally {
+                URL.revokeObjectURL(sourceUrl);
             }
         }
 
@@ -1370,13 +1460,23 @@
         window.openEditProfileModal = function() {
             document.getElementById('editProfileName').value = profileData.name || '';
             document.getElementById('editProfileBio').value = profileData.bio || '';
-            document.getElementById('editProfileAvatar').value = profileData.avatar || '';
+            releaseAvatarPreviewUrl();
+            const savedAvatar = profileData.avatar || '';
+            const isEmbeddedImage = savedAvatar.startsWith('data:image/');
+            const safeAvatar = getSafeAvatarUrl(savedAvatar);
+            document.getElementById('editProfileAvatar').value = isEmbeddedImage || safeAvatar === DEFAULT_AVATAR ? '' : savedAvatar;
+            document.getElementById('editProfileAvatarFile').value = '';
+            document.getElementById('editProfileAvatarPreview').src = safeAvatar;
+            document.getElementById('avatarUploadStatus').innerText = savedAvatar ? 'Foto profil saat ini.' : 'Pilih foto dari galeri, maks. 12 MB.';
             document.getElementById('editProfileVerified').checked = !!profileData.verified;
 
             document.getElementById('profileModal').classList.remove('hidden');
         };
 
         window.closeEditProfileModal = function() {
+            releaseAvatarPreviewUrl();
+            document.getElementById('editProfileAvatarFile').value = '';
+            document.getElementById('editProfileAvatarPreview').src = getSafeAvatarUrl(profileData.avatar);
             document.getElementById('profileModal').classList.add('hidden');
         };
 
@@ -1384,19 +1484,33 @@
             e.preventDefault();
             const name = document.getElementById('editProfileName').value.trim();
             const bio = document.getElementById('editProfileBio').value.trim();
-            const avatar = document.getElementById('editProfileAvatar').value.trim();
+            const avatarUrl = document.getElementById('editProfileAvatar').value.trim();
+            const avatarFile = document.getElementById('editProfileAvatarFile').files?.[0];
             const verified = document.getElementById('editProfileVerified').checked;
+            const saveButton = document.getElementById('saveProfileBtn');
 
-            const updatedProfile = { name, bio, avatar, verified };
+            saveButton.disabled = true;
+            saveButton.innerText = avatarFile ? 'Mengompres foto...' : 'Menyimpan...';
 
             try {
+                let avatar = getSafeAvatarUrl(profileData.avatar);
+                if (avatarFile) {
+                    avatar = await compressAvatarFile(avatarFile);
+                } else if (avatarUrl) {
+                    avatar = getSafeAvatarUrl(avatarUrl);
+                }
+
+                const updatedProfile = { name, bio, avatar, verified };
                 const profileDocRef = doc(db, 'biolink', 'public', 'profile', 'header');
                 await setDoc(profileDocRef, updatedProfile, { merge: true });
 
                 closeEditProfileModal();
                 showToast('Profil header berhasil diperbarui!');
             } catch (err) {
-                showToast('Gagal memperbarui profil', 'error');
+                showToast(err.message || 'Gagal memperbarui profil', 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.innerText = 'Simpan Profil';
             }
         };
 
