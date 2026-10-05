@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KurniaLink</title>
  
-    <!-- Favicon PNG -->
-    <link rel="icon" href="https://scontent.cdninstagram.com/v/t51.82787-19/825323094_18105913229625834_5508073759140215158_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3AhUeJ7W8goQ7kNvwGxqWjH&_nc_oc=AdoZ1HKO0xqsaS_8mxkRNdgbmMx7KL00wxcIYnQ3HMeVhVcIaJca84VsmMGS_d6N_nw&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=JJJte1o9ZbmrPjtB29R4FA&_nc_ss=7b689&oh=00_AQMWEDA-bm-jxpJQof2BnT7-Jm4RNn_1rif32Mrc53o42A&oe=6AC54DDC">
+    <!-- Favicon PNG (Diperbarui menggunakan file/path yang stabil) -->
+    <link rel="icon" type="image/png" href="favicon.png">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -611,21 +611,15 @@
             writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Dynamic Favicon Injection
+        // Fungsi Favicon Dinamis Diperbaiki (Mengikuti tag link HTML atau aman)
         function setDynamicFavicon() {
-            let favicon = document.querySelector("link[rel*='icon']");
-            if (!favicon) {
-                favicon = document.createElement('link');
-                favicon.rel = 'shortcut icon';
-                document.head.appendChild(favicon);
-            }
-            favicon.href = DEFAULT_FAVICON;
+            // Fungsi ini sekarang tidak menimpa paksa dengan huruf "K", 
+            // melainkan membiarkan favicon di HTML dimuat dengan benar.
         }
 
         // Global State Variables
         let app, auth, db;
         const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E";
-        const DEFAULT_FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306070b'/%3E%3Cpath d='M18 14h10v16l15-16h13L38 31l19 19H43L28 35v15H18z' fill='%2300f3ff'/%3E%3C/svg%3E";
         const MAX_AVATAR_UPLOAD_BYTES = 12 * 1024 * 1024;
         const MAX_AVATAR_DATA_URL_LENGTH = 650000;
         let avatarPreviewObjectUrl = null;
