@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KurniaLink</title>
  
-    <!-- Favicon PNG (Diperbarui menggunakan file/path yang stabil) -->
+    <!-- Favicon PNG -->
     <link rel="icon" type="image/png" href="favicon.png">
     
     <!-- Tailwind CSS CDN -->
@@ -49,7 +49,6 @@
             background-attachment: fixed;
         }
 
-        /* Glassmorphism Styles Refined */
         .glass-panel {
             background: rgba(15, 17, 26, 0.75);
             backdrop-filter: blur(20px);
@@ -101,7 +100,6 @@
             outline: none;
         }
 
-        /* Drag & Drop Styles */
         .sortable-ghost {
             opacity: 0.35;
             background: rgba(0, 243, 255, 0.12) !important;
@@ -121,7 +119,6 @@
             cursor: grabbing;
         }
 
-        /* Folder Accordion Transition */
         .folder-content {
             max-height: 0;
             overflow: hidden;
@@ -143,7 +140,6 @@
             transform: rotate(180deg);
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -159,7 +155,6 @@
         }
 
         #profileFrame { isolation: isolate; }
-
         #profileFrame::before {
             content: "";
             position: absolute;
@@ -170,17 +165,14 @@
             animation: neon-orbit 7s linear infinite;
             pointer-events: none;
         }
-
         #profileFrame > #profileAvatar {
             z-index: 1;
             border-color: #06070b;
             box-shadow: 0 0 24px rgba(0, 243, 255, 0.2);
         }
-
         #profileFrame > span { z-index: 2; }
 
         #adminPanel { position: relative; }
-
         #adminPanel::before {
             content: "";
             position: absolute;
@@ -194,69 +186,17 @@
             pointer-events: none;
         }
 
-        #linksContainer .glass-card {
-            position: relative;
-            isolation: isolate;
-        }
-
-        #linksContainer .glass-card:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2),
-                        0 0 20px var(--link-light-glow, rgba(0, 243, 255, 0.14));
-        }
-
-        @property --link-light-angle {
-            syntax: "<angle>";
-            inherits: false;
-            initial-value: 0deg;
-        }
-
-        #linksContainer .glass-card::before {
-            content: "";
-            position: absolute;
-            z-index: 0;
-            inset: 0;
-            padding: 1px;
-            border-radius: inherit;
-            background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--link-light-color, #00f3ff) 65%, var(--link-light-highlight, #00ff9d) 72%, transparent 80% 100%);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.24;
-            animation: link-light-orbit var(--link-light-speed, 12s) linear var(--link-light-delay, 0s) infinite;
-            pointer-events: none;
-        }
-
-        #linksContainer .glass-card:hover::before {
-            opacity: 0.68;
-        }
-
         @keyframes neon-orbit {
             to { transform: rotate(1turn); }
         }
-
-        @keyframes link-light-orbit {
-            to { --link-light-angle: 360deg; }
-        }
-
         @keyframes neon-flow {
             from { background-position: 100% center; }
             to { background-position: -120% center; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            #profileFrame::before,
-            #adminPanel::before,
-            #linksContainer .glass-card:hover::before,
-            #linksContainer .glass-card::before {
-                animation: none !important;
-            }
         }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
-    <!-- Main Container dengan max-w-[420px] konsisten dengan padding sejajar -->
     <div id="profileShell" class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
@@ -276,7 +216,7 @@
             </div>
         </div>
 
-        <!-- Admin Mode Indicator Badge (Hidden by default) -->
+        <!-- Admin Mode Indicator Badge -->
         <div id="adminBadge" class="hidden w-full mb-4 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20 box-border">
             <div class="flex items-center gap-2 text-xs text-emerald-300 font-medium">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -298,8 +238,7 @@
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur opacity-70 group-hover:opacity-100 transition duration-700"></div>
                 <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E" 
                      alt="Avatar" 
-                     class="relative w-20 h-20 rounded-full object-cover border-2 border-slate-900 neon-avatar"
-                     >
+                     class="relative w-20 h-20 rounded-full object-cover border-2 border-slate-900 neon-avatar">
                 <span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full" title="Active Now"></span>
             </div>
             
@@ -313,16 +252,16 @@
 
             <!-- Social Media Icon Bar -->
             <div id="socialMediaRow" class="flex items-center justify-center gap-2.5">
-                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/60 transition-all text-xs">
+                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/65 transition-all text-xs">
                     <i class="fa-brands fa-instagram"></i>
                 </a>
-                <a href="https://tiktok.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple/60 transition-all text-xs">
+                <a href="https://tiktok.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple/65 transition-all text-xs">
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
-                <a href="https://www.youtube.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/60 transition-all text-xs">
+                <a href="https://www.youtube.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/65 transition-all text-xs">
                     <i class="fa-brands fa-youtube"></i>
                 </a>
-                <a href="https://wa.me/+6285870906050" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-green hover:border-neon-green/60 transition-all text-xs">
+                <a href="https://wa.me/+6285870906050" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-green hover:border-neon-green/65 transition-all text-xs">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
             </div>
@@ -358,22 +297,20 @@
             </div>
 
             <form id="addLinkForm" onsubmit="handleAddLink(event)" class="space-y-2.5">
-                <!-- Tipe Item Terpilih -->
                 <input type="hidden" id="itemType" value="link">
+                <!-- Menyimpan data ikon terpilih (bisa class FontAwesome atau base64 gambar lokal) -->
+                <input type="hidden" id="linkIconValue" value="fa-solid fa-globe">
 
-                <!-- Input Khusus Link / Nama Folder -->
                 <div>
                     <label id="titleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Judul Link</label>
                     <input type="text" id="linkTitle" placeholder="Judul Link (contoh: TARTILIKU)" required class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
-                <!-- Input URL (Hanya untuk Single Link) -->
                 <div id="urlInputContainer">
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">URL Tujuan</label>
                     <input type="url" id="linkUrl" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
-                <!-- Pilihan Folder Induk (Untuk memasukkan link ke folder tertentu) -->
                 <div id="folderParentContainer">
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Masukkan ke Dalam Folder (Opsional)</label>
                     <select id="linkFolderParent" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
@@ -386,30 +323,39 @@
                     <input type="text" id="linkDesc" placeholder="Penjelasan singkat" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
                 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Ikon</label>
-                        <select id="linkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
-                            <option value="fa-solid fa-globe">🌐 Web / Custom</option>
-                            <option value="fa-solid fa-folder">📁 Folder Umum</option>
-                            <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
-                            <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
-                            <option value="fa-brands fa-github">🐙 GitHub</option>
-                            <option value="fa-brands fa-instagram">📸 Instagram</option>
-                            <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
-                            <option value="fa-brands fa-youtube">▶️ YouTube</option>
-                            <option value="fa-brands fa-tiktok">🎵 TikTok</option>
-                            <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
-                            <option value="fa-solid fa-briefcase">💼 Portfolio</option>
-                            <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                        </select>
+                <!-- Pemilihan Ikon (Icon Picker & File Upload Lokal) -->
+                <div>
+                    <label class="text-[9px] uppercase text-slate-400 mb-1 block font-semibold">Ikon Tautan / Folder</label>
+                    <div class="flex items-center gap-2.5">
+                        <div id="linkIconPreviewBox" class="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-sm flex-shrink-0 overflow-hidden bg-slate-900 border border-cyan-500/30">
+                            <i id="linkIconPreviewFa" class="fa-solid fa-globe"></i>
+                            <img id="linkIconPreviewImg" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                        </div>
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <select id="linkIconSelect" onchange="handleIconSelectChange(this.value)" class="w-full glass-input text-[11px] p-1.5 rounded-lg bg-slate-900">
+                                <option value="fa-solid fa-globe">🌐 Web / Umum</option>
+                                <option value="fa-solid fa-folder">📁 Folder Umum</option>
+                                <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
+                                <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
+                                <option value="fa-brands fa-github">🐙 GitHub</option>
+                                <option value="fa-brands fa-instagram">📸 Instagram</option>
+                                <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
+                                <option value="fa-brands fa-youtube">▶️ YouTube</option>
+                                <option value="fa-brands fa-tiktok">🎵 TikTok</option>
+                                <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
+                                <option value="fa-solid fa-briefcase">💼 Portfolio</option>
+                                <option value="fa-solid fa-store">🛍️ Toko Online</option>
+                                <option value="CUSTOM_FILE">📁 Unggah dari File Lokal...</option>
+                            </select>
+                            <input type="file" id="linkIconLocalFile" accept="image/*" onchange="handleLinkLocalFileSelected(event)" class="hidden w-full glass-input text-[10px] p-1 rounded file:mr-2 file:px-2 file:py-0.5 file:rounded file:border-0 file:bg-cyan-500/20 file:text-cyan-200">
+                        </div>
                     </div>
+                </div>
 
-                    <div class="flex items-end">
-                        <button type="submit" id="submitAddLinkBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-save"></i> Simpan
-                        </button>
-                    </div>
+                <div class="pt-1">
+                    <button type="submit" id="submitAddLinkBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-save"></i> Simpan Item
+                    </button>
                 </div>
             </form>
         </div>
@@ -429,6 +375,7 @@
             <p id="emptyStateText" class="text-xs text-slate-400">Belum ada link atau folder yang tersedia.</p>
         </div>
     </div>
+
     <!-- Footer -->
     <footer class="text-center py-0 text-[11px] text-slate-500">
         <p>Crafted with <span style="color: #ff007f;">♥</span> by <span style="color: #00f2fe; font-weight: 600; text-shadow: 0 0 10px rgba(0,242,254,0.4);">Kurniapedia</span> 2026</p>
@@ -469,7 +416,7 @@
 
     <!-- Modal 2: Edit Item (Link / Folder) Modal -->
     <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-panel w-full max-w-[360px] rounded-2xl p-4 border-purple-500/30">
+        <div class="glass-panel w-full max-w-[380px] rounded-2xl p-4 border-purple-500/30">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-bold text-neon-purple flex items-center gap-1.5">
                     <i class="fa-solid fa-pen-to-square"></i> Edit Item
@@ -481,6 +428,7 @@
             <form onsubmit="handleSaveEdit(event)" class="space-y-2.5">
                 <input type="hidden" id="editLinkId">
                 <input type="hidden" id="editIsFolder" value="false">
+                <input type="hidden" id="editLinkIconValue" value="fa-solid fa-globe">
 
                 <div>
                     <label id="editTitleLabel" class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Judul / Nama Folder</label>
@@ -505,29 +453,39 @@
                 </div>
 
                 <div>
-                    <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Ikon</label>
-                    <select id="editLinkIcon" class="w-full glass-input text-xs p-2 rounded-lg bg-slate-900">
-                        <option value="fa-solid fa-globe">🌐 Web / Custom</option>
-                        <option value="fa-solid fa-folder">📁 Folder Umum</option>
-                        <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
-                        <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
-                        <option value="fa-brands fa-github">🐙 GitHub</option>
-                        <option value="fa-brands fa-instagram">📸 Instagram</option>
-                        <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
-                        <option value="fa-brands fa-youtube">▶️ YouTube</option>
-                        <option value="fa-brands fa-tiktok">🎵 TikTok</option>
-                        <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
-                        <option value="fa-solid fa-briefcase">💼 Portfolio</option>
-                        <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                    </select>
+                    <label class="text-[9px] uppercase text-slate-400 mb-1 block font-semibold">Ikon Item</label>
+                    <div class="flex items-center gap-2.5">
+                        <div id="editIconPreviewBox" class="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 overflow-hidden bg-slate-900 border border-purple-500/30">
+                            <i id="editIconPreviewFa" class="fa-solid fa-globe"></i>
+                            <img id="editIconPreviewImg" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                        </div>
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <select id="editLinkIconSelect" onchange="handleEditIconSelectChange(this.value)" class="w-full glass-input text-[11px] p-1.5 rounded-lg bg-slate-900">
+                                <option value="fa-solid fa-globe">🌐 Web / Umum</option>
+                                <option value="fa-solid fa-folder">📁 Folder Umum</option>
+                                <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
+                                <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
+                                <option value="fa-brands fa-github">🐙 GitHub</option>
+                                <option value="fa-brands fa-instagram">📸 Instagram</option>
+                                <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
+                                <option value="fa-brands fa-youtube">▶️ YouTube</option>
+                                <option value="fa-brands fa-tiktok">🎵 TikTok</option>
+                                <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
+                                <option value="fa-solid fa-briefcase">💼 Portfolio</option>
+                                <option value="fa-solid fa-store">🛍️ Toko Online</option>
+                                <option value="CUSTOM_FILE">📁 Unggah dari File Lokal...</option>
+                            </select>
+                            <input type="file" id="editLinkIconLocalFile" accept="image/*" onchange="handleEditLinkLocalFileSelected(event)" class="hidden w-full glass-input text-[10px] p-1 rounded file:mr-2 file:px-2 file:py-0.5 file:rounded file:border-0 file:bg-purple-500/20 file:text-purple-200">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex gap-2 pt-1.5">
+                <div class="flex gap-2 pt-2">
                     <button type="button" onclick="closeEditModal()" class="w-1/2 glass-panel text-xs py-2 rounded-lg text-slate-300 hover:text-white">
                         Batal
                     </button>
                     <button type="submit" class="w-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-purple-500/20">
-                        Simpan
+                        Simpan Perubahan
                     </button>
                 </div>
             </form>
@@ -611,75 +569,20 @@
             writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Fungsi Favicon Dinamis Diperbaiki (Mengikuti tag link HTML atau aman)
-        function setDynamicFavicon() {
-            // Fungsi ini sekarang tidak menimpa paksa dengan huruf "K", 
-            // melainkan membiarkan favicon di HTML dimuat dengan benar.
-        }
-
-        // Global State Variables
         let app, auth, db;
         const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E";
         const MAX_AVATAR_UPLOAD_BYTES = 12 * 1024 * 1024;
         const MAX_AVATAR_DATA_URL_LENGTH = 650000;
         let avatarPreviewObjectUrl = null;
+        let linkIconPreviewObjectUrl = null;
+        let editIconPreviewObjectUrl = null;
         let currentUser = null;
         let linksList = [];
         let sortableInstances = [];
         let isDraggingActive = false;
         let openFolders = new Set();
         const linkLightHues = new Map();
-        const legacyLinkLightCards = new Map();
-        let legacyLinkLightFrame = null;
-        let legacyLinkLightStartTime = 0;
         let nextLinkLightHue = Math.random() * 360;
-
-        function getLinkLightHue(linkId) {
-            const key = String(linkId);
-            if (!linkLightHues.has(key)) {
-                linkLightHues.set(key, nextLinkLightHue);
-                nextLinkLightHue = (nextLinkLightHue + 137.508) % 360;
-            }
-            return linkLightHues.get(key);
-        }
-
-        function updateLegacyLinkLight(now) {
-            legacyLinkLightFrame = null;
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                legacyLinkLightCards.clear();
-                return;
-            }
-
-            const elapsed = now - legacyLinkLightStartTime;
-            legacyLinkLightCards.forEach((animation, card) => {
-                if (!card.isConnected) {
-                    legacyLinkLightCards.delete(card);
-                    return;
-                }
-
-                const progress = ((elapsed + animation.phase) % animation.duration) / animation.duration;
-                card.style.setProperty('--link-light-angle', `${progress * 360}deg`);
-            });
-
-            if (legacyLinkLightCards.size > 0) {
-                legacyLinkLightFrame = requestAnimationFrame(updateLegacyLinkLight);
-            }
-        }
-
-        function registerLegacyLinkLight(card) {
-            if (typeof CSS !== 'undefined' && typeof CSS.registerProperty === 'function') return;
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-            const duration = Math.max(1000, parseFloat(card.style.getPropertyValue('--link-light-speed')) * 1000 || 12000);
-            const delay = parseFloat(card.style.getPropertyValue('--link-light-delay')) * 1000 || 0;
-            const phase = ((-delay % duration) + duration) % duration;
-
-            if (legacyLinkLightCards.size === 0) legacyLinkLightStartTime = performance.now();
-            legacyLinkLightCards.set(card, { duration, phase });
-            if (legacyLinkLightFrame === null) {
-                legacyLinkLightFrame = requestAnimationFrame(updateLegacyLinkLight);
-            }
-        }
 
         let profileData = {
             name: "",
@@ -690,7 +593,6 @@
         let linksUnsubscribe = null;
         let profileUnsubscribe = null;
 
-        // Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyBls1lMf1IBcnLQhUsCOvWnG53Tpd08mVM",
           authDomain: "kurnialink-73c9b.firebaseapp.com",
@@ -700,7 +602,6 @@
           appId: "1:812035410453:web:32d495b7e3007d6afb1c1c"
         };
 
-        // Initialize Firebase
         function initFirebase() {
             try {
                 if (!getApps().length) {
@@ -710,7 +611,6 @@
                 }
                 auth = getAuth(app);
                 db = getFirestore(app);
-
                 setupAuthListeners();
             } catch (err) {
                 console.warn("Firebase Init Notice:", err);
@@ -727,7 +627,6 @@
             });
         }
 
-        // Subscribe to Firestore Public Collection
         function subscribeToFirestoreData() {
             const linksCollectionRef = collection(db, 'biolink', 'public', 'links');
             const profileDocRef = doc(db, 'biolink', 'public', 'profile', 'header');
@@ -738,7 +637,6 @@
             if (linksUnsubscribe) linksUnsubscribe();
             if (profileUnsubscribe) profileUnsubscribe();
 
-            // Realtime Links & Folders Listener
             linksUnsubscribe = onSnapshot(linksCollectionRef, (snapshot) => {
                 if (isDraggingActive) return;
 
@@ -747,7 +645,6 @@
                     fetchedLinks.push({ id: docItem.id, ...docItem.data() });
                 });
 
-                // Sort items by order property ascending
                 fetchedLinks.sort((a, b) => {
                     const orderA = typeof a.order === 'number' ? a.order : 0;
                     const orderB = typeof b.order === 'number' ? b.order : 0;
@@ -756,18 +653,16 @@
                 });
 
                 linksList = fetchedLinks;
-
                 updateFolderDropdownOptions();
                 filterLinks();
                 
                 document.getElementById('linksLoading').classList.add('hidden');
                 document.getElementById('linksContainer').classList.remove('hidden');
             }, (error) => {
-                console.error("Firestore links snapshot error:", error);
+                console.error("Firestore snapshot error:", error);
                 loadFallbackLocalData();
             });
 
-            // Realtime Profile Listener
             profileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
                 if (docSnap.exists()) {
                     profileData = docSnap.data();
@@ -782,11 +677,9 @@
             });
         }
 
-        // Update Dropdown Pilihan Folder di Form Admin
         function updateFolderDropdownOptions() {
             const addSelect = document.getElementById('linkFolderParent');
             const editSelect = document.getElementById('editLinkFolderParent');
-            
             const folders = linksList.filter(item => item.isFolder === true && (currentUser || item.visible !== false));
             
             let optionsHtml = '<option value="">-- Halaman Utama (Tanpa Folder) --</option>';
@@ -798,7 +691,116 @@
             if (editSelect) editSelect.innerHTML = optionsHtml;
         }
 
-        // Switch Item Type Form (Single Link vs Folder)
+        // --- ICON SELECTION & LOCAL FILE UPLOAD HANDLERS ---
+        window.handleIconSelectChange = function(val) {
+            const fileInput = document.getElementById('linkIconLocalFile');
+            const iconFa = document.getElementById('linkIconPreviewFa');
+            const iconImg = document.getElementById('linkIconPreviewImg');
+            const hiddenValue = document.getElementById('linkIconValue');
+
+            if (val === 'CUSTOM_FILE') {
+                fileInput.classList.remove('hidden');
+                fileInput.click();
+            } else {
+                fileInput.classList.add('hidden');
+                if (linkIconPreviewObjectUrl) {
+                    URL.revokeObjectURL(linkIconPreviewObjectUrl);
+                    linkIconPreviewObjectUrl = null;
+                }
+                iconFa.className = val;
+                iconFa.classList.remove('hidden');
+                iconImg.classList.add('hidden');
+                hiddenValue.value = val;
+            }
+        };
+
+        window.handleLinkLocalFileSelected = async function(event) {
+            const file = event.target.files?.[0];
+            const iconFa = document.getElementById('linkIconPreviewFa');
+            const iconImg = document.getElementById('linkIconPreviewImg');
+            const hiddenValue = document.getElementById('linkIconValue');
+            const selectEl = document.getElementById('linkIconSelect');
+
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Pilih file gambar ikon yang valid.', 'error');
+                return;
+            }
+
+            try {
+                showToast('Mengompres ikon...');
+                const compressedDataUrl = await compressAvatarFile(file, 200, 200);
+                
+                if (linkIconPreviewObjectUrl) URL.revokeObjectURL(linkIconPreviewObjectUrl);
+                linkIconPreviewObjectUrl = URL.createObjectURL(file);
+
+                iconFa.classList.add('hidden');
+                iconImg.src = compressedDataUrl;
+                iconImg.classList.remove('hidden');
+                hiddenValue.value = compressedDataUrl;
+                showToast('Ikon lokal berhasil dimuat!');
+            } catch (err) {
+                showToast('Gagal memproses gambar ikon.', 'error');
+                selectEl.value = "fa-solid fa-globe";
+                window.handleIconSelectChange("fa-solid fa-globe");
+            }
+        };
+
+        // Handler untuk Edit Modal Icon
+        window.handleEditIconSelectChange = function(val) {
+            const fileInput = document.getElementById('editLinkIconLocalFile');
+            const iconFa = document.getElementById('editIconPreviewFa');
+            const iconImg = document.getElementById('editIconPreviewImg');
+            const hiddenValue = document.getElementById('editLinkIconValue');
+
+            if (val === 'CUSTOM_FILE') {
+                fileInput.classList.remove('hidden');
+                fileInput.click();
+            } else {
+                fileInput.classList.add('hidden');
+                if (editIconPreviewObjectUrl) {
+                    URL.revokeObjectURL(editIconPreviewObjectUrl);
+                    editIconPreviewObjectUrl = null;
+                }
+                iconFa.className = val;
+                iconFa.classList.remove('hidden');
+                iconImg.classList.add('hidden');
+                hiddenValue.value = val;
+            }
+        };
+
+        window.handleEditLinkLocalFileSelected = async function(event) {
+            const file = event.target.files?.[0];
+            const iconFa = document.getElementById('editIconPreviewFa');
+            const iconImg = document.getElementById('editIconPreviewImg');
+            const hiddenValue = document.getElementById('editLinkIconValue');
+            const selectEl = document.getElementById('editLinkIconSelect');
+
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Pilih file gambar ikon yang valid.', 'error');
+                return;
+            }
+
+            try {
+                showToast('Mengompres ikon...');
+                const compressedDataUrl = await compressAvatarFile(file, 200, 200);
+                
+                if (editIconPreviewObjectUrl) URL.revokeObjectURL(editIconPreviewObjectUrl);
+                editIconPreviewObjectUrl = URL.createObjectURL(file);
+
+                iconFa.classList.add('hidden');
+                iconImg.src = compressedDataUrl;
+                iconImg.classList.remove('hidden');
+                hiddenValue.value = compressedDataUrl;
+                showToast('Ikon lokal berhasil dimuat!');
+            } catch (err) {
+                showToast('Gagal memproses gambar ikon.', 'error');
+                selectEl.value = "fa-solid fa-globe";
+                window.handleEditIconSelectChange("fa-solid fa-globe");
+            }
+        };
+
         window.switchItemType = function(type) {
             const itemTypeInput = document.getElementById('itemType');
             const typeLinkBtn = document.getElementById('typeLinkBtn');
@@ -808,7 +810,7 @@
             const titleLabel = document.getElementById('titleLabel');
             const linkUrlInput = document.getElementById('linkUrl');
             const linkTitleInput = document.getElementById('linkTitle');
-            const linkIconSelect = document.getElementById('linkIcon');
+            const linkIconSelect = document.getElementById('linkIconSelect');
 
             itemTypeInput.value = type;
 
@@ -821,8 +823,9 @@
                 linkUrlInput.removeAttribute('required');
                 
                 titleLabel.innerText = "Nama Folder / Kategori";
-                linkTitleInput.placeholder = "Contoh: Aplikasi Saya, Portofolio";
+                linkTitleInput.placeholder = "Contoh: Koleksi Aplikasi";
                 linkIconSelect.value = "fa-solid fa-folder";
+                window.handleIconSelectChange("fa-solid fa-folder");
             } else {
                 typeLinkBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm";
                 typeFolderBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all text-slate-400 hover:text-white";
@@ -834,10 +837,10 @@
                 titleLabel.innerText = "Judul Link";
                 linkTitleInput.placeholder = "Judul Link (contoh: TARTILIKU)";
                 linkIconSelect.value = "fa-solid fa-globe";
+                window.handleIconSelectChange("fa-solid fa-globe");
             }
         };
 
-        // Render Profile Info
         function renderProfile(data) {
             document.getElementById('profileName').childNodes[0].nodeValue = (data.name || 'User Name') + ' ';
             document.getElementById('profileBio').innerText = data.bio || '';
@@ -858,6 +861,7 @@
 
         function getSafeAvatarUrl(value) {
             if (!value) return DEFAULT_AVATAR;
+            if (value.startsWith('data:image/')) return value;
             try {
                 const host = new URL(value, window.location.href).hostname.toLowerCase();
                 return host === 'cdninstagram.com' || host.endsWith('.cdninstagram.com')
@@ -878,14 +882,13 @@
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const fileInput = event.target;
             if (!file.type.startsWith('image/')) {
-                fileInput.value = '';
+                event.target.value = '';
                 showToast('Pilih file gambar yang valid.', 'error');
                 return;
             }
             if (file.size > MAX_AVATAR_UPLOAD_BYTES) {
-                fileInput.value = '';
+                event.target.value = '';
                 showToast('Ukuran foto maksimal 12 MB.', 'error');
                 return;
             }
@@ -905,7 +908,7 @@
             document.getElementById('avatarUploadStatus').innerText = 'Pratinjau dari URL foto.';
         }
 
-        async function compressAvatarFile(file) {
+        async function compressAvatarFile(file, maxDim = 512, maxByteLen = MAX_AVATAR_DATA_URL_LENGTH) {
             const sourceUrl = URL.createObjectURL(file);
             try {
                 const image = new Image();
@@ -918,30 +921,29 @@
                 const sourceSize = Math.max(image.naturalWidth, image.naturalHeight);
                 if (!sourceSize) throw new Error('Ukuran foto tidak valid.');
 
-                let maxDimension = 512;
-                for (const quality of [0.8, 0.68, 0.56]) {
-                    const scale = Math.min(1, maxDimension / sourceSize);
+                let currentMaxDim = maxDim;
+                for (const quality of [0.8, 0.68, 0.52]) {
+                    const scale = Math.min(1, currentMaxDim / sourceSize);
                     const canvas = document.createElement('canvas');
                     canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
                     canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
                     const context = canvas.getContext('2d');
-                    if (!context) throw new Error('Kompresi foto tidak didukung browser.');
+                    if (!context) throw new Error('Kompresi tidak didukung browser.');
                     context.fillStyle = '#06070b';
                     context.fillRect(0, 0, canvas.width, canvas.height);
                     context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
                     const compressed = canvas.toDataURL('image/jpeg', quality);
-                    if (compressed.length <= MAX_AVATAR_DATA_URL_LENGTH) return compressed;
-                    maxDimension = Math.round(maxDimension * 0.75);
+                    if (compressed.length <= maxByteLen) return compressed;
+                    currentMaxDim = Math.round(currentMaxDim * 0.75);
                 }
 
-                throw new Error('Foto tetap terlalu besar setelah dikompres.');
+                throw new Error('File terlalu besar setelah kompres.');
             } finally {
                 URL.revokeObjectURL(sourceUrl);
             }
         }
 
-        // Render Links List
         function renderLinks(linksToRender) {
             const container = document.getElementById('linksContainer');
             const emptyState = document.getElementById('emptyState');
@@ -949,7 +951,6 @@
             const isSearching = searchInput && searchInput.value.trim().length > 0;
 
             container.innerHTML = '';
-
             const visibleItems = linksToRender.filter(item => currentUser || item.visible !== false);
 
             if (visibleItems.length === 0) {
@@ -966,26 +967,28 @@
             }
 
             const rootItems = visibleItems.filter(item => !item.parentId);
-
             rootItems.forEach(item => {
                 if (item.isFolder) {
-                    const folderCard = createFolderElement(item, visibleItems);
-                    container.appendChild(folderCard);
+                    container.appendChild(createFolderElement(item, visibleItems));
                 } else {
-                    const linkCard = createSingleLinkElement(item);
-                    container.appendChild(linkCard);
+                    container.appendChild(createSingleLinkElement(item));
                 }
             });
 
             initSortable();
         }
 
-        // Membuat Element Blok Folder
+        function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClass = '') {
+            if (iconValue && iconValue.startsWith('data:image/')) {
+                return `<img src="${iconValue}" alt="Icon" class="w-full h-full object-cover rounded-md ${customClass}">`;
+            }
+            return `<i class="${escapeHtml(iconValue || defaultFa)} ${customClass}"></i>`;
+        }
+
         function createFolderElement(folder, allVisibleItems) {
             const folderWrapper = document.createElement('div');
             const isHidden = folder.visible === false;
             const isOpen = openFolders.has(folder.id);
-
             const childLinks = allVisibleItems.filter(item => item.parentId === folder.id);
 
             folderWrapper.setAttribute('data-id', folder.id);
@@ -1000,8 +1003,8 @@
                             </div>
                         ` : ''}
 
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <i class="${escapeHtml(folder.icon || 'fa-solid fa-folder')}"></i>
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                            ${renderIconMarkup(folder.icon, 'fa-solid fa-folder')}
                         </div>
 
                         <div class="flex-1 min-w-0">
@@ -1050,28 +1053,18 @@
 
             const folderContentDiv = folderWrapper.querySelector(`#folderContent-${folder.id}`);
             childLinks.forEach(child => {
-                const childElement = createSingleLinkElement(child, true);
-                folderContentDiv.appendChild(childElement);
+                folderContentDiv.appendChild(createSingleLinkElement(child, true));
             });
 
             return folderWrapper;
         }
 
-        // Membuat Element Single Link
         function createSingleLinkElement(link, isInsideFolder = false) {
             const card = document.createElement('div');
             const isHidden = link.visible === false;
-            const lightHue = getLinkLightHue(link.id);
-            const highlightHue = (lightHue + 48) % 360;
             
             card.setAttribute('data-id', link.id);
             card.className = `glass-card rounded-xl p-2 sm:p-2.5 flex items-center justify-between group relative overflow-hidden ${isInsideFolder ? 'bg-slate-900/60 border-slate-700/60 shadow-inner' : ''} ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
-            card.style.setProperty('--link-light-color', `hsl(${lightHue} 92% 64%)`);
-            card.style.setProperty('--link-light-highlight', `hsl(${highlightHue} 96% 68%)`);
-            card.style.setProperty('--link-light-glow', `hsla(${lightHue} 92% 64% / 0.16)`);
-            card.style.setProperty('--link-light-speed', `${(7 + Math.random() * 9).toFixed(2)}s`);
-            card.style.setProperty('--link-light-delay', `${(-Math.random() * 12).toFixed(2)}s`);
-            registerLegacyLinkLight(card);
             
             card.innerHTML = `
                 <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
@@ -1082,8 +1075,8 @@
                     ` : ''}
 
                     <a href="${escapeHtml(link.url)}" target="_blank" onclick="window.trackClick('${link.id}', event)" class="flex items-center gap-2 flex-1 min-w-0">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-xs flex-shrink-0 group-hover:scale-105 transition-transform">
-                            <i class="${escapeHtml(link.icon || 'fa-solid fa-globe')}"></i>
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-xs flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                            ${renderIconMarkup(link.icon, 'fa-solid fa-globe')}
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5">
@@ -1121,13 +1114,11 @@
             return card;
         }
 
-        // Toggle Expand / Collapse Folder
         window.toggleFolderOpen = function(folderId, event) {
             const folderContentDiv = document.getElementById(`folderContent-${folderId}`);
             if (!folderContentDiv) return;
 
             const chevron = event.currentTarget.querySelector('.chevron-icon');
-
             if (openFolders.has(folderId)) {
                 openFolders.delete(folderId);
                 folderContentDiv.classList.remove('open');
@@ -1139,7 +1130,6 @@
             }
         };
 
-        // Initialize SortableJS
         function initSortable() {
             sortableInstances.forEach(inst => inst.destroy());
             sortableInstances = [];
@@ -1162,9 +1152,7 @@
                 sortableInstances.push(rootInst);
             }
 
-            const folderContentElements = document.querySelectorAll('.folder-content');
-            folderContentElements.forEach(folderEl => {
-                const folderId = folderEl.id.replace('folderContent-', '');
+            document.querySelectorAll('.folder-content').forEach(folderEl => {
                 const folderInst = new Sortable(folderEl, {
                     animation: 200,
                     handle: '.drag-handle',
@@ -1173,34 +1161,27 @@
                     onStart: () => { isDraggingActive = true; },
                     onEnd: async () => {
                         isDraggingActive = false;
-                        await updateOrderFromDOM(folderEl, folderId);
+                        await updateOrderFromDOM(folderEl, null);
                     }
                 });
                 sortableInstances.push(folderInst);
             });
         }
 
-        // Update Urutan Baru Ke Firestore
-        async function updateOrderFromDOM(containerEl, parentFolderId) {
-            const itemElements = Array.from(containerEl.children);
-            const orderedIds = itemElements.map(el => el.getAttribute('data-id')).filter(Boolean);
-
+        async function updateOrderFromDOM(containerEl) {
+            const orderedIds = Array.from(containerEl.children).map(el => el.getAttribute('data-id')).filter(Boolean);
             try {
                 const batch = writeBatch(db);
                 orderedIds.forEach((id, index) => {
-                    const docRef = doc(db, 'biolink', 'public', 'links', id);
-                    batch.update(docRef, { order: index });
+                    batch.update(doc(db, 'biolink', 'public', 'links', id), { order: index });
                 });
-
                 await batch.commit();
                 showToast('Urutan baru tersimpan!');
             } catch (err) {
-                console.error("Error saving new order:", err);
                 showToast('Gagal menyimpan urutan', 'error');
             }
         }
 
-        // Fallback Local Data
         function loadFallbackLocalData() {
             document.getElementById('linksLoading').classList.add('hidden');
             document.getElementById('linksContainer').classList.remove('hidden');
@@ -1210,10 +1191,8 @@
                 linksList = JSON.parse(savedLocal);
             } else {
                 linksList = [
-                    { id: 'f1', title: 'TARTILI', desc: 'Tartili Jilid 1 - 6, Gharib, Tahfidz', icon: 'fa-solid fa-layer-group', isFolder: true, clicks: 0, visible: true, order: 0 },
-                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Tartili 1 - 6 | Setoran Membaca Tartili Online', icon: 'fa-solid fa-globe', clicks: 12, visible: true, parentId: 'f1', order: 0 },
-                    { id: '2', title: 'TALQINKU', url: 'https://example.com', desc: 'Aplikasi Digital Membantu Menghafal Al Quran', icon: 'fa-solid fa-globe', clicks: 8, visible: true, parentId: 'f1', order: 1 },
-                    { id: '3', title: 'INFAQU', url: 'https://example.com', desc: 'Aplikasi Sistem Manajemen Infaq Digital', icon: 'fa-solid fa-globe', clicks: 15, visible: true, order: 1 }
+                    { id: 'f1', title: 'TARTILI', desc: 'Tartili Jilid 1 - 6', icon: 'fa-solid fa-layer-group', isFolder: true, clicks: 0, visible: true, order: 0 },
+                    { id: '1', title: 'TARTILIKU', url: 'https://example.com', desc: 'Tartili 1 - 6', icon: 'fa-solid fa-globe', clicks: 12, visible: true, parentId: 'f1', order: 0 }
                 ];
             }
             updateFolderDropdownOptions();
@@ -1221,7 +1200,6 @@
             renderProfile(profileData);
         }
 
-        // Admin State UI Update
         function updateAdminUI(user) {
             const adminBadge = document.getElementById('adminBadge');
             const adminPanel = document.getElementById('adminPanel');
@@ -1239,27 +1217,20 @@
                 adminStatusText.innerText = 'Cloudzone';
                 adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
             }
-
             filterLinks();
         }
 
-        // Track Click Count
-        window.trackClick = async function(id, event) {
+        window.trackClick = async function(id) {
             const link = linksList.find(l => l.id === id);
             if (!link) return;
-
-            const newClicks = (link.clicks || 0) + 1;
-            link.clicks = newClicks;
-            
+            link.clicks = (link.clicks || 0) + 1;
             try {
-                const docRef = doc(db, 'biolink', 'public', 'links', id);
-                await updateDoc(docRef, { clicks: newClicks });
+                await updateDoc(doc(db, 'biolink', 'public', 'links', id), { clicks: link.clicks });
             } catch(e) {
                 localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
             }
         };
 
-        // Admin Login
         window.handleLoginSubmit = async function(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
@@ -1275,7 +1246,6 @@
                 closeLoginModal();
                 showToast('Berhasil masuk sebagai Admin!');
             } catch (err) {
-                console.error("Login error:", err);
                 errorMsg.classList.remove('hidden');
                 errorMsg.innerText = 'Gagal Login: Email atau password salah.';
             } finally {
@@ -1283,7 +1253,6 @@
             }
         };
 
-        // Logout
         window.handleLogout = async function() {
             try {
                 await signOut(auth);
@@ -1293,7 +1262,6 @@
             }
         };
 
-        // Add New Item
         window.handleAddLink = async function(e) {
             e.preventDefault();
             if (!currentUser) {
@@ -1305,89 +1273,69 @@
             const title = document.getElementById('linkTitle').value.trim();
             const url = document.getElementById('linkUrl').value.trim();
             const desc = document.getElementById('linkDesc').value.trim();
-            const icon = document.getElementById('linkIcon').value;
+            const icon = document.getElementById('linkIconValue').value;
             const parentId = document.getElementById('linkFolderParent').value;
             const btn = document.getElementById('submitAddLinkBtn');
 
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
-
             const isFolder = itemType === 'folder';
-            const nextOrder = linksList.length;
-
-            const newItemData = {
-                title,
-                url: isFolder ? '' : url,
-                desc,
-                icon,
-                isFolder: isFolder,
-                parentId: isFolder ? '' : (parentId || ''),
-                clicks: 0,
-                visible: true,
-                order: nextOrder,
-                createdAt: Date.now()
-            };
 
             try {
-                const linksCollectionRef = collection(db, 'biolink', 'public', 'links');
-                await addDoc(linksCollectionRef, newItemData);
+                await addDoc(collection(db, 'biolink', 'public', 'links'), {
+                    title,
+                    url: isFolder ? '' : url,
+                    desc,
+                    icon,
+                    isFolder,
+                    parentId: isFolder ? '' : (parentId || ''),
+                    clicks: 0,
+                    visible: true,
+                    order: linksList.length,
+                    createdAt: Date.now()
+                });
 
                 document.getElementById('addLinkForm').reset();
                 switchItemType('link');
                 showToast(isFolder ? 'Folder baru dibuat!' : 'Link baru ditambahkan!');
             } catch (err) {
-                console.error("Error adding item:", err);
                 showToast('Gagal menyimpan data ke cloud', 'error');
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan';
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Item';
             }
         };
 
-        // Delete Link / Folder
         window.deleteLink = async function(id) {
             if (!currentUser) return;
-            
             const target = linksList.find(i => i.id === id);
             if (target && target.isFolder) {
-                const hasChildren = linksList.some(i => i.parentId === id);
-                if (hasChildren && !confirm("Folder ini berisi link. Menghapus folder juga akan mengeluarkan link di dalamnya ke halaman utama. Lanjutkan?")) {
-                    return;
-                }
+                if (linksList.some(i => i.parentId === id) && !confirm("Folder berisi link. Lanjutkan menghapus?")) return;
             }
 
             try {
-                const docRef = doc(db, 'biolink', 'public', 'links', id);
-                await deleteDoc(docRef);
-
+                await deleteDoc(doc(db, 'biolink', 'public', 'links', id));
                 if (target && target.isFolder) {
-                    const children = linksList.filter(i => i.parentId === id);
                     const batch = writeBatch(db);
-                    children.forEach(c => {
-                        const childRef = doc(db, 'biolink', 'public', 'links', c.id);
-                        batch.update(childRef, { parentId: '' });
+                    linksList.filter(i => i.parentId === id).forEach(c => {
+                        batch.update(doc(db, 'biolink', 'public', 'links', c.id), { parentId: '' });
                     });
                     await batch.commit();
                 }
-
                 showToast('Item berhasil dihapus.');
             } catch (err) {
                 showToast('Gagal menghapus item', 'error');
             }
         };
 
-        // Toggle Visibility
         window.toggleLinkVisibility = async function(id, newVisibility) {
             if (!currentUser) return;
-
             try {
-                const docRef = doc(db, 'biolink', 'public', 'links', id);
-                await updateDoc(docRef, { visible: newVisibility });
+                await updateDoc(doc(db, 'biolink', 'public', 'links', id), { visible: newVisibility });
                 showToast(newVisibility ? 'Item ditampilkan' : 'Item disembunyikan');
             } catch(e) {
                 showToast('Gagal mengubah status', 'error');
             }
         };
 
-        // Edit Modal Open & Actions
         window.openEditModal = function(id) {
             const item = linksList.find(l => l.id === id);
             if (!item) return;
@@ -1397,8 +1345,26 @@
             document.getElementById('editLinkTitle').value = item.title || '';
             document.getElementById('editLinkUrl').value = item.url || '';
             document.getElementById('editLinkDesc').value = item.desc || '';
-            document.getElementById('editLinkIcon').value = item.icon || (item.isFolder ? 'fa-solid fa-folder' : 'fa-solid fa-globe');
             document.getElementById('editLinkFolderParent').value = item.parentId || '';
+
+            const iconVal = item.icon || (item.isFolder ? 'fa-solid fa-folder' : 'fa-solid fa-globe');
+            document.getElementById('editLinkIconValue').value = iconVal;
+
+            const editIconFa = document.getElementById('editIconPreviewFa');
+            const editIconImg = document.getElementById('editIconPreviewImg');
+            const editSelect = document.getElementById('editLinkIconSelect');
+
+            if (iconVal.startsWith('data:image/')) {
+                editIconFa.classList.add('hidden');
+                editIconImg.src = iconVal;
+                editIconImg.classList.remove('hidden');
+                editSelect.value = "CUSTOM_FILE";
+            } else {
+                editIconImg.classList.add('hidden');
+                editIconFa.className = iconVal;
+                editIconFa.classList.remove('hidden');
+                editSelect.value = iconVal;
+            }
 
             const editUrlContainer = document.getElementById('editUrlContainer');
             const editFolderParentContainer = document.getElementById('editFolderParentContainer');
@@ -1428,20 +1394,17 @@
             const title = document.getElementById('editLinkTitle').value.trim();
             const url = document.getElementById('editLinkUrl').value.trim();
             const desc = document.getElementById('editLinkDesc').value.trim();
-            const icon = document.getElementById('editLinkIcon').value;
+            const icon = document.getElementById('editLinkIconValue').value;
             const parentId = document.getElementById('editLinkFolderParent').value;
 
             try {
-                const docRef = doc(db, 'biolink', 'public', 'links', id);
-                const updatedData = {
+                await updateDoc(doc(db, 'biolink', 'public', 'links', id), {
                     title,
                     desc,
                     icon,
                     url: isFolder ? '' : url,
                     parentId: isFolder ? '' : parentId
-                };
-
-                await updateDoc(docRef, updatedData);
+                });
 
                 closeEditModal();
                 showToast('Perubahan berhasil disimpan!');
@@ -1450,18 +1413,16 @@
             }
         };
 
-        // Edit Profile Header
         window.openEditProfileModal = function() {
             document.getElementById('editProfileName').value = profileData.name || '';
             document.getElementById('editProfileBio').value = profileData.bio || '';
             releaseAvatarPreviewUrl();
             const savedAvatar = profileData.avatar || '';
-            const isEmbeddedImage = savedAvatar.startsWith('data:image/');
             const safeAvatar = getSafeAvatarUrl(savedAvatar);
-            document.getElementById('editProfileAvatar').value = isEmbeddedImage || safeAvatar === DEFAULT_AVATAR ? '' : savedAvatar;
+            document.getElementById('editProfileAvatar').value = savedAvatar.startsWith('data:image/') || safeAvatar === DEFAULT_AVATAR ? '' : savedAvatar;
             document.getElementById('editProfileAvatarFile').value = '';
             document.getElementById('editProfileAvatarPreview').src = safeAvatar;
-            document.getElementById('avatarUploadStatus').innerText = savedAvatar ? 'Foto profil saat ini.' : 'Pilih foto dari galeri, maks. 12 MB.';
+            document.getElementById('avatarUploadStatus').innerText = savedAvatar ? 'Foto profil saat ini.' : 'Pilih foto dari galeri.';
             document.getElementById('editProfileVerified').checked = !!profileData.verified;
 
             document.getElementById('profileModal').classList.remove('hidden');
@@ -1494,10 +1455,7 @@
                     avatar = getSafeAvatarUrl(avatarUrl);
                 }
 
-                const updatedProfile = { name, bio, avatar, verified };
-                const profileDocRef = doc(db, 'biolink', 'public', 'profile', 'header');
-                await setDoc(profileDocRef, updatedProfile, { merge: true });
-
+                await setDoc(doc(db, 'biolink', 'public', 'profile', 'header'), { name, bio, avatar, verified }, { merge: true });
                 closeEditProfileModal();
                 showToast('Profil header berhasil diperbarui!');
             } catch (err) {
@@ -1520,18 +1478,13 @@
             document.getElementById('loginModal').classList.add('hidden');
         };
 
-        // Search Filter
         window.filterLinks = function() {
             const searchInput = document.getElementById('searchInput');
             const clearBtn = document.getElementById('clearSearchBtn');
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
             if (clearBtn) {
-                if (query.length > 0) {
-                    clearBtn.classList.remove('hidden');
-                } else {
-                    clearBtn.classList.add('hidden');
-                }
+                clearBtn.classList.toggle('hidden', query.length === 0);
             }
 
             if (!query) {
@@ -1539,37 +1492,27 @@
                 return;
             }
 
-            const matchedItems = linksList.filter(item => 
+            const matchedIds = new Set();
+            linksList.filter(item => 
                 (item.title && item.title.toLowerCase().includes(query)) || 
                 (item.desc && item.desc.toLowerCase().includes(query))
-            );
-
-            const matchedIds = new Set();
-
-            matchedItems.forEach(item => {
+            ).forEach(item => {
                 matchedIds.add(item.id);
-
                 if (item.parentId) {
                     matchedIds.add(item.parentId);
                     openFolders.add(item.parentId);
                 }
-
                 if (item.isFolder) {
                     openFolders.add(item.id);
                     linksList.forEach(child => {
-                        if (child.parentId === item.id) {
-                            matchedIds.add(child.id);
-                        }
+                        if (child.parentId === item.id) matchedIds.add(child.id);
                     });
                 }
             });
 
-            const filteredList = linksList.filter(item => matchedIds.has(item.id));
-
-            renderLinks(filteredList);
+            renderLinks(linksList.filter(item => matchedIds.has(item.id)));
         };
 
-        // Reset Search
         window.clearSearch = function() {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
@@ -1578,16 +1521,12 @@
             }
         };
 
-        // Share Profile
         window.shareProfile = function() {
             const profileUrl = window.location.href;
-            
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(profileUrl).then(() => {
                     showToast('Link profil berhasil disalin!');
-                }).catch(() => {
-                    fallbackCopy(profileUrl);
-                });
+                }).catch(() => fallbackCopy(profileUrl));
             } else {
                 fallbackCopy(profileUrl);
             }
@@ -1609,18 +1548,15 @@
             document.body.removeChild(textArea);
         }
 
-        // Toast Helper
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             const toastIcon = document.getElementById('toastIcon');
 
             toastMsg.innerText = message;
-            if (type === 'error') {
-                toastIcon.className = 'fa-solid fa-circle-exclamation text-neon-pink text-xs';
-            } else {
-                toastIcon.className = 'fa-solid fa-circle-check text-neon-cyan text-xs';
-            }
+            toastIcon.className = type === 'error' 
+                ? 'fa-solid fa-circle-exclamation text-neon-pink text-xs' 
+                : 'fa-solid fa-circle-check text-neon-cyan text-xs';
 
             toast.classList.remove('opacity-0', 'pointer-events-none');
             toast.classList.add('opacity-100');
@@ -1641,9 +1577,7 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // Initialize Application
         window.onload = function() {
-            setDynamicFavicon();
             initFirebase();
         };
     </script>
