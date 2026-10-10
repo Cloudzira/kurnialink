@@ -186,7 +186,7 @@
             pointer-events: none;
         }
 
-        /* Efek Cahaya Neon Berputar pada Kartu Link */
+        /* Universal Cross-Browser Link Light Animation via JS */
         #linksContainer .glass-card {
             position: relative;
             isolation: isolate;
@@ -195,12 +195,6 @@
         #linksContainer .glass-card:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2),
                         0 0 20px var(--link-light-glow, rgba(0, 243, 255, 0.14));
-        }
-
-        @property --link-light-angle {
-            syntax: "<angle>";
-            inherits: false;
-            initial-value: 0deg;
         }
 
         #linksContainer .glass-card::before {
@@ -216,7 +210,6 @@
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0.24;
-            animation: link-light-orbit var(--link-light-speed, 12s) linear var(--link-light-delay, 0s) infinite;
             pointer-events: none;
         }
 
@@ -228,10 +221,6 @@
             to { transform: rotate(1turn); }
         }
 
-        @keyframes link-light-orbit {
-            to { --link-light-angle: 360deg; }
-        }
-
         @keyframes neon-flow {
             from { background-position: 100% center; }
             to { background-position: -120% center; }
@@ -240,7 +229,6 @@
         @media (prefers-reduced-motion: reduce) {
             #profileFrame::before,
             #adminPanel::before,
-            #linksContainer .glass-card:hover::before,
             #linksContainer .glass-card::before {
                 animation: none !important;
             }
@@ -636,6 +624,11 @@
         const linkLightHues = new Map();
         let nextLinkLightHue = Math.random() * 360;
 
+        // --- CROSS-BROWSER ANIMATION ENGINE (Jalan di Laptop & HP) ---
+        const linkLightCards = new Map();
+        let linkLightAnimFrame = null;
+        let linkLightStartTime = 0;
+
         function getLinkLightHue(linkId) {
             const key = String(linkId);
             if (!linkLightHues.has(key)) {
@@ -643,6 +636,40 @@
                 nextLinkLightHue = (nextLinkLightHue + 137.508) % 360;
             }
             return linkLightHues.get(key);
+        }
+
+        function updateLinkLights(now) {
+            linkLightAnimFrame = null;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                linkLightCards.clear();
+                return;
+            }
+
+            const elapsed = now - linkLightStartTime;
+            linkLightCards.forEach((anim, card) => {
+                if (!card.isConnected) {
+                    linkLightCards.delete(card);
+                    return;
+                }
+                const progress = ((elapsed + anim.phase) % anim.duration) / anim.duration;
+                card.style.setProperty('--link-light-angle', `${progress * 360}deg`);
+            });
+
+            if (linkLightCards.size > 0) {
+                linkLightAnimFrame = requestAnimationFrame(updateLinkLights);
+            }
+        }
+
+        function registerLinkLightAnimation(card) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const duration = 10000; // 10 detik per putaran
+            const phase = Math.random() * duration;
+
+            if (linkLightCards.size === 0) linkLightStartTime = performance.now();
+            linkLightCards.set(card, { duration, phase });
+            if (linkLightAnimFrame === null) {
+                linkLightAnimFrame = requestAnimationFrame(updateLinkLights);
+            }
         }
 
         let profileData = {
@@ -752,7 +779,6 @@
             if (editSelect) editSelect.innerHTML = optionsHtml;
         }
 
-        // --- DIPERBAIKI: ICON SELECTION & ROBUST LOCAL FILE UPLOAD ---
         window.handleIconSelectChange = function(val) {
             const fileInput = document.getElementById('linkIconLocalFile');
             const iconFa = document.getElementById('linkIconPreviewFa');
@@ -1143,8 +1169,9 @@
             card.style.setProperty('--link-light-color', `hsl(${lightHue} 92% 64%)`);
             card.style.setProperty('--link-light-highlight', `hsl(${highlightHue} 96% 68%)`);
             card.style.setProperty('--link-light-glow', `hsla(${lightHue} 92% 64% / 0.16)`);
-            card.style.setProperty('--link-light-speed', `${(7 + (link.id.charCodeAt(0) % 5)).toFixed(2)}s`);
-            card.style.setProperty('--link-light-delay', `${(- (link.id.charCodeAt(0) % 3) * 3).toFixed(2)}s`);
+            
+            // Daftarkan ke animasi JavaScript agar berjalan sempurna di laptop & HP
+            registerLinkLightAnimation(card);
             
             card.innerHTML = `
                 <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
