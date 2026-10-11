@@ -4,6 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kurniapedia</title>
+
+    <!-- PWA: installable di HP & laptop -->
+    <meta name="theme-color" content="#06070b">
+    <meta name="application-name" content="Kurniapedia">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Kurniapedia">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <script>
+        // Tangkap event install lebih awal supaya tombol Install tidak terlewat
+        window.__bip = null;
+        window.addEventListener('beforeinstallprompt', function (e) {
+            e.preventDefault();
+            window.__bip = e;
+            window.dispatchEvent(new Event('pwa-installable'));
+        });
+    </script>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -223,13 +243,23 @@
             to { background-position: -120% center; }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            #profileFrame::before,
-            #adminPanel::before,
-            #linksContainer .glass-card::before {
-                animation: none !important;
-            }
+        /* Catatan: blok "prefers-reduced-motion" sengaja dihapus.
+           Di banyak laptop, pengaturan OS "kurangi animasi" aktif, sehingga
+           semua animasi neon otomatis mati. HP biasanya tidak mengaktifkannya. */
+
+        /* Link terkunci */
+        #linksContainer .glass-card.link-locked {
+            border-color: rgba(251, 191, 36, 0.25);
         }
+        #linksContainer .glass-card.link-locked:hover {
+            border-color: rgba(251, 191, 36, 0.55);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 20px rgba(251, 191, 36, 0.16);
+        }
+        @keyframes info-pop {
+            from { opacity: 0; transform: scale(0.92) translateY(8px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .info-pop { animation: info-pop 0.25s ease-out; }
 
         /* Splash Screen Custom Animations */
         #splashScreen {
@@ -309,6 +339,10 @@
             </div>
 
             <div class="flex items-center gap-2">
+                <button id="installBtn" onclick="handleInstallClick()" class="hidden px-3 py-1.5 rounded-full text-[11px] font-semibold glass-panel items-center gap-1.5 hover:border-cyan-500/50 transition-all text-slate-300 hover:text-white" title="Install aplikasi">
+                    <i class="fa-solid fa-download text-neon-cyan text-[11px]"></i>
+                    <span>Install</span>
+                </button>
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="px-3 py-1.5 rounded-full text-[11px] font-semibold glass-panel flex items-center gap-1.5 hover:border-purple-500/50 transition-all text-slate-300 hover:text-white">
                     <i id="adminStatusIcon" class="fa-solid fa-lock text-neon-purple text-[11px]"></i>
                     <span id="adminStatusText">Cloudzone</span>
@@ -423,6 +457,18 @@
                 <div>
                     <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Deskripsi Singkat (Opsional)</label>
                     <input type="text" id="linkDesc" placeholder="Penjelasan singkat" class="w-full glass-input text-xs p-2 rounded-lg">
+                </div>
+
+                <!-- Opsi Kunci Link -->
+                <div id="lockOptionContainer" class="rounded-lg border border-amber-500/20 bg-amber-950/10 p-2">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="linkLocked" onchange="toggleLockFields('add')" class="rounded accent-amber-400">
+                        <label for="linkLocked" class="text-[11px] text-slate-300"><i class="fa-solid fa-lock text-amber-400 mr-1"></i> Kunci link ini</label>
+                    </div>
+                    <div id="linkLockMsgWrap" class="hidden mt-2">
+                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Pesan saat diklik (Opsional)</label>
+                        <input type="text" id="linkLockMsg" placeholder="Contoh: Aplikasi sedang dalam perbaikan" class="w-full glass-input text-xs p-2 rounded-lg">
+                    </div>
                 </div>
                 
                 <!-- Pemilihan Ikon (Icon Picker & File Upload Lokal) -->
@@ -554,6 +600,17 @@
                     <input type="text" id="editLinkDesc" class="w-full glass-input text-xs p-2 rounded-lg">
                 </div>
 
+                <div id="editLockOptionContainer" class="rounded-lg border border-amber-500/20 bg-amber-950/10 p-2">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="editLinkLocked" onchange="toggleLockFields('edit')" class="rounded accent-amber-400">
+                        <label for="editLinkLocked" class="text-[11px] text-slate-300"><i class="fa-solid fa-lock text-amber-400 mr-1"></i> Kunci link ini</label>
+                    </div>
+                    <div id="editLockMsgWrap" class="hidden mt-2">
+                        <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Pesan saat diklik (Opsional)</label>
+                        <input type="text" id="editLockMsg" placeholder="Contoh: Aplikasi sedang dalam perbaikan" class="w-full glass-input text-xs p-2 rounded-lg">
+                    </div>
+                </div>
+
                 <div>
                     <label class="text-[9px] uppercase text-slate-400 mb-1 block font-semibold">Ikon Item</label>
                     <div class="flex items-center gap-2.5">
@@ -645,6 +702,21 @@
         </div>
     </div>
 
+    <!-- Modal 4: Info (Link Dikunci / Bantuan Install) -->
+    <div id="infoModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[60] hidden" onclick="if(event.target===this)closeInfoModal()">
+        <div class="glass-panel info-pop w-full max-w-[340px] rounded-2xl p-5 text-center border-amber-500/30 shadow-2xl">
+            <div id="infoModalIconWrap" class="w-12 h-12 rounded-full glass-panel mx-auto flex items-center justify-center text-xl mb-3 text-amber-400 border-amber-500/30">
+                <i id="infoModalIcon" class="fa-solid fa-lock"></i>
+            </div>
+            <h3 id="infoModalTitle" class="text-sm font-bold text-white mb-1">Aplikasi Dikunci</h3>
+            <p id="infoModalName" class="hidden text-[11px] font-semibold text-neon-cyan mb-2 break-words"></p>
+            <p id="infoModalMsg" class="text-[11px] text-slate-300 leading-relaxed mb-4" style="white-space: pre-line;"></p>
+            <button type="button" onclick="closeInfoModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-md shadow-cyan-500/20">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 glass-panel px-3.5 py-2 rounded-full text-xs font-medium text-white border-cyan-400/40 shadow-xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 z-50">
         <i id="toastIcon" class="fa-solid fa-circle-check text-neon-cyan text-xs"></i>
@@ -703,10 +775,6 @@
 
         function updateLinkLights(now) {
             linkLightAnimFrame = null;
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                linkLightCards.clear();
-                return;
-            }
 
             const elapsed = now - linkLightStartTime;
             linkLightCards.forEach((anim, card) => {
@@ -724,7 +792,6 @@
         }
 
         function registerLinkLightAnimation(card) {
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             const duration = 10000; // 10 detik per putaran
             const phase = Math.random() * duration;
 
@@ -966,8 +1033,10 @@
             const linkUrlInput = document.getElementById('linkUrl');
             const linkTitleInput = document.getElementById('linkTitle');
             const linkIconSelect = document.getElementById('linkIconSelect');
+            const lockOption = document.getElementById('lockOptionContainer');
 
             itemTypeInput.value = type;
+            if (lockOption) lockOption.classList.toggle('hidden', type === 'folder');
 
             if (type === 'folder') {
                 typeFolderBtn.className = "py-1.5 rounded-md text-[11px] font-semibold transition-all bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm";
@@ -1224,11 +1293,12 @@
         function createSingleLinkElement(link, isInsideFolder = false) {
             const card = document.createElement('div');
             const isHidden = link.visible === false;
+            const isLocked = link.locked === true;
             const lightHue = getLinkLightHue(link.id);
             const highlightHue = (lightHue + 48) % 360;
             
             card.setAttribute('data-id', link.id);
-            card.className = `glass-card rounded-xl p-2 sm:p-2.5 flex items-center justify-between group relative overflow-hidden ${isInsideFolder ? 'bg-slate-900/60 border-slate-700/60 shadow-inner' : ''} ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+            card.className = `glass-card rounded-xl p-2 sm:p-2.5 flex items-center justify-between group relative overflow-hidden ${isInsideFolder ? 'bg-slate-900/60 border-slate-700/60 shadow-inner' : ''} ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''} ${isLocked ? 'link-locked' : ''}`;
             card.style.setProperty('--link-light-color', `hsl(${lightHue} 92% 64%)`);
             card.style.setProperty('--link-light-highlight', `hsl(${highlightHue} 96% 68%)`);
             card.style.setProperty('--link-light-glow', `hsla(${lightHue} 92% 64% / 0.16)`);
@@ -1244,7 +1314,7 @@
                         </div>
                     ` : ''}
 
-                    <a href="${escapeHtml(link.url)}" target="_blank" onclick="window.trackClick('${link.id}', event)" class="flex items-center gap-2 flex-1 min-w-0">
+                    <a href="${isLocked ? '#' : escapeHtml(link.url)}" ${isLocked ? '' : 'target="_blank" rel="noopener"'} onclick="window.handleLinkClick('${link.id}', event)" class="flex items-center gap-2 flex-1 min-w-0">
                         <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-xs flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
                             ${renderIconMarkup(link.icon, 'fa-solid fa-globe')}
                         </div>
@@ -1254,6 +1324,7 @@
                                     ${escapeHtml(link.title)}
                                 </h3>
                                 ${isHidden ? '<span class="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded border border-slate-700">Hidden</span>' : ''}
+                                ${isLocked ? '<span class="text-[8px] bg-amber-950/60 text-amber-300 px-1 py-0.2 rounded border border-amber-500/30 flex-shrink-0"><i class="fa-solid fa-lock mr-0.5"></i>Dikunci</span>' : ''}
                             </div>
                             ${link.desc ? `<p class="text-[10px] text-slate-400 truncate mt-0.5 font-light">${escapeHtml(link.desc)}</p>` : ''}
                         </div>
@@ -1267,6 +1338,9 @@
 
                     ${currentUser ? `
                         <div class="flex items-center gap-0.5 border-l border-white/10 pl-1.5">
+                            <button onclick="window.toggleLinkLock('${link.id}',${!isLocked})" class="p-1 ${isLocked ? 'text-amber-400' : 'text-slate-400 hover:text-amber-300'} transition-colors text-[11px]" title="${isLocked ? 'Buka Kunci' : 'Kunci Link'}">
+                                <i class="fa-solid ${isLocked ? 'fa-lock' : 'fa-lock-open'}"></i>
+                            </button>
                             <button onclick="window.toggleLinkVisibility('${link.id}',${!isHidden})" class="p-1 text-slate-400 hover:text-neon-cyan transition-colors text-[11px]" title="${isHidden ? 'Tampilkan' : 'Sembunyikan'}">
                                 <i class="fa-solid ${isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
                             </button>
@@ -1390,6 +1464,128 @@
             filterLinks();
         }
 
+        // --- INFO MODAL (dikunci / bantuan install) ---
+        function showInfoModal({ icon = 'fa-solid fa-lock', title = '', name = '', message = '', tone = 'amber' }) {
+            const wrap = document.getElementById('infoModalIconWrap');
+            const nameEl = document.getElementById('infoModalName');
+            document.getElementById('infoModalIcon').className = icon;
+            wrap.className = 'w-12 h-12 rounded-full glass-panel mx-auto flex items-center justify-center text-xl mb-3 ' +
+                (tone === 'cyan' ? 'text-neon-cyan border-cyan-500/30' : 'text-amber-400 border-amber-500/30');
+            document.getElementById('infoModalTitle').innerText = title;
+            document.getElementById('infoModalMsg').innerText = message;
+            if (name) {
+                nameEl.innerText = name;
+                nameEl.classList.remove('hidden');
+            } else {
+                nameEl.classList.add('hidden');
+            }
+            document.getElementById('infoModal').classList.remove('hidden');
+        }
+
+        window.closeInfoModal = function() {
+            document.getElementById('infoModal').classList.add('hidden');
+        };
+
+        // --- FITUR LOCK LINK ---
+        const DEFAULT_LOCK_MESSAGE = 'Aplikasi ini sedang dikunci oleh admin dan belum bisa dibuka. Silakan coba lagi nanti atau hubungi admin.';
+
+        window.handleLinkClick = function(id, event) {
+            const link = linksList.find(l => l.id === id);
+            if (!link) return;
+            if (link.locked === true) {
+                event.preventDefault();
+                showInfoModal({
+                    icon: 'fa-solid fa-lock',
+                    title: 'Aplikasi Dikunci',
+                    name: link.title,
+                    message: (link.lockMessage && link.lockMessage.trim()) || DEFAULT_LOCK_MESSAGE
+                });
+                return;
+            }
+            window.trackClick(id);
+        };
+
+        window.toggleLinkLock = async function(id, newLocked) {
+            if (!currentUser) return;
+            try {
+                await updateDoc(doc(db, 'biolink', 'public', 'links', id), { locked: newLocked });
+                showToast(newLocked ? 'Link dikunci' : 'Kunci link dibuka');
+            } catch (e) {
+                showToast('Gagal mengubah status kunci', 'error');
+            }
+        };
+
+        window.toggleLockFields = function(prefix) {
+            const isEdit = prefix === 'edit';
+            const cb = document.getElementById(isEdit ? 'editLinkLocked' : 'linkLocked');
+            const wrap = document.getElementById(isEdit ? 'editLockMsgWrap' : 'linkLockMsgWrap');
+            wrap.classList.toggle('hidden', !cb.checked);
+        };
+
+        // --- PWA: INSTALL APLIKASI (HP & LAPTOP) ---
+        function isStandaloneMode() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+        function isIOSDevice() {
+            return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+        function refreshInstallButton() {
+            const btn = document.getElementById('installBtn');
+            if (!btn) return;
+            const canShow = !isStandaloneMode() && (window.__bip || isIOSDevice());
+            btn.classList.toggle('hidden', !canShow);
+        }
+        window.addEventListener('pwa-installable', refreshInstallButton);
+        window.addEventListener('appinstalled', () => {
+            window.__bip = null;
+            refreshInstallButton();
+            showToast('Aplikasi berhasil diinstal!');
+        });
+
+        window.handleInstallClick = async function() {
+            if (window.__bip) {
+                const promptEvent = window.__bip;
+                promptEvent.prompt();
+                try { await promptEvent.userChoice; } catch (e) {}
+                window.__bip = null;
+                refreshInstallButton();
+                return;
+            }
+            if (isIOSDevice()) {
+                showInfoModal({
+                    icon: 'fa-solid fa-download',
+                    tone: 'cyan',
+                    title: 'Install di iPhone / iPad',
+                    message: '1. Buka halaman ini di Safari\n2. Ketuk tombol Bagikan (kotak dengan panah ke atas)\n3. Pilih "Tambahkan ke Layar Utama"'
+                });
+            } else {
+                showInfoModal({
+                    icon: 'fa-solid fa-download',
+                    tone: 'cyan',
+                    title: 'Install Aplikasi',
+                    message: 'Buka menu browser, lalu pilih "Install app" atau "Tambahkan ke layar utama".'
+                });
+            }
+        };
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            if (!(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) return;
+
+            const hadController = !!navigator.serviceWorker.controller;
+            let reloading = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!hadController || reloading) return; // jangan reload pada install pertama
+                reloading = true;
+                window.location.reload();
+            });
+
+            navigator.serviceWorker.register('sw.js').catch(err => {
+                console.warn('Service worker gagal didaftarkan:', err);
+            });
+        }
+
         window.trackClick = async function(id) {
             const link = linksList.find(l => l.id === id);
             if (!link) return;
@@ -1445,6 +1641,8 @@
             const desc = document.getElementById('linkDesc').value.trim();
             const icon = document.getElementById('linkIconValue').value;
             const parentId = document.getElementById('linkFolderParent').value;
+            const locked = document.getElementById('linkLocked').checked;
+            const lockMessage = document.getElementById('linkLockMsg').value.trim();
             const btn = document.getElementById('submitAddLinkBtn');
 
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
@@ -1460,11 +1658,14 @@
                     parentId: isFolder ? '' : (parentId || ''),
                     clicks: 0,
                     visible: true,
+                    locked: isFolder ? false : locked,
+                    lockMessage: isFolder ? '' : lockMessage,
                     order: linksList.length,
                     createdAt: Date.now()
                 });
 
                 document.getElementById('addLinkForm').reset();
+                toggleLockFields('add');
                 switchItemType('link');
                 showToast(isFolder ? 'Folder baru dibuat!' : 'Link baru ditambahkan!');
             } catch (err) {
@@ -1540,13 +1741,20 @@
             const editFolderParentContainer = document.getElementById('editFolderParentContainer');
             const editTitleLabel = document.getElementById('editTitleLabel');
 
+            const editLockOption = document.getElementById('editLockOptionContainer');
+            document.getElementById('editLinkLocked').checked = item.locked === true;
+            document.getElementById('editLockMsg').value = item.lockMessage || '';
+            toggleLockFields('edit');
+
             if (item.isFolder) {
                 editUrlContainer.classList.add('hidden');
                 editFolderParentContainer.classList.add('hidden');
+                editLockOption.classList.add('hidden');
                 editTitleLabel.innerText = "Nama Folder";
             } else {
                 editUrlContainer.classList.remove('hidden');
                 editFolderParentContainer.classList.remove('hidden');
+                editLockOption.classList.remove('hidden');
                 editTitleLabel.innerText = "Judul Link";
             }
 
@@ -1566,6 +1774,8 @@
             const desc = document.getElementById('editLinkDesc').value.trim();
             const icon = document.getElementById('editLinkIconValue').value;
             const parentId = document.getElementById('editLinkFolderParent').value;
+            const locked = document.getElementById('editLinkLocked').checked;
+            const lockMessage = document.getElementById('editLockMsg').value.trim();
 
             try {
                 await updateDoc(doc(db, 'biolink', 'public', 'links', id), {
@@ -1573,7 +1783,9 @@
                     desc,
                     icon,
                     url: isFolder ? '' : url,
-                    parentId: isFolder ? '' : parentId
+                    parentId: isFolder ? '' : parentId,
+                    locked: isFolder ? false : locked,
+                    lockMessage: isFolder ? '' : lockMessage
                 });
 
                 closeEditModal();
@@ -1747,8 +1959,14 @@
                 .replace(/'/g, "&#039;");
         }
 
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') window.closeInfoModal();
+        });
+
         window.onload = function() {
             initFirebase();
+            registerServiceWorker();
+            refreshInstallButton();
             
             // Splash Screen Auto Dismiss Controller
             setTimeout(() => {
