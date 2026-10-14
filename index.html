@@ -1867,8 +1867,9 @@
             const img = getSafeBannerImage(slide.image);
             const hasText = slide.title || slide.text;
             const tag = href ? 'a' : 'div';
+            const openNewTab = slide.newTab !== false && /^https?:/i.test(href);
             const attrs = href
-                ? `href="${escapeHtml(href)}"${/^https?:/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : ''}`
+                ? `href="${escapeHtml(href)}"${openNewTab ? ' target="_blank" rel="noopener noreferrer"' : ''}`
                 : '';
             const cloneAttrs = isClone ? ' aria-hidden="true" tabindex="-1"' : '';
             return `<${tag} class="banner-slide${href ? ' is-link' : ''}" ${attrs}${cloneAttrs} draggable="false">
@@ -2066,7 +2067,7 @@
                 const dx = e.clientX - d.x;
                 const dy = e.clientY - d.y;
                 if (!d.axis) {
-                    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+                    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
                     d.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
                     if (d.axis === 'x') { try { viewport.setPointerCapture(e.pointerId); } catch (err) {} }
                 }
@@ -2086,8 +2087,11 @@
                 bannerDragging = false;
                 if (d.axis !== 'x') return;
 
-                bannerSuppressClick = true;
-                setTimeout(() => { bannerSuppressClick = false; }, 80);
+                // hanya blokir klik jika benar-benar menggeser; ketukan dengan jari sedikit bergeser tetap membuka link
+                if (Math.abs(d.dx) > 10) {
+                    bannerSuppressClick = true;
+                    setTimeout(() => { bannerSuppressClick = false; }, 80);
+                }
 
                 const threshold = Math.max(40, viewport.clientWidth * 0.18);
                 if (e.type !== 'pointercancel' && d.dx <= -threshold) {
@@ -2195,6 +2199,10 @@
                         <div>
                             <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Link Tujuan (saat diklik)</label>
                             <input type="text" id="bnLink${i}" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <input type="checkbox" id="bnNewTab${i}" class="rounded accent-cyan-400">
+                                <label for="bnNewTab${i}" class="text-[10px] text-slate-400">Buka di tab baru (hilangkan centang untuk membuka di halaman yang sama)</label>
+                            </div>
                         </div>
                     </div>
                 </details>`;
@@ -2288,6 +2296,7 @@
                 bEl('bnTitle' + i).value = d.title || '';
                 bEl('bnText' + i).value = d.text || '';
                 bEl('bnLink' + i).value = d.link || '';
+                bEl('bnNewTab' + i).checked = d.newTab !== false;
                 bEl('bnImageUrl' + i).value = (image && !image.startsWith('data:')) ? image : '';
                 bannerUpdatePreview(i);
                 window.bannerRefreshSummary(i);
@@ -2323,7 +2332,7 @@
                     showToast(`Slide ${i}: gambar terlalu besar, pilih gambar lain.`, 'error');
                     return;
                 }
-                slides.push({ order: i, active, title, text, link, image });
+                slides.push({ order: i, active, title, text, link, newTab: bEl('bnNewTab' + i).checked, image });
             }
 
             const interval = Math.min(15, Math.max(2, Number(bEl('bnInterval').value) || 5));
