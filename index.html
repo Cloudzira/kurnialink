@@ -414,6 +414,38 @@
             -webkit-backdrop-filter: blur(8px);
             pointer-events: none;
         }
+        .banner-cta {
+            position: absolute;
+            right: 12px;
+            bottom: 11px;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            max-width: 112px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            color: #06070b;
+            background: linear-gradient(90deg, #00f3ff, #b026ff);
+            box-shadow: 0 0 14px rgba(0, 243, 255, 0.45);
+            pointer-events: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .banner-cta span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .banner-cta i { font-size: 9px; transition: transform 0.25s ease; }
+        .banner-slide.is-link:hover .banner-cta {
+            box-shadow: 0 0 20px rgba(176, 38, 255, 0.65);
+            transform: translateY(-1px);
+        }
+        .banner-slide.is-link:hover .banner-cta i { transform: translateX(3px); }
+        .banner-caption.has-cta { right: 132px; }
         .banner-nav {
             position: absolute;
             top: 50%;
@@ -1872,13 +1904,15 @@
                 ? `href="${escapeHtml(href)}"${openNewTab ? ' target="_blank" rel="noopener noreferrer"' : ''}`
                 : '';
             const cloneAttrs = isClone ? ' aria-hidden="true" tabindex="-1"' : '';
-            return `<${tag} class="banner-slide${href ? ' is-link' : ''}" ${attrs}${cloneAttrs} draggable="false">
+            const dataAttrs = href ? ` data-href="${escapeHtml(href)}" data-newtab="${openNewTab ? '1' : '0'}"` : '';
+            const ctaText = (slide.cta && String(slide.cta).trim()) || 'Buka Link';
+            return `<${tag} class="banner-slide${href ? ' is-link' : ''}" ${attrs}${dataAttrs}${cloneAttrs} draggable="false">
                 ${img
                     ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(slide.title || 'Banner')}" class="banner-img" draggable="false">`
                     : '<div class="banner-bg"></div>'}
                 <div class="banner-shade"></div>
-                ${href ? '<span class="banner-chip"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>' : ''}
-                ${hasText ? `<div class="banner-caption">
+                ${href ? `<span class="banner-cta"><span>${escapeHtml(ctaText)}</span><i class="fa-solid fa-arrow-right"></i></span>` : ''}
+                ${hasText ? `<div class="banner-caption${href ? ' has-cta' : ''}">
                     ${slide.title ? `<div class="banner-title">${escapeHtml(slide.title)}</div>` : ''}
                     ${slide.text ? `<div class="banner-text">${escapeHtml(slide.text)}</div>` : ''}
                 </div>` : ''}
@@ -2112,6 +2146,24 @@
                     e.stopPropagation();
                 }
             }, true);
+
+            // Banner = tombol link: klik di bagian mana pun membuka link slide
+            viewport.addEventListener('click', (e) => {
+                if (e.defaultPrevented) return;
+                if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                const slideEl = e.target && e.target.closest ? e.target.closest('.banner-slide[data-href]') : null;
+                if (!slideEl) return;
+                const href = slideEl.getAttribute('data-href');
+                if (!href) return;
+                e.preventDefault();
+                if (slideEl.getAttribute('data-newtab') === '1') {
+                    const w = window.open(href, '_blank');
+                    if (w) { try { w.opener = null; } catch (err) {} }
+                    else window.location.href = href; // popup diblokir -> buka di halaman ini
+                } else {
+                    window.location.href = href;
+                }
+            });
         }
 
         // ---------- Admin: pengaturan banner ----------
@@ -2199,6 +2251,8 @@
                         <div>
                             <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Link Tujuan (saat diklik)</label>
                             <input type="text" id="bnLink${i}" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
+                            <label class="text-[9px] uppercase text-slate-400 mt-2 mb-0.5 block font-semibold">Teks Tombol (opsional)</label>
+                            <input type="text" id="bnCta${i}" maxlength="18" placeholder="Buka Link" class="w-full glass-input text-xs p-2 rounded-lg">
                             <div class="flex items-center gap-2 mt-1.5">
                                 <input type="checkbox" id="bnNewTab${i}" class="rounded accent-cyan-400">
                                 <label for="bnNewTab${i}" class="text-[10px] text-slate-400">Buka di tab baru (hilangkan centang untuk membuka di halaman yang sama)</label>
@@ -2297,6 +2351,7 @@
                 bEl('bnText' + i).value = d.text || '';
                 bEl('bnLink' + i).value = d.link || '';
                 bEl('bnNewTab' + i).checked = d.newTab !== false;
+                bEl('bnCta' + i).value = d.cta || '';
                 bEl('bnImageUrl' + i).value = (image && !image.startsWith('data:')) ? image : '';
                 bannerUpdatePreview(i);
                 window.bannerRefreshSummary(i);
@@ -2332,7 +2387,7 @@
                     showToast(`Slide ${i}: gambar terlalu besar, pilih gambar lain.`, 'error');
                     return;
                 }
-                slides.push({ order: i, active, title, text, link, newTab: bEl('bnNewTab' + i).checked, image });
+                slides.push({ order: i, active, title, text, link, newTab: bEl('bnNewTab' + i).checked, cta: bEl('bnCta' + i).value.trim(), image });
             }
 
             const interval = Math.min(15, Math.max(2, Number(bEl('bnInterval').value) || 5));
