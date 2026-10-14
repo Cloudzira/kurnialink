@@ -261,6 +261,238 @@
         }
         .info-pop { animation: info-pop 0.25s ease-out; }
 
+        /* ===== BANNER SLIDER ===== */
+        .banner-frame {
+            position: relative;
+            isolation: isolate;
+            border-radius: 18px;
+            padding: 1.5px;
+            background: rgba(15, 17, 26, 0.75);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 28px rgba(0, 243, 255, 0.08);
+        }
+        .banner-frame::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            padding: 1.5px;
+            border-radius: inherit;
+            background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 38%, #00f3ff 48%, #b026ff 60%, #ff007f 72%, transparent 84% 100%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .banner-viewport {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16.5px;
+            aspect-ratio: 20 / 9;
+            background: #06070b;
+            touch-action: pan-y;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* Aksen HUD futuristik di sudut */
+        .banner-viewport::after {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            z-index: 2;
+            border-radius: 12px;
+            pointer-events: none;
+            opacity: 0.6;
+            background:
+                linear-gradient(#00f3ff, #00f3ff) top left / 14px 1.5px no-repeat,
+                linear-gradient(#00f3ff, #00f3ff) top left / 1.5px 14px no-repeat,
+                linear-gradient(#ff007f, #ff007f) bottom right / 14px 1.5px no-repeat,
+                linear-gradient(#ff007f, #ff007f) bottom right / 1.5px 14px no-repeat;
+        }
+        .banner-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            will-change: transform;
+            transition: transform 0.7s cubic-bezier(0.65, 0, 0.25, 1);
+        }
+        .banner-slide {
+            position: relative;
+            flex: 0 0 100%;
+            height: 100%;
+            display: block;
+            overflow: hidden;
+            color: inherit;
+            text-decoration: none;
+            -webkit-user-drag: none;
+        }
+        .banner-slide.is-link { cursor: pointer; }
+        .banner-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            transition: transform 6s ease-out;
+        }
+        .banner-slide.is-link:hover .banner-img { transform: scale(1.04); }
+        .banner-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(176, 38, 255, 0.45), transparent 55%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.35), transparent 50%),
+                radial-gradient(circle at 50% 110%, rgba(255, 0, 127, 0.30), transparent 55%),
+                #0a0c16;
+        }
+        .banner-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 22px 22px;
+        }
+        .banner-shade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(6, 7, 11, 0.92) 0%, rgba(6, 7, 11, 0.55) 38%, rgba(6, 7, 11, 0) 72%);
+            pointer-events: none;
+        }
+        .banner-caption {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 14px;
+            text-align: left;
+            pointer-events: none;
+        }
+        .banner-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.25;
+            letter-spacing: 0.01em;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .banner-text {
+            margin-top: 3px;
+            font-size: 10.5px;
+            line-height: 1.45;
+            color: rgba(226, 232, 240, 0.85);
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .banner-chip {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 1;
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #00f3ff;
+            background: rgba(6, 7, 11, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            pointer-events: none;
+        }
+        .banner-nav {
+            position: absolute;
+            top: 50%;
+            z-index: 4;
+            width: 28px;
+            height: 28px;
+            margin-top: -14px;
+            border-radius: 999px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #fff;
+            background: rgba(6, 7, 11, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+        .banner-nav:hover { border-color: #00f3ff; color: #00f3ff; }
+        .banner-nav-prev { left: 8px; }
+        .banner-nav-next { right: 8px; }
+        @media (hover: hover) and (pointer: fine) {
+            .banner-nav.is-on { display: flex; }
+            .banner-viewport:hover .banner-nav { opacity: 1; }
+        }
+        .banner-progress {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            z-index: 4;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .banner-progress span {
+            display: block;
+            height: 100%;
+            transform-origin: left center;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
+        }
+        .banner-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            margin-top: 6px;
+        }
+        .banner-dot {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            background: none;
+            cursor: pointer;
+        }
+        .banner-dot span {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.22);
+            transition: width 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+        }
+        .banner-dot.active span {
+            width: 20px;
+            background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.55);
+        }
+        details.banner-editor-item[open] .bn-chev { transform: rotate(180deg); }
+        details.banner-editor-item summary { list-style: none; }
+        details.banner-editor-item summary::-webkit-details-marker { display: none; }
+
         /* Splash Screen Custom Animations */
         #splashScreen {
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s ease;
@@ -360,6 +592,9 @@
                 <span class="text-[11px]">Cloudzone</span>
             </div>
             <div class="flex items-center gap-2">
+                <button onclick="openBannerModal()" class="px-2.5 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                    <i class="fa-solid fa-images mr-1 text-neon-purple"></i> Banner
+                </button>
                 <button onclick="openEditProfileModal()" class="px-2.5 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
                     <i class="fa-solid fa-user-pen mr-1 text-neon-cyan"></i> Profil
                 </button>
@@ -401,6 +636,28 @@
                 <a href="https://wa.me/+6285870906050" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-green hover:border-neon-green/65 transition-all text-xs">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
+            </div>
+        </div>
+
+        <!-- Banner Slider (di bawah ikon medsos) -->
+        <div id="bannerSection" class="w-full mb-5 hidden" role="region" aria-label="Banner">
+            <div id="bannerFrame" class="banner-frame hidden">
+                <div id="bannerViewport" class="banner-viewport" aria-roledescription="carousel">
+                    <div id="bannerTrack" class="banner-track"></div>
+                    <button type="button" id="bannerPrev" class="banner-nav banner-nav-prev" onclick="bannerStep(-1)" aria-label="Slide sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button type="button" id="bannerNext" class="banner-nav banner-nav-next" onclick="bannerStep(1)" aria-label="Slide berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="banner-progress"><span id="bannerProgressBar"></span></div>
+                </div>
+            </div>
+            <div id="bannerDots" class="banner-dots" style="display:none"></div>
+
+            <!-- Info untuk admin saat banner kosong / nonaktif -->
+            <div id="bannerEmpty" class="hidden w-full rounded-2xl border border-dashed border-cyan-500/30 bg-cyan-950/10 p-4 text-center">
+                <i class="fa-solid fa-images text-neon-cyan text-lg mb-1.5"></i>
+                <p id="bannerEmptyText" class="text-[11px] text-slate-300 leading-relaxed"></p>
+                <button type="button" onclick="openBannerModal()" class="mt-2.5 px-3 py-1.5 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                    <i class="fa-solid fa-sliders mr-1 text-neon-cyan"></i> Atur Banner
+                </button>
             </div>
         </div>
 
@@ -702,6 +959,58 @@
         </div>
     </div>
 
+    <!-- Modal: Pengaturan Banner (Admin) -->
+    <div id="bannerModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 z-50 hidden">
+        <div class="glass-panel w-full max-w-[420px] max-h-[92vh] rounded-2xl border-cyan-500/30 flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-4 pt-4 pb-3 border-b border-white/5">
+                <h3 class="text-xs font-bold text-neon-cyan flex items-center gap-1.5">
+                    <i class="fa-solid fa-images"></i> Pengaturan Banner Slide
+                </h3>
+                <button type="button" onclick="closeBannerModal()" class="text-slate-400 hover:text-white" aria-label="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="bannerForm" onsubmit="handleSaveBanner(event)" class="flex flex-col min-h-0 flex-1">
+                <div class="overflow-y-auto px-4 py-3 space-y-3 flex-1">
+                    <!-- Pengaturan umum -->
+                    <div class="rounded-xl border border-white/10 bg-slate-900/40 p-3 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="bnEnabled" class="rounded accent-cyan-400">
+                            <label for="bnEnabled" class="text-[11px] text-slate-200">Tampilkan banner di halaman</label>
+                        </div>
+                        <div class="flex items-center justify-between gap-3">
+                            <label for="bnInterval" class="text-[11px] text-slate-300">Pindah otomatis setiap</label>
+                            <select id="bnInterval" class="glass-input text-xs p-1.5 rounded-lg bg-slate-900">
+                                <option value="3">3 detik</option>
+                                <option value="4">4 detik</option>
+                                <option value="5">5 detik</option>
+                                <option value="6">6 detik</option>
+                                <option value="8">8 detik</option>
+                                <option value="10">10 detik</option>
+                            </select>
+                        </div>
+                        <p class="text-[9px] text-slate-500 leading-relaxed">
+                            Maksimal 5 slide. Gambar otomatis dipotong rasio 20:9 (ideal 1200×540 px) dan dikompres.
+                        </p>
+                    </div>
+
+                    <!-- Editor 5 slide dibuat oleh JavaScript -->
+                    <div id="bannerSlidesEditor" class="space-y-2"></div>
+                </div>
+
+                <div class="flex gap-2 px-4 py-3 border-t border-white/5">
+                    <button type="button" onclick="closeBannerModal()" class="w-1/2 glass-panel text-xs py-2 rounded-lg text-slate-300 hover:text-white">
+                        Batal
+                    </button>
+                    <button type="submit" id="saveBannerBtn" class="w-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs py-2 rounded-lg transition-all shadow-md shadow-cyan-500/20">
+                        Simpan Banner
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal 4: Info (Link Dikunci / Bantuan Install) -->
     <div id="infoModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[60] hidden" onclick="if(event.target===this)closeInfoModal()">
         <div class="glass-panel info-pop w-full max-w-[340px] rounded-2xl p-5 text-center border-amber-500/30 shadow-2xl">
@@ -854,6 +1163,7 @@
 
             if (linksUnsubscribe) linksUnsubscribe();
             if (profileUnsubscribe) profileUnsubscribe();
+            subscribeToBanner();
 
             linksUnsubscribe = onSnapshot(linksCollectionRef, (snapshot) => {
                 if (isDraggingActive) return;
@@ -1462,7 +1772,584 @@
                 adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
             }
             filterLinks();
+            renderBanner();
         }
+
+        // ================= BANNER SLIDER =================
+        const BANNER_MAX = 5;
+        const BANNER_W = 960;
+        const BANNER_H = 432;
+        const BANNER_MAX_IMAGE_LENGTH = 300000; // karakter data-URL per gambar (aman di bawah batas 1 MB dokumen Firestore)
+        let bannerConfig = { enabled: true, interval: 5 };
+        let bannerDocs = {};
+        let bannerSlides = [];
+        let bannerPos = 0;
+        let bannerElapsed = 0;
+        let bannerLastTs = 0;
+        let bannerAnimating = false;
+        let bannerAnimTimer = null;
+        let bannerRaf = null;
+        let bannerHover = false;
+        let bannerDragging = false;
+        let bannerDrag = null;
+        let bannerSuppressClick = false;
+        let bannerUnsubs = [];
+        let bannerRenderTimer = null;
+        let bannerDraft = {};
+
+        function bEl(id) { return document.getElementById(id); }
+
+        function normalizeBannerConfig(d) {
+            const iv = (d && d.interval != null) ? Number(d.interval) : NaN;
+            return {
+                enabled: d ? d.enabled !== false : true,
+                interval: Number.isFinite(iv) ? Math.min(15, Math.max(2, iv)) : 5
+            };
+        }
+
+        function subscribeToBanner() {
+            bannerUnsubs.forEach(fn => { try { fn(); } catch (e) {} });
+            bannerUnsubs = [];
+
+            const watch = (id, apply) => {
+                const ref = doc(db, 'biolink', 'public', 'profile', id);
+                bannerUnsubs.push(onSnapshot(ref, (snap) => {
+                    apply(snap.exists() ? snap.data() : null);
+                    scheduleBannerRender();
+                }, (err) => {
+                    console.warn('Banner snapshot error (' + id + '):', err && err.code ? err.code : err);
+                }));
+            };
+
+            watch('banner_config', (d) => { bannerConfig = normalizeBannerConfig(d); });
+            for (let i = 1; i <= BANNER_MAX; i++) {
+                watch('banner_' + i, (d) => { bannerDocs[i] = d; });
+            }
+        }
+
+        function scheduleBannerRender() {
+            clearTimeout(bannerRenderTimer);
+            bannerRenderTimer = setTimeout(renderBanner, 60);
+        }
+
+        function getSafeBannerImage(v) {
+            if (!v) return '';
+            if (/^data:image\/(jpeg|png|webp|gif|avif);base64,/i.test(v)) return v;
+            try {
+                const u = new URL(v);
+                return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function getSafeBannerHref(v) {
+            if (!v) return '';
+            try {
+                const u = new URL(v, window.location.href);
+                return ['http:', 'https:', 'mailto:', 'tel:'].includes(u.protocol) ? u.href : '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // Kembalikan '' (kosong), string link valid, atau null (tidak valid)
+        function normalizeBannerLink(v) {
+            v = (v || '').trim();
+            if (!v) return '';
+            if (/^(https?:|mailto:|tel:)/i.test(v)) return v;
+            if (/^[a-z][a-z0-9+.\-]*:/i.test(v)) return null;
+            return 'https://' + v.replace(/^\/+/, '');
+        }
+
+        function bannerSlideHtml(slide, isClone) {
+            const href = getSafeBannerHref(slide.link);
+            const img = getSafeBannerImage(slide.image);
+            const hasText = slide.title || slide.text;
+            const tag = href ? 'a' : 'div';
+            const attrs = href
+                ? `href="${escapeHtml(href)}"${/^https?:/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : ''}`
+                : '';
+            const cloneAttrs = isClone ? ' aria-hidden="true" tabindex="-1"' : '';
+            return `<${tag} class="banner-slide${href ? ' is-link' : ''}" ${attrs}${cloneAttrs} draggable="false">
+                ${img
+                    ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(slide.title || 'Banner')}" class="banner-img" draggable="false">`
+                    : '<div class="banner-bg"></div>'}
+                <div class="banner-shade"></div>
+                ${href ? '<span class="banner-chip"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>' : ''}
+                ${hasText ? `<div class="banner-caption">
+                    ${slide.title ? `<div class="banner-title">${escapeHtml(slide.title)}</div>` : ''}
+                    ${slide.text ? `<div class="banner-text">${escapeHtml(slide.text)}</div>` : ''}
+                </div>` : ''}
+            </${tag}>`;
+        }
+
+        function renderBanner() {
+            const section = bEl('bannerSection');
+            if (!section) return;
+            const frame = bEl('bannerFrame');
+            const track = bEl('bannerTrack');
+            const dotsEl = bEl('bannerDots');
+            const empty = bEl('bannerEmpty');
+
+            const prevCount = bannerSlides.length;
+            const prevIdx = prevCount ? bannerPos % prevCount : 0;
+
+            const active = [];
+            for (let i = 1; i <= BANNER_MAX; i++) {
+                const s = bannerDocs[i];
+                if (s && s.active !== false && (s.image || s.title || s.text)) active.push(s);
+            }
+            const hasContent = active.length > 0;
+            bannerSlides = bannerConfig.enabled ? active : [];
+            const n = bannerSlides.length;
+
+            if (n === 0) {
+                stopBannerLoop();
+                frame.classList.add('hidden');
+                dotsEl.style.display = 'none';
+                track.innerHTML = '';
+                if (currentUser) {
+                    section.classList.remove('hidden');
+                    empty.classList.remove('hidden');
+                    bEl('bannerEmptyText').innerText = (!bannerConfig.enabled && hasContent)
+                        ? 'Banner sedang dinonaktifkan, jadi tidak tampil untuk pengunjung.'
+                        : 'Belum ada slide banner yang aktif. Tambahkan sampai 5 slide dengan gambar, teks, dan link.';
+                } else {
+                    section.classList.add('hidden');
+                    empty.classList.add('hidden');
+                }
+                return;
+            }
+
+            section.classList.remove('hidden');
+            empty.classList.add('hidden');
+            frame.classList.remove('hidden');
+
+            track.innerHTML = bannerSlides.map(s => bannerSlideHtml(s, false)).join('')
+                + (n > 1 ? bannerSlideHtml(bannerSlides[0], true) : '');
+
+            clearTimeout(bannerAnimTimer);
+            bannerAnimating = false;
+            bannerElapsed = 0;
+            bannerPos = Math.min(prevIdx, n - 1);
+            setBannerTrack(bannerPos, false);
+
+            ['bannerPrev', 'bannerNext'].forEach(id => bEl(id).classList.toggle('is-on', n > 1));
+
+            if (n > 1) {
+                dotsEl.innerHTML = bannerSlides.map((_, i) =>
+                    `<button type="button" class="banner-dot" onclick="bannerGoTo(${i})" aria-label="Slide ${i + 1}"><span></span></button>`
+                ).join('');
+                dotsEl.style.display = 'flex';
+                updateBannerDots();
+                startBannerLoop();
+            } else {
+                dotsEl.innerHTML = '';
+                dotsEl.style.display = 'none';
+                stopBannerLoop();
+            }
+            bEl('bannerProgressBar').style.transform = 'scaleX(0)';
+        }
+
+        function setBannerTrack(pos, animate, dragPx = 0) {
+            const track = bEl('bannerTrack');
+            if (!track) return;
+            track.style.transition = animate ? '' : 'none';
+            track.style.transform = dragPx
+                ? `translate3d(calc(${-pos * 100}% + ${dragPx}px), 0, 0)`
+                : `translate3d(${-pos * 100}%, 0, 0)`;
+        }
+
+        function updateBannerDots() {
+            const n = bannerSlides.length;
+            if (n < 2) return;
+            const idx = bannerPos % n;
+            bEl('bannerDots').querySelectorAll('.banner-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+
+        function startBannerTransition(pos) {
+            bannerPos = pos;
+            bannerAnimating = true;
+            bannerElapsed = 0;
+            setBannerTrack(pos, true);
+            updateBannerDots();
+            clearTimeout(bannerAnimTimer);
+            bannerAnimTimer = setTimeout(finishBannerTransition, 900);
+        }
+
+        function finishBannerTransition() {
+            clearTimeout(bannerAnimTimer);
+            bannerAnimating = false;
+            const n = bannerSlides.length;
+            if (n > 1 && bannerPos >= n) {
+                bannerPos = 0;
+                setBannerTrack(0, false);
+                updateBannerDots();
+            }
+        }
+
+        window.bannerStep = function(dir) {
+            const n = bannerSlides.length;
+            if (n < 2 || bannerAnimating) return;
+            if (dir > 0) {
+                startBannerTransition(bannerPos + 1);
+            } else {
+                if (bannerPos === 0) {
+                    // lompat tak terlihat ke salinan slide pertama, lalu geser mundur
+                    bannerPos = n;
+                    setBannerTrack(n, false);
+                    void bEl('bannerTrack').offsetWidth;
+                }
+                startBannerTransition(bannerPos - 1);
+            }
+        };
+
+        window.bannerGoTo = function(i) {
+            const n = bannerSlides.length;
+            if (n < 2 || bannerAnimating || i === bannerPos % n) return;
+            startBannerTransition(i);
+        };
+
+        function bannerTick(ts) {
+            bannerRaf = requestAnimationFrame(bannerTick);
+            if (!bannerLastTs) bannerLastTs = ts;
+            let dt = ts - bannerLastTs;
+            bannerLastTs = ts;
+            if (dt > 250) dt = 0; // setelah tab tersembunyi, jangan loncat
+
+            if (bannerSlides.length < 2) return;
+            if (!(bannerHover || bannerDragging || bannerAnimating)) bannerElapsed += dt;
+
+            const interval = bannerConfig.interval * 1000;
+            bEl('bannerProgressBar').style.transform = `scaleX(${Math.min(1, bannerElapsed / interval)})`;
+            if (bannerElapsed >= interval) window.bannerStep(1);
+        }
+
+        function startBannerLoop() {
+            if (bannerRaf !== null) return;
+            bannerLastTs = 0;
+            bannerRaf = requestAnimationFrame(bannerTick);
+        }
+
+        function stopBannerLoop() {
+            if (bannerRaf !== null) cancelAnimationFrame(bannerRaf);
+            bannerRaf = null;
+        }
+
+        function initBanner() {
+            const viewport = bEl('bannerViewport');
+            const track = bEl('bannerTrack');
+            const frame = bEl('bannerFrame');
+            if (!viewport || !track || !frame) return;
+
+            // Cahaya neon yang berputar di bingkai (mesin animasi yang sama dengan kartu link)
+            registerLinkLightAnimation(frame);
+
+            track.addEventListener('transitionend', (e) => {
+                if (e.target === track && e.propertyName === 'transform') finishBannerTransition();
+            });
+
+            viewport.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') bannerHover = true; });
+            viewport.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') bannerHover = false; });
+
+            viewport.addEventListener('pointerdown', (e) => {
+                if (bannerSlides.length < 2 || bannerAnimating) return;
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                bannerDrag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, axis: null };
+                bannerDragging = true;
+            });
+
+            viewport.addEventListener('pointermove', (e) => {
+                const d = bannerDrag;
+                if (!d || e.pointerId !== d.id) return;
+                const dx = e.clientX - d.x;
+                const dy = e.clientY - d.y;
+                if (!d.axis) {
+                    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+                    d.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+                    if (d.axis === 'x') { try { viewport.setPointerCapture(e.pointerId); } catch (err) {} }
+                }
+                if (d.axis !== 'x') return;
+                d.dx = dx;
+                const n = bannerSlides.length;
+                // tukar ke salinan slide agar tidak ada ruang kosong saat menarik di ujung
+                if (dx > 0 && bannerPos === 0) bannerPos = n;
+                else if (dx < 0 && bannerPos === n) bannerPos = 0;
+                setBannerTrack(bannerPos, false, dx);
+            });
+
+            const endDrag = (e) => {
+                const d = bannerDrag;
+                if (!d || e.pointerId !== d.id) return;
+                bannerDrag = null;
+                bannerDragging = false;
+                if (d.axis !== 'x') return;
+
+                bannerSuppressClick = true;
+                setTimeout(() => { bannerSuppressClick = false; }, 80);
+
+                const threshold = Math.max(40, viewport.clientWidth * 0.18);
+                if (e.type !== 'pointercancel' && d.dx <= -threshold) {
+                    window.bannerStep(1);
+                } else if (e.type !== 'pointercancel' && d.dx >= threshold) {
+                    window.bannerStep(-1);
+                } else {
+                    startBannerTransition(bannerPos); // kembali ke posisi semula
+                }
+            };
+            viewport.addEventListener('pointerup', endDrag);
+            viewport.addEventListener('pointercancel', endDrag);
+
+            // Cegah klik link setelah menggeser
+            viewport.addEventListener('click', (e) => {
+                if (bannerSuppressClick) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        }
+
+        // ---------- Admin: pengaturan banner ----------
+        function compressBannerFile(file, maxLen = BANNER_MAX_IMAGE_LENGTH) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Gagal memuat gambar.'));
+                    img.onload = () => {
+                        const dstRatio = BANNER_W / BANNER_H;
+                        const srcRatio = img.naturalWidth / img.naturalHeight;
+                        let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+                        if (srcRatio > dstRatio) {
+                            sw = sh * dstRatio;
+                            sx = (img.naturalWidth - sw) / 2;
+                        } else {
+                            sh = sw / dstRatio;
+                            sy = (img.naturalHeight - sh) / 2;
+                        }
+                        let w = BANNER_W, h = BANNER_H, q = 0.85, out = '';
+                        for (let i = 0; i < 6; i++) {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w;
+                            canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            if (!ctx) { reject(new Error('Canvas tidak didukung browser ini.')); return; }
+                            ctx.fillStyle = '#06070b';
+                            ctx.fillRect(0, 0, w, h);
+                            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+                            out = canvas.toDataURL('image/jpeg', q);
+                            if (out.length <= maxLen) break;
+                            q = Math.max(0.5, q - 0.1);
+                            if (i >= 2) { w = Math.round(w * 0.85); h = Math.round(h * 0.85); }
+                        }
+                        resolve(out);
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function buildBannerEditor() {
+            let html = '';
+            for (let i = 1; i <= BANNER_MAX; i++) {
+                html += `
+                <details class="banner-editor-item rounded-xl border border-white/10 bg-slate-900/40" ${i === 1 ? 'open' : ''}>
+                    <summary class="flex items-center gap-2 px-3 py-2.5 cursor-pointer select-none">
+                        <span class="w-5 h-5 rounded-md bg-gradient-to-br from-cyan-500 to-purple-600 text-[10px] font-bold flex items-center justify-center text-white flex-shrink-0">${i}</span>
+                        <span id="bnSummary${i}" class="flex-1 min-w-0 truncate text-[11px] text-slate-200">Slide ${i}</span>
+                        <span id="bnDot${i}" class="w-1.5 h-1.5 rounded-full bg-slate-600 flex-shrink-0"></span>
+                        <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 bn-chev transition-transform"></i>
+                    </summary>
+                    <div class="px-3 pb-3 pt-1 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="bnActive${i}" onchange="bannerRefreshSummary(${i})" class="rounded accent-cyan-400">
+                            <label for="bnActive${i}" class="text-[11px] text-slate-300">Tampilkan slide ini</label>
+                        </div>
+
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-28 flex-shrink-0 rounded-lg overflow-hidden border border-white/10 bg-slate-950 relative" style="aspect-ratio:20/9">
+                                <img id="bnPreview${i}" alt="Pratinjau slide ${i}" class="w-full h-full object-cover hidden">
+                                <span id="bnPreviewEmpty${i}" class="absolute inset-0 flex items-center justify-center text-[9px] text-slate-500">Tanpa gambar</span>
+                            </div>
+                            <div class="flex-1 min-w-0 space-y-1.5">
+                                <input type="file" id="bnFile${i}" accept="image/*" onchange="bannerFileSelected(${i}, event)" class="w-full glass-input text-[10px] p-1.5 rounded-lg file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-cyan-500/20 file:text-cyan-200">
+                                <button type="button" onclick="bannerClearImage(${i})" class="text-[10px] text-red-300 hover:text-red-200"><i class="fa-solid fa-trash-can mr-1"></i>Hapus gambar</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Atau URL Gambar</label>
+                            <input type="url" id="bnImageUrl${i}" oninput="bannerImageUrlInput(${i}, this.value)" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Judul</label>
+                            <input type="text" id="bnTitle${i}" maxlength="60" oninput="bannerRefreshSummary(${i})" placeholder="Judul slide" class="w-full glass-input text-xs p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Teks</label>
+                            <textarea id="bnText${i}" rows="2" maxlength="140" placeholder="Keterangan singkat" class="w-full glass-input text-xs p-2 rounded-lg resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase text-slate-400 mb-0.5 block font-semibold">Link Tujuan (saat diklik)</label>
+                            <input type="text" id="bnLink${i}" placeholder="https://..." class="w-full glass-input text-xs p-2 rounded-lg">
+                        </div>
+                    </div>
+                </details>`;
+            }
+            bEl('bannerSlidesEditor').innerHTML = html;
+        }
+
+        window.bannerRefreshSummary = function(i) {
+            const title = bEl('bnTitle' + i).value.trim();
+            bEl('bnSummary' + i).innerText = title || ('Slide ' + i);
+            bEl('bnDot' + i).className = 'w-1.5 h-1.5 rounded-full flex-shrink-0 ' +
+                (bEl('bnActive' + i).checked ? 'bg-emerald-400' : 'bg-slate-600');
+        };
+
+        function bannerUpdatePreview(i) {
+            const img = bEl('bnPreview' + i);
+            const empty = bEl('bnPreviewEmpty' + i);
+            const src = getSafeBannerImage(bannerDraft[i] ? bannerDraft[i].image : '');
+            if (src) {
+                img.src = src;
+                img.classList.remove('hidden');
+                empty.classList.add('hidden');
+            } else {
+                img.removeAttribute('src');
+                img.classList.add('hidden');
+                empty.classList.remove('hidden');
+            }
+        }
+
+        window.bannerFileSelected = async function(i, event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Pilih file gambar yang valid.', 'error');
+                event.target.value = '';
+                return;
+            }
+            if (file.size > 12 * 1024 * 1024) {
+                showToast('Ukuran gambar maksimal 12 MB.', 'error');
+                event.target.value = '';
+                return;
+            }
+            try {
+                showToast('Memproses gambar...');
+                const data = await compressBannerFile(file);
+                bannerDraft[i] = { image: data, source: 'file' };
+                bEl('bnImageUrl' + i).value = '';
+                bannerUpdatePreview(i);
+                showToast('Gambar slide ' + i + ' siap disimpan.');
+            } catch (err) {
+                showToast(err.message || 'Gagal memproses gambar', 'error');
+            }
+        };
+
+        window.bannerImageUrlInput = function(i, value) {
+            const v = value.trim();
+            if (v) {
+                bannerDraft[i] = { image: v, source: 'url' };
+                bEl('bnFile' + i).value = '';
+            } else if (bannerDraft[i] && bannerDraft[i].source === 'url') {
+                bannerDraft[i] = { image: '', source: '' };
+            }
+            bannerUpdatePreview(i);
+        };
+
+        window.bannerClearImage = function(i) {
+            bannerDraft[i] = { image: '', source: '' };
+            bEl('bnFile' + i).value = '';
+            bEl('bnImageUrl' + i).value = '';
+            bannerUpdatePreview(i);
+        };
+
+        window.openBannerModal = function() {
+            if (!currentUser) return;
+            buildBannerEditor();
+            bEl('bnEnabled').checked = bannerConfig.enabled;
+            const ivSelect = bEl('bnInterval');
+            if (![...ivSelect.options].some(o => Number(o.value) === bannerConfig.interval)) {
+                const opt = document.createElement('option');
+                opt.value = String(bannerConfig.interval);
+                opt.textContent = bannerConfig.interval + ' detik';
+                ivSelect.appendChild(opt);
+            }
+            ivSelect.value = String(bannerConfig.interval);
+
+            for (let i = 1; i <= BANNER_MAX; i++) {
+                const d = bannerDocs[i] || {};
+                const image = d.image || '';
+                bannerDraft[i] = { image, source: image ? (image.startsWith('data:') ? 'file' : 'url') : '' };
+                bEl('bnActive' + i).checked = d.active !== false;
+                bEl('bnTitle' + i).value = d.title || '';
+                bEl('bnText' + i).value = d.text || '';
+                bEl('bnLink' + i).value = d.link || '';
+                bEl('bnImageUrl' + i).value = (image && !image.startsWith('data:')) ? image : '';
+                bannerUpdatePreview(i);
+                window.bannerRefreshSummary(i);
+            }
+            bEl('bannerModal').classList.remove('hidden');
+        };
+
+        window.closeBannerModal = function() {
+            bEl('bannerModal').classList.add('hidden');
+        };
+
+        window.handleSaveBanner = async function(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const slides = [];
+            for (let i = 1; i <= BANNER_MAX; i++) {
+                const title = bEl('bnTitle' + i).value.trim();
+                const text = bEl('bnText' + i).value.trim();
+                const active = bEl('bnActive' + i).checked;
+                const image = (bannerDraft[i] && bannerDraft[i].image) || '';
+
+                const link = normalizeBannerLink(bEl('bnLink' + i).value);
+                if (link === null) {
+                    showToast(`Slide ${i}: link harus diawali http(s)://, mailto: atau tel:`, 'error');
+                    return;
+                }
+                if (image && !getSafeBannerImage(image)) {
+                    showToast(`Slide ${i}: URL gambar harus diawali http:// atau https://`, 'error');
+                    return;
+                }
+                if (image.length > 900000) {
+                    showToast(`Slide ${i}: gambar terlalu besar, pilih gambar lain.`, 'error');
+                    return;
+                }
+                slides.push({ order: i, active, title, text, link, image });
+            }
+
+            const interval = Math.min(15, Math.max(2, Number(bEl('bnInterval').value) || 5));
+            const enabled = bEl('bnEnabled').checked;
+            const btn = bEl('saveBannerBtn');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
+            try {
+                const batch = writeBatch(db);
+                batch.set(doc(db, 'biolink', 'public', 'profile', 'banner_config'), { enabled, interval });
+                slides.forEach((s, idx) => {
+                    batch.set(doc(db, 'biolink', 'public', 'profile', 'banner_' + (idx + 1)), s);
+                });
+                await batch.commit();
+                closeBannerModal();
+                showToast('Banner berhasil disimpan!');
+            } catch (err) {
+                console.error('Save banner error:', err);
+                const denied = err && (err.code === 'permission-denied' || /permission/i.test(err.message || ''));
+                showToast(denied ? 'Ditolak Firestore: perbarui Rules (lihat petunjuk)' : (err.message || 'Gagal menyimpan banner'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Simpan Banner';
+            }
+        };
 
         // --- INFO MODAL (dikunci / bantuan install) ---
         function showInfoModal({ icon = 'fa-solid fa-lock', title = '', name = '', message = '', tone = 'amber' }) {
@@ -1967,6 +2854,7 @@
             initFirebase();
             registerServiceWorker();
             refreshInstallButton();
+            initBanner();
             
             // Splash Screen Auto Dismiss Controller
             setTimeout(() => {
