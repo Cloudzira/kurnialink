@@ -4,7 +4,7 @@
    - Aset CDN: stale-while-revalidate
    - Firebase/Firestore/Auth TIDAK di-cache (data selalu fresh)
    Naikkan angka VERSION setiap kali mengganti file ini. */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL_CACHE = 'kurniapedia-shell-' + VERSION;
 const RUNTIME_CACHE = 'kurniapedia-runtime-' + VERSION;
 
@@ -54,6 +54,10 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   if (NO_CACHE_HOSTS.includes(url.hostname)) return;
+
+  // Audio/video (murottal) jangan di-cache: file besar & memakai permintaan Range
+  if (req.headers.has('range') || req.destination === 'audio' || req.destination === 'video' ||
+      /\.(mp3|m4a|ogg|wav|mp4)(\?|$)/i.test(url.pathname)) return;
 
   // Halaman utama: network-first, fallback ke cache saat offline
   if (req.mode === 'navigate') {

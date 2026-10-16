@@ -261,6 +261,131 @@
         }
         .info-pop { animation: info-pop 0.25s ease-out; }
 
+        /* ===== MUROTTAL PLAYER (pill minimalis) ===== */
+        .murottal-pill {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            max-width: 100%;
+            padding: 5px 14px 5px 5px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(15, 17, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 16px rgba(0, 243, 255, 0.06);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .murottal-pill.is-playing {
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 243, 255, 0.18);
+        }
+        .murottal-btn {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            border: 0;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #06070b;
+            background: linear-gradient(135deg, #00f3ff, #b026ff);
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+            cursor: pointer;
+        }
+        .murottal-btn.pulse { animation: murottal-pulse 1.8s ease-in-out infinite; }
+        @keyframes murottal-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.55); }
+            50% { box-shadow: 0 0 0 7px rgba(0, 243, 255, 0); }
+        }
+        .murottal-eq {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+        .murottal-eq span {
+            width: 2px;
+            height: 3px;
+            border-radius: 2px;
+            background: #00f3ff;
+            opacity: 0.4;
+        }
+        .murottal-pill.is-playing .murottal-eq span {
+            opacity: 1;
+            animation: murottal-eq 0.9s ease-in-out infinite;
+        }
+        .murottal-pill.is-playing .murottal-eq span:nth-child(2) { animation-delay: 0.2s; }
+        .murottal-pill.is-playing .murottal-eq span:nth-child(3) { animation-delay: 0.4s; }
+        .murottal-pill.is-playing .murottal-eq span:nth-child(4) { animation-delay: 0.1s; }
+        @keyframes murottal-eq {
+            0%, 100% { height: 3px; }
+            50% { height: 12px; }
+        }
+        .murottal-meta {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding-right: 16px;
+        }
+        .murottal-label {
+            font-size: 7.5px;
+            line-height: 1;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 3px;
+            white-space: nowrap;
+        }
+        .murottal-meta select {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            border: 0;
+            outline: none;
+            padding: 0;
+            max-width: 150px;
+            color: #e2e8f0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11.5px;
+            font-weight: 500;
+            line-height: 1.2;
+            cursor: pointer;
+            text-overflow: ellipsis;
+        }
+        .murottal-meta select:focus-visible { color: #00f3ff; }
+        .murottal-meta select option { background: #0b0d14; color: #e2e8f0; }
+        .murottal-chevron {
+            position: absolute;
+            right: 0;
+            bottom: 3px;
+            font-size: 8px;
+            color: #00f3ff;
+            pointer-events: none;
+        }
+        .murottal-progress {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+        }
+        .murottal-progress span {
+            display: block;
+            height: 100%;
+            transform-origin: left center;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
+        }
+
         /* ===== BANNER SLIDER ===== */
         .banner-frame {
             position: relative;
@@ -597,7 +722,7 @@
     <div id="profileShell" class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
-        <div class="w-full flex justify-between items-center mb-6">
+        <div class="w-full flex justify-between items-center mb-2.5">
             <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold tracking-widest text-neon-cyan uppercase font-display">Kurniapedia</span>
             </div>
@@ -614,6 +739,22 @@
                 <button onclick="shareProfile()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-pink-500/50 transition-all text-slate-300 hover:text-white" title="Bagikan Profile">
                     <i class="fa-solid fa-share-nodes text-neon-purple"></i>
                 </button>
+            </div>
+        </div>
+
+        <!-- Murottal: dropdown surat (di bawah judul Kurniapedia) -->
+        <div id="murottalRow" class="w-full flex justify-start mb-5">
+            <div id="murottalPlayer" class="murottal-pill" title="Murottal Syaikh Misyari Rasyid Alafasy">
+                <button type="button" id="murottalToggle" class="murottal-btn" aria-label="Putar murottal">
+                    <i id="murottalToggleIcon" class="fa-solid fa-play"></i>
+                </button>
+                <div class="murottal-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                <div class="murottal-meta">
+                    <span class="murottal-label">Syaikh Misyari Rasyid</span>
+                    <select id="murottalSelect" aria-label="Pilih surat Al-Qur'an"></select>
+                    <i class="fa-solid fa-chevron-down murottal-chevron"></i>
+                </div>
+                <div class="murottal-progress"><span id="murottalProgress"></span></div>
             </div>
         </div>
 
@@ -1807,6 +1948,188 @@
             renderBanner();
         }
 
+        // ================= MUROTTAL: Syaikh Misyari Rasyid Alafasy =================
+        const MUROTTAL_QARI = 'Syaikh Misyari Rasyid Alafasy';
+        const SURAH_NAMES = [
+            'Al-Fatihah', 'Al-Baqarah', "Ali 'Imran", "An-Nisa'", "Al-Ma'idah", "Al-An'am", "Al-A'raf", 'Al-Anfal', 'At-Taubah', 'Yunus',
+            'Hud', 'Yusuf', "Ar-Ra'd", 'Ibrahim', 'Al-Hijr', 'An-Nahl', "Al-Isra'", 'Al-Kahfi', 'Maryam', 'Thaha',
+            "Al-Anbiya'", 'Al-Hajj', "Al-Mu'minun", 'An-Nur', 'Al-Furqan', "Asy-Syu'ara'", 'An-Naml', 'Al-Qashash', "Al-'Ankabut", 'Ar-Rum',
+            'Luqman', 'As-Sajdah', 'Al-Ahzab', "Saba'", 'Fathir', 'Yasin', 'Ash-Shaffat', 'Shad', 'Az-Zumar', 'Ghafir',
+            'Fushshilat', 'Asy-Syura', 'Az-Zukhruf', 'Ad-Dukhan', 'Al-Jatsiyah', 'Al-Ahqaf', 'Muhammad', 'Al-Fath', 'Al-Hujurat', 'Qaf',
+            'Adz-Dzariyat', 'Ath-Thur', 'An-Najm', 'Al-Qamar', 'Ar-Rahman', "Al-Waqi'ah", 'Al-Hadid', 'Al-Mujadilah', 'Al-Hasyr', 'Al-Mumtahanah',
+            'Ash-Shaff', "Al-Jumu'ah", 'Al-Munafiqun', 'At-Taghabun', 'Ath-Thalaq', 'At-Tahrim', 'Al-Mulk', 'Al-Qalam', 'Al-Haqqah', "Al-Ma'arij",
+            'Nuh', 'Al-Jinn', 'Al-Muzzammil', 'Al-Muddatstsir', 'Al-Qiyamah', 'Al-Insan', 'Al-Mursalat', "An-Naba'", "An-Nazi'at", "'Abasa",
+            'At-Takwir', 'Al-Infithar', 'Al-Muthaffifin', 'Al-Insyiqaq', 'Al-Buruj', 'Ath-Thariq', "Al-A'la", 'Al-Ghasyiyah', 'Al-Fajr', 'Al-Balad',
+            'Asy-Syams', 'Al-Lail', 'Adh-Dhuha', 'Al-Insyirah', 'At-Tin', "Al-'Alaq", 'Al-Qadr', 'Al-Bayyinah', 'Az-Zalzalah', "Al-'Adiyat",
+            "Al-Qari'ah", 'At-Takatsur', "Al-'Ashr", 'Al-Humazah', 'Al-Fil', 'Quraisy', "Al-Ma'un", 'Al-Kautsar', 'Al-Kafirun', 'An-Nashr',
+            'Al-Lahab', 'Al-Ikhlash', 'Al-Falaq', 'An-Nas'
+        ];
+        // Daftar sumber audio (dicoba berurutan; jika gagal otomatis pindah ke sumber berikutnya)
+        const MUROTTAL_SOURCES = [
+            (n) => `https://server8.mp3quran.net/afs/${String(n).padStart(3, '0')}.mp3`,
+            (n) => `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${n}.mp3`,
+            (n) => `https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/${String(n).padStart(3, '0')}.mp3`
+        ];
+        let murottalAudio = null;
+        let murottalSurah = 1;
+        let murottalSource = 0;
+        let murottalWantPlay = true;       // true = ingin memutar (autoplay awal / pilihan tamu)
+        let murottalUserTouched = false;   // tamu sudah memakai kontrol murottal
+        let murottalGestureHandler = null;
+        const MUROTTAL_GESTURE_EVENTS = ['pointerdown', 'touchend', 'keydown', 'click'];
+
+        function murottalSetUi(playing) {
+            const pill = bEl('murottalPlayer');
+            if (!pill) return;
+            pill.classList.toggle('is-playing', playing);
+            bEl('murottalToggleIcon').className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            bEl('murottalToggle').setAttribute('aria-label', playing ? 'Jeda murottal' : 'Putar murottal');
+            if (playing) bEl('murottalToggle').classList.remove('pulse');
+            if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+        }
+
+        function murottalUpdateMediaSession() {
+            if (!('mediaSession' in navigator) || typeof MediaMetadata === 'undefined') return;
+            try {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: 'Surah ' + SURAH_NAMES[murottalSurah - 1],
+                    artist: MUROTTAL_QARI,
+                    album: 'Kurniapedia',
+                    artwork: [
+                        { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+                        { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
+                    ]
+                });
+            } catch (e) {}
+        }
+
+        function murottalLoad(n, sourceIdx = 0) {
+            murottalSurah = n;
+            murottalSource = sourceIdx;
+            murottalAudio.src = MUROTTAL_SOURCES[sourceIdx](n);
+            murottalAudio.load();
+            bEl('murottalSelect').value = String(n);
+            bEl('murottalProgress').style.transform = 'scaleX(0)';
+            murottalUpdateMediaSession();
+        }
+
+        function murottalDisarmGesture() {
+            if (!murottalGestureHandler) return;
+            MUROTTAL_GESTURE_EVENTS.forEach(t => document.removeEventListener(t, murottalGestureHandler, true));
+            murottalGestureHandler = null;
+        }
+
+        // Browser memblokir suara otomatis sebelum ada interaksi: mulai di sentuhan/klik pertama tamu
+        function murottalArmGesture() {
+            bEl('murottalToggle').classList.add('pulse');
+            if (murottalGestureHandler) return;
+            murottalGestureHandler = (e) => {
+                if (e.target && e.target.closest && e.target.closest('#murottalPlayer')) return; // kontrol murottal menangani sendiri
+                if (e.type === 'keydown' && ['Shift', 'Control', 'Alt', 'Meta', 'Tab', 'CapsLock'].includes(e.key)) return;
+                murottalDisarmGesture();
+                if (murottalWantPlay) murottalPlay();
+            };
+            MUROTTAL_GESTURE_EVENTS.forEach(t => document.addEventListener(t, murottalGestureHandler, true));
+        }
+
+        async function murottalPlay() {
+            try {
+                await murottalAudio.play();
+                murottalDisarmGesture();
+                return true;
+            } catch (e) {
+                if (e && e.name === 'NotAllowedError') {
+                    if (murottalWantPlay) murottalArmGesture();
+                } else if (!e || e.name !== 'AbortError') {
+                    console.warn('Murottal play error:', e);
+                }
+                return false;
+            }
+        }
+
+        function murottalJump(delta) {
+            const n = murottalSurah + delta;
+            if (n < 1 || n > 114) return;
+            murottalWantPlay = true;
+            murottalLoad(n, 0);
+            murottalPlay();
+        }
+
+        function initMurottal() {
+            const select = bEl('murottalSelect');
+            const toggle = bEl('murottalToggle');
+            if (!select || !toggle) return;
+
+            select.innerHTML = SURAH_NAMES.map((name, i) => `<option value="${i + 1}">${i + 1}. ${escapeHtml(name)}</option>`).join('');
+
+            murottalAudio = new Audio();
+            murottalAudio.preload = 'auto';
+
+            murottalAudio.addEventListener('play', () => murottalSetUi(true));
+            murottalAudio.addEventListener('pause', () => murottalSetUi(false));
+            murottalAudio.addEventListener('timeupdate', () => {
+                const d = murottalAudio.duration;
+                if (d && isFinite(d)) bEl('murottalProgress').style.transform = `scaleX(${Math.min(1, murottalAudio.currentTime / d)})`;
+            });
+            murottalAudio.addEventListener('ended', () => {
+                // lanjut otomatis ke surat berikutnya (dst)
+                if (murottalSurah < 114) {
+                    murottalLoad(murottalSurah + 1, 0);
+                    murottalPlay();
+                } else {
+                    murottalWantPlay = false;
+                    murottalSetUi(false);
+                }
+            });
+            murottalAudio.addEventListener('error', () => {
+                if (murottalSource < MUROTTAL_SOURCES.length - 1) {
+                    const keepPlaying = murottalWantPlay;
+                    murottalLoad(murottalSurah, murottalSource + 1);
+                    if (keepPlaying) murottalPlay();
+                } else {
+                    murottalSetUi(false);
+                    if (murottalUserTouched) showToast('Murottal gagal dimuat. Periksa koneksi internet.', 'error');
+                }
+            });
+
+            toggle.addEventListener('click', () => {
+                murottalUserTouched = true;
+                if (murottalAudio.paused) {
+                    murottalWantPlay = true;
+                    murottalDisarmGesture();
+                    if (murottalAudio.error || !murottalAudio.src) murottalLoad(murottalSurah, 0);
+                    murottalPlay();
+                } else {
+                    murottalWantPlay = false;
+                    murottalDisarmGesture();
+                    murottalAudio.pause();
+                }
+            });
+
+            // Tamu memilih surat sendiri -> putar surat itu (dan lanjut berurutan sesudahnya)
+            select.addEventListener('change', () => {
+                murottalUserTouched = true;
+                murottalWantPlay = true;
+                murottalDisarmGesture();
+                murottalLoad(Number(select.value), 0);
+                murottalPlay();
+            });
+
+            if ('mediaSession' in navigator) {
+                const handlers = {
+                    play: () => { murottalWantPlay = true; murottalPlay(); },
+                    pause: () => { murottalWantPlay = false; murottalAudio.pause(); },
+                    previoustrack: () => murottalJump(-1),
+                    nexttrack: () => murottalJump(1)
+                };
+                Object.keys(handlers).forEach(a => { try { navigator.mediaSession.setActionHandler(a, handlers[a]); } catch (e) {} });
+            }
+
+            // Otomatis mulai dari Al-Fatihah
+            murottalLoad(1, 0);
+            murottalPlay();
+        }
+
         // ================= BANNER SLIDER =================
         const BANNER_MAX = 5;
         const BANNER_W = 960;
@@ -2919,6 +3242,7 @@
             registerServiceWorker();
             refreshInstallButton();
             initBanner();
+            initMurottal();
             
             // Splash Screen Auto Dismiss Controller
             setTimeout(() => {
