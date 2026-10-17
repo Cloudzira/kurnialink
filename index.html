@@ -891,42 +891,14 @@
         .fx-orb.o2 { width: 40vmax; height: 40vmax; right: -12vmax; top: 6vh; background: rgba(0, 243, 255, 0.20); }
         .fx-orb.o3 { width: 34vmax; height: 34vmax; left: 30vw; bottom: -18vmax; background: rgba(255, 0, 127, 0.18); }
 
-        /* Lantai grid perspektif */
-        .fx-floor {
-            position: absolute;
-            left: -50%;
-            right: -50%;
-            bottom: 0;
-            height: 56vh;
-            perspective: 420px;
-            perspective-origin: 50% 0%;
-            -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.75) 45%, transparent 100%);
-            mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.75) 45%, transparent 100%);
-        }
+        /* Grid persegi (square) memenuhi layar */
         .fx-grid {
             position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            height: 200%;
-            transform-origin: 50% 0%;
-            transform: rotateX(62deg);
+            inset: 0;
             background-image:
-                linear-gradient(rgba(0, 243, 255, 0.55) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.55) 1px, transparent 1px);
-            background-size: 64px 64px;
-        }
-
-        /* Garis horizon bercahaya */
-        .fx-horizon {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 56vh;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #b026ff 22%, #00f3ff 50%, #b026ff 78%, transparent);
-            box-shadow: 0 0 22px 4px rgba(0, 243, 255, 0.45), 0 0 80px 18px rgba(176, 38, 255, 0.28);
-            opacity: 0.85;
+                linear-gradient(rgba(0, 243, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.09) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         /* Vignette agar konten tetap terbaca */
@@ -939,7 +911,7 @@
         @keyframes fxTwinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
 
         @media (max-width: 640px) {
-            .fx-grid { background-size: 44px 44px; }
+            .fx-grid { background-size: 32px 32px; }
             .fx-orb { filter: blur(54px); }
         }
     </style>
@@ -952,8 +924,7 @@
         <div class="fx-orb o1"></div>
         <div class="fx-orb o2"></div>
         <div class="fx-orb o3"></div>
-        <div class="fx-floor"><div class="fx-grid"></div></div>
-        <div class="fx-horizon"></div>
+        <div class="fx-grid"></div>
         <div class="fx-vignette"></div>
     </div>
 
