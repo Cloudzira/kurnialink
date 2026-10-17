@@ -261,81 +261,101 @@
         }
         .info-pop { animation: info-pop 0.25s ease-out; }
 
-        /* ===== MUROTTAL PLAYER (pill minimalis) ===== */
+        /* ===== MUROTTAL PLAYER (pill minimalis + panel pilihan surat) ===== */
+        #murottalRow { position: relative; z-index: 30; }
+        .murottal-wrap {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
         .murottal-pill {
-            position: center;
+            position: relative;
             display: inline-flex;
             align-items: center;
-            gap: 9px;
+            gap: 8px;
             max-width: 100%;
-            padding: 5px 14px 5px 5px;
+            padding: 4px 12px 4px 4px;
             border-radius: 999px;
             overflow: hidden;
-            background: rgba(15, 17, 26, 0.7);
+            background: rgba(15, 17, 26, 0.72);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 16px rgba(0, 243, 255, 0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 14px rgba(0, 243, 255, 0.06);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .murottal-pill.is-playing {
+        .murottal-wrap.is-playing .murottal-pill {
             border-color: rgba(0, 243, 255, 0.4);
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 243, 255, 0.18);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 18px rgba(0, 243, 255, 0.18);
         }
         .murottal-btn {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             flex-shrink: 0;
             border: 0;
             border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 9px;
             color: #06070b;
             background: linear-gradient(135deg, #00f3ff, #b026ff);
-            box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
             cursor: pointer;
         }
         .murottal-btn.pulse { animation: murottal-pulse 1.8s ease-in-out infinite; }
         @keyframes murottal-pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.55); }
-            50% { box-shadow: 0 0 0 7px rgba(0, 243, 255, 0); }
+            50% { box-shadow: 0 0 0 6px rgba(0, 243, 255, 0); }
         }
-        .murottal-eq {
+        .murottal-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: inherit;
+            cursor: pointer;
+            text-align: left;
+        }
+        .murottal-eq, .murottal-mini-eq {
             display: flex;
             align-items: flex-end;
             gap: 2px;
-            height: 12px;
+            height: 10px;
             flex-shrink: 0;
         }
-        .murottal-eq span {
+        .murottal-eq span, .murottal-mini-eq span {
             width: 2px;
             height: 3px;
             border-radius: 2px;
             background: #00f3ff;
             opacity: 0.4;
         }
-        .murottal-pill.is-playing .murottal-eq span {
+        .murottal-wrap.is-playing .murottal-eq span,
+        .murottal-wrap.is-playing .murottal-item.active .murottal-mini-eq span {
             opacity: 1;
             animation: murottal-eq 0.9s ease-in-out infinite;
         }
-        .murottal-pill.is-playing .murottal-eq span:nth-child(2) { animation-delay: 0.2s; }
-        .murottal-pill.is-playing .murottal-eq span:nth-child(3) { animation-delay: 0.4s; }
-        .murottal-pill.is-playing .murottal-eq span:nth-child(4) { animation-delay: 0.1s; }
+        .murottal-wrap.is-playing .murottal-eq span:nth-child(2),
+        .murottal-wrap.is-playing .murottal-item.active .murottal-mini-eq span:nth-child(2) { animation-delay: 0.2s; }
+        .murottal-wrap.is-playing .murottal-eq span:nth-child(3),
+        .murottal-wrap.is-playing .murottal-item.active .murottal-mini-eq span:nth-child(3) { animation-delay: 0.4s; }
+        .murottal-wrap.is-playing .murottal-eq span:nth-child(4) { animation-delay: 0.1s; }
         @keyframes murottal-eq {
             0%, 100% { height: 3px; }
-            50% { height: 12px; }
+            50% { height: 10px; }
         }
         .murottal-meta {
-            position: relative;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             min-width: 0;
-            padding-right: 16px;
         }
         .murottal-label {
-            font-size: 7.5px;
+            font-size: 7px;
             line-height: 1;
             letter-spacing: 0.14em;
             text-transform: uppercase;
@@ -343,32 +363,21 @@
             margin-bottom: 3px;
             white-space: nowrap;
         }
-        .murottal-meta select {
-            -webkit-appearance: none;
-            appearance: none;
-            background: transparent;
-            border: 0;
-            outline: none;
-            padding: 0;
-            max-width: 150px;
-            color: #e2e8f0;
+        .murottal-name {
+            min-width: 92px;
             font-family: 'Outfit', sans-serif;
-            font-size: 11.5px;
+            font-size: 10.5px;
             font-weight: 500;
-            line-height: 1.2;
-            cursor: pointer;
-            text-overflow: ellipsis;
+            line-height: 1.15;
+            color: #e2e8f0;
+            white-space: nowrap;
         }
-        .murottal-meta select:focus-visible { color: #00f3ff; }
-        .murottal-meta select option { background: #0b0d14; color: #e2e8f0; }
         .murottal-chevron {
-            position: absolute;
-            right: 0;
-            bottom: 3px;
             font-size: 8px;
             color: #00f3ff;
-            pointer-events: none;
+            transition: transform 0.25s ease;
         }
+        .murottal-trigger[aria-expanded="true"] .murottal-chevron { transform: rotate(180deg); }
         .murottal-progress {
             position: absolute;
             left: 0;
@@ -385,6 +394,155 @@
             transform: scaleX(0);
             background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
         }
+
+        /* Panel pilihan surat */
+        .murottal-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            z-index: 40;
+            width: 276px;
+            max-width: calc(100vw - 32px);
+            transform: translateX(-50%);
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(10, 12, 20, 0.94);
+            border: 1px solid rgba(0, 243, 255, 0.22);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 243, 255, 0.1);
+        }
+        .murottal-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
+        }
+        .murottal-panel.open {
+            display: block;
+            animation: murottal-pop 0.22s ease-out;
+        }
+        @keyframes murottal-pop {
+            from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.97); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+        .murottal-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 14px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .murottal-search i { font-size: 11px; color: #00f3ff; }
+        .murottal-search input {
+            flex: 1;
+            min-width: 0;
+            padding: 0;
+            border: 0;
+            outline: none;
+            background: transparent;
+            color: #e2e8f0;
+            font-size: 12px;
+        }
+        .murottal-search input::placeholder { color: #64748b; }
+        @media (pointer: coarse) { .murottal-search input { font-size: 16px; } }
+        .murottal-list {
+            position: relative;
+            max-height: 252px;
+            overflow-y: auto;
+            padding: 6px;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 243, 255, 0.35) transparent;
+        }
+        .murottal-list::-webkit-scrollbar { width: 4px; }
+        .murottal-list::-webkit-scrollbar-thumb { background: rgba(0, 243, 255, 0.35); border-radius: 4px; }
+        .murottal-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 7px 8px;
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
+            color: #cbd5e1;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .murottal-item:hover, .murottal-item:focus-visible {
+            outline: none;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .murottal-item.active {
+            color: #fff;
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.15), rgba(176, 38, 255, 0.1));
+            box-shadow: inset 2px 0 0 #00f3ff;
+        }
+        .murottal-num {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #00f3ff;
+            background: rgba(0, 243, 255, 0.08);
+            border: 1px solid rgba(0, 243, 255, 0.18);
+        }
+        .murottal-item.active .murottal-num {
+            color: #06070b;
+            background: linear-gradient(135deg, #00f3ff, #b026ff);
+            border-color: transparent;
+        }
+        .murottal-iname {
+            flex: 1;
+            min-width: 0;
+            font-size: 11.5px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .murottal-mini-eq { display: none; }
+        .murottal-wrap.is-playing .murottal-item.active .murottal-mini-eq { display: flex; }
+        .murottal-ar {
+            flex-shrink: 0;
+            direction: rtl;
+            font-family: 'Noto Naskh Arabic', 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+            font-size: 15px;
+            line-height: 1.2;
+            color: #94a3b8;
+        }
+        .murottal-item.active .murottal-ar { color: #00f3ff; }
+        .murottal-empty {
+            padding: 18px 8px;
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+        }
+        .murottal-panel-foot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 8.5px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        .murottal-panel-foot i { color: #b026ff; }
 
         /* ===== BANNER SLIDER ===== */
         .banner-frame {
@@ -732,29 +890,42 @@
                     <i class="fa-solid fa-download text-neon-cyan text-[11px]"></i>
                     <span>Install</span>
                 </button>
-                <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="px-3 py-1.5 rounded-full text-[11px] font-semibold glass-panel flex items-center gap-1.5 hover:border-purple-500/50 transition-all text-slate-300 hover:text-white">
-                    <i id="adminStatusIcon" class="fa-solid fa-lock text-neon-purple text-[11px]"></i>
-                    <span id="adminStatusText">Cloudzone</span>
+                <button onclick="shareProfile()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-cyan-500/50 transition-all" title="Bagikan Profile" aria-label="Bagikan Profile">
+                    <i class="fa-solid fa-share-nodes text-neon-cyan"></i>
                 </button>
-                <button onclick="shareProfile()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-pink-500/50 transition-all text-slate-300 hover:text-white" title="Bagikan Profile">
-                    <i class="fa-solid fa-share-nodes text-neon-purple"></i>
+                <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-red-500/50 transition-all" title="Cloudzone" aria-label="Cloudzone">
+                    <i id="adminStatusIcon" class="fa-solid fa-lock text-red-500 text-[12px]"></i>
+                    <span id="adminStatusText" class="sr-only">Cloudzone</span>
                 </button>
             </div>
         </div>
 
-        <!-- Murottal: dropdown surat (di bawah judul Kurniapedia) -->
-        <div id="murottalRow" class="w-full flex justify-start mb-5">
-            <div id="murottalPlayer" class="murottal-pill" title="Murottal Syaikh Misyari Rasyid Alafasy">
-                <button type="button" id="murottalToggle" class="murottal-btn" aria-label="Putar murottal">
-                    <i id="murottalToggleIcon" class="fa-solid fa-play"></i>
-                </button>
-                <div class="murottal-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-                <div class="murottal-meta">
-                    <span class="murottal-label">Syaikh Misyari Rasyid</span>
-                    <select id="murottalSelect" aria-label="Pilih surat Al-Qur'an"></select>
-                    <i class="fa-solid fa-chevron-down murottal-chevron"></i>
+        <!-- Murottal: pilihan surat (di tengah, di bawah judul Kurniapedia) -->
+        <div id="murottalRow" class="w-full flex justify-center mb-5">
+            <div id="murottalWrap" class="murottal-wrap">
+                <div id="murottalPlayer" class="murottal-pill" title="Murottal Syaikh Misyari Rasyid Alafasy">
+                    <button type="button" id="murottalToggle" class="murottal-btn" aria-label="Putar murottal">
+                        <i id="murottalToggleIcon" class="fa-solid fa-play"></i>
+                    </button>
+                    <button type="button" id="murottalTrigger" class="murottal-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="murottalPanel" aria-label="Pilih surat">
+                        <span class="murottal-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                        <span class="murottal-meta">
+                            <span class="murottal-label">Syaikh Misyari Rasyid</span>
+                            <span id="murottalName" class="murottal-name">1. Al-Fatihah</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down murottal-chevron"></i>
+                    </button>
+                    <div class="murottal-progress"><span id="murottalProgress"></span></div>
                 </div>
-                <div class="murottal-progress"><span id="murottalProgress"></span></div>
+
+                <div id="murottalPanel" class="murottal-panel" role="dialog" aria-label="Pilih surat Al-Qur'an">
+                    <div class="murottal-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="murottalSearch" placeholder="Cari surat atau nomor..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Cari surat">
+                    </div>
+                    <div id="murottalList" class="murottal-list" role="listbox" aria-label="Daftar surat"></div>
+                    <div class="murottal-panel-foot"><i class="fa-solid fa-headphones"></i> Murottal &middot; Syaikh Misyari Rasyid Alafasy</div>
+                </div>
             </div>
         </div>
 
@@ -1937,12 +2108,12 @@
                 adminBadge.classList.remove('hidden');
                 adminPanel.classList.remove('hidden');
                 adminStatusText.innerText = 'Admin Active';
-                adminStatusIcon.className = 'fa-solid fa-user-check text-neon-green';
+                adminStatusIcon.className = 'fa-solid fa-user-check text-red-500 text-[12px]';
             } else {
                 adminBadge.classList.add('hidden');
                 adminPanel.classList.add('hidden');
                 adminStatusText.innerText = 'Cloudzone';
-                adminStatusIcon.className = 'fa-solid fa-lock text-neon-purple';
+                adminStatusIcon.className = 'fa-solid fa-lock text-red-500 text-[12px]';
             }
             filterLinks();
             renderBanner();
@@ -1964,6 +2135,20 @@
             "Al-Qari'ah", 'At-Takatsur', "Al-'Ashr", 'Al-Humazah', 'Al-Fil', 'Quraisy', "Al-Ma'un", 'Al-Kautsar', 'Al-Kafirun', 'An-Nashr',
             'Al-Lahab', 'Al-Ikhlash', 'Al-Falaq', 'An-Nas'
         ];
+        const SURAH_ARABIC = [
+            'الفاتحة', 'البقرة', 'آل عمران', 'النساء', 'المائدة', 'الأنعام', 'الأعراف', 'الأنفال', 'التوبة', 'يونس',
+            'هود', 'يوسف', 'الرعد', 'إبراهيم', 'الحجر', 'النحل', 'الإسراء', 'الكهف', 'مريم', 'طه',
+            'الأنبياء', 'الحج', 'المؤمنون', 'النور', 'الفرقان', 'الشعراء', 'النمل', 'القصص', 'العنكبوت', 'الروم',
+            'لقمان', 'السجدة', 'الأحزاب', 'سبأ', 'فاطر', 'يس', 'الصافات', 'ص', 'الزمر', 'غافر',
+            'فصلت', 'الشورى', 'الزخرف', 'الدخان', 'الجاثية', 'الأحقاف', 'محمد', 'الفتح', 'الحجرات', 'ق',
+            'الذاريات', 'الطور', 'النجم', 'القمر', 'الرحمن', 'الواقعة', 'الحديد', 'المجادلة', 'الحشر', 'الممتحنة',
+            'الصف', 'الجمعة', 'المنافقون', 'التغابن', 'الطلاق', 'التحريم', 'الملك', 'القلم', 'الحاقة', 'المعارج',
+            'نوح', 'الجن', 'المزمل', 'المدثر', 'القيامة', 'الإنسان', 'المرسلات', 'النبأ', 'النازعات', 'عبس',
+            'التكوير', 'الانفطار', 'المطففين', 'الانشقاق', 'البروج', 'الطارق', 'الأعلى', 'الغاشية', 'الفجر', 'البلد',
+            'الشمس', 'الليل', 'الضحى', 'الشرح', 'التين', 'العلق', 'القدر', 'البينة', 'الزلزلة', 'العاديات',
+            'القارعة', 'التكاثر', 'العصر', 'الهمزة', 'الفيل', 'قريش', 'الماعون', 'الكوثر', 'الكافرون', 'النصر',
+            'المسد', 'الإخلاص', 'الفلق', 'الناس'
+        ];
         // Daftar sumber audio (dicoba berurutan; jika gagal otomatis pindah ke sumber berikutnya)
         const MUROTTAL_SOURCES = [
             (n) => `https://server8.mp3quran.net/afs/${String(n).padStart(3, '0')}.mp3`,
@@ -1976,12 +2161,25 @@
         let murottalWantPlay = true;       // true = ingin memutar (autoplay awal / pilihan tamu)
         let murottalUserTouched = false;   // tamu sudah memakai kontrol murottal
         let murottalGestureHandler = null;
+        let murottalPanelOpen = false;
         const MUROTTAL_GESTURE_EVENTS = ['pointerdown', 'touchend', 'keydown', 'click'];
 
+        function murottalNorm(str) {
+            return String(str).toLowerCase().replace(/['’‘`\-\s]/g, '');
+        }
+
+        // Pencarian: angka -> cocok awalan nomor; teks -> cocok sebagian nama (Latin/Arab)
+        function murottalMatches(query, n) {
+            const q = murottalNorm(query);
+            if (!q) return true;
+            if (/^\d+$/.test(q)) return String(n).startsWith(q);
+            return murottalNorm(SURAH_NAMES[n - 1]).includes(q) || SURAH_ARABIC[n - 1].replace(/\s/g, '').includes(q);
+        }
+
         function murottalSetUi(playing) {
-            const pill = bEl('murottalPlayer');
-            if (!pill) return;
-            pill.classList.toggle('is-playing', playing);
+            const wrap = bEl('murottalWrap');
+            if (!wrap) return;
+            wrap.classList.toggle('is-playing', playing);
             bEl('murottalToggleIcon').className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
             bEl('murottalToggle').setAttribute('aria-label', playing ? 'Jeda murottal' : 'Putar murottal');
             if (playing) bEl('murottalToggle').classList.remove('pulse');
@@ -2003,13 +2201,23 @@
             } catch (e) {}
         }
 
+        function murottalMarkActive() {
+            const list = bEl('murottalList');
+            if (!list) return;
+            const prev = list.querySelector('.murottal-item.active');
+            if (prev) { prev.classList.remove('active'); prev.setAttribute('aria-selected', 'false'); }
+            const cur = list.querySelector(`.murottal-item[data-n="${murottalSurah}"]`);
+            if (cur) { cur.classList.add('active'); cur.setAttribute('aria-selected', 'true'); }
+        }
+
         function murottalLoad(n, sourceIdx = 0) {
             murottalSurah = n;
             murottalSource = sourceIdx;
             murottalAudio.src = MUROTTAL_SOURCES[sourceIdx](n);
             murottalAudio.load();
-            bEl('murottalSelect').value = String(n);
+            bEl('murottalName').innerText = `${n}. ${SURAH_NAMES[n - 1]}`;
             bEl('murottalProgress').style.transform = 'scaleX(0)';
+            murottalMarkActive();
             murottalUpdateMediaSession();
         }
 
@@ -2024,7 +2232,7 @@
             bEl('murottalToggle').classList.add('pulse');
             if (murottalGestureHandler) return;
             murottalGestureHandler = (e) => {
-                if (e.target && e.target.closest && e.target.closest('#murottalPlayer')) return; // kontrol murottal menangani sendiri
+                if (e.target && e.target.closest && e.target.closest('#murottalWrap')) return; // kontrol murottal menangani sendiri
                 if (e.type === 'keydown' && ['Shift', 'Control', 'Alt', 'Meta', 'Tab', 'CapsLock'].includes(e.key)) return;
                 murottalDisarmGesture();
                 if (murottalWantPlay) murottalPlay();
@@ -2055,12 +2263,64 @@
             murottalPlay();
         }
 
-        function initMurottal() {
-            const select = bEl('murottalSelect');
-            const toggle = bEl('murottalToggle');
-            if (!select || !toggle) return;
+        // Tamu memilih surat sendiri -> putar surat itu (dan lanjut berurutan sesudahnya)
+        function murottalChoose(n) {
+            murottalUserTouched = true;
+            murottalWantPlay = true;
+            murottalDisarmGesture();
+            murottalLoad(n, 0);
+            murottalPlay();
+            murottalClosePanel();
+        }
 
-            select.innerHTML = SURAH_NAMES.map((name, i) => `<option value="${i + 1}">${i + 1}. ${escapeHtml(name)}</option>`).join('');
+        function murottalFilter(query) {
+            const list = bEl('murottalList');
+            let visible = 0;
+            list.querySelectorAll('.murottal-item').forEach(item => {
+                const show = murottalMatches(query, Number(item.dataset.n));
+                item.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            bEl('murottalEmpty').style.display = visible ? 'none' : 'block';
+        }
+
+        function murottalOpenPanel() {
+            const panel = bEl('murottalPanel');
+            const list = bEl('murottalList');
+            const search = bEl('murottalSearch');
+            search.value = '';
+            murottalFilter('');
+            panel.classList.add('open');
+            murottalPanelOpen = true;
+            bEl('murottalTrigger').setAttribute('aria-expanded', 'true');
+            const active = list.querySelector('.murottal-item.active');
+            if (active) list.scrollTop = Math.max(0, active.offsetTop - list.clientHeight / 2 + active.clientHeight / 2);
+            // fokus otomatis hanya di perangkat dengan mouse (agar keyboard HP tidak langsung muncul)
+            if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) search.focus();
+        }
+
+        function murottalClosePanel() {
+            if (!murottalPanelOpen) return;
+            bEl('murottalPanel').classList.remove('open');
+            murottalPanelOpen = false;
+            bEl('murottalTrigger').setAttribute('aria-expanded', 'false');
+        }
+
+        function initMurottal() {
+            const toggle = bEl('murottalToggle');
+            const trigger = bEl('murottalTrigger');
+            const list = bEl('murottalList');
+            const search = bEl('murottalSearch');
+            const panel = bEl('murottalPanel');
+            if (!toggle || !trigger || !list || !search || !panel) return;
+
+            list.innerHTML = SURAH_NAMES.map((name, i) => `
+                <button type="button" class="murottal-item" role="option" aria-selected="false" data-n="${i + 1}">
+                    <span class="murottal-num">${i + 1}</span>
+                    <span class="murottal-iname">${escapeHtml(name)}</span>
+                    <span class="murottal-mini-eq" aria-hidden="true"><span></span><span></span><span></span></span>
+                    <span class="murottal-ar" lang="ar">${SURAH_ARABIC[i]}</span>
+                </button>`).join('') + '<div class="murottal-empty" id="murottalEmpty" style="display:none">Surat tidak ditemukan</div>';
 
             murottalAudio = new Audio();
             murottalAudio.preload = 'auto';
@@ -2106,14 +2366,43 @@
                 }
             });
 
-            // Tamu memilih surat sendiri -> putar surat itu (dan lanjut berurutan sesudahnya)
-            select.addEventListener('change', () => {
-                murottalUserTouched = true;
-                murottalWantPlay = true;
-                murottalDisarmGesture();
-                murottalLoad(Number(select.value), 0);
-                murottalPlay();
+            trigger.addEventListener('click', () => {
+                if (murottalPanelOpen) murottalClosePanel(); else murottalOpenPanel();
             });
+
+            list.addEventListener('click', (e) => {
+                const item = e.target && e.target.closest ? e.target.closest('.murottal-item') : null;
+                if (item) murottalChoose(Number(item.dataset.n));
+            });
+
+            search.addEventListener('input', () => murottalFilter(search.value));
+            search.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                const first = [...list.querySelectorAll('.murottal-item')].find(it => it.style.display !== 'none');
+                if (first) murottalChoose(Number(first.dataset.n));
+            });
+
+            panel.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    murottalClosePanel();
+                    trigger.focus();
+                    return;
+                }
+                if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+                const items = [...list.querySelectorAll('.murottal-item')].filter(it => it.style.display !== 'none');
+                if (!items.length) return;
+                e.preventDefault();
+                const idx = items.indexOf(document.activeElement);
+                const next = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+                if (next < 0) { search.focus(); return; }
+                items[Math.min(next, items.length - 1)].focus();
+            });
+
+            // Tutup panel saat klik di luar
+            document.addEventListener('pointerdown', (e) => {
+                if (murottalPanelOpen && !(e.target && e.target.closest && e.target.closest('#murottalWrap'))) murottalClosePanel();
+            }, true);
 
             if ('mediaSession' in navigator) {
                 const handlers = {
