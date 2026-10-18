@@ -894,9 +894,10 @@
         .fx-grid {
             position: absolute;
             inset: 0;
+            /* Angka terakhir (0.04) = tingkat transparan garis grid. Makin kecil makin samar (0 = hilang). */
             background-image:
-                linear-gradient(rgba(0, 243, 255, 0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.09) 1px, transparent 1px);
+                linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
             background-size: 40px 40px;
         }
 
