@@ -4,7 +4,7 @@
    - Aset CDN: stale-while-revalidate
    - Firebase/Firestore/Auth TIDAK di-cache (data selalu fresh)
    Naikkan angka VERSION setiap kali mengganti file ini. */
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL_CACHE = 'kurniapedia-shell-' + VERSION;
 const RUNTIME_CACHE = 'kurniapedia-runtime-' + VERSION;
 
@@ -13,9 +13,6 @@ const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png',
-  './icon-maskable-512.png',
-  './apple-touch-icon.png',
   './favicon.png'
 ];
 
@@ -59,19 +56,27 @@ self.addEventListener('fetch', (event) => {
   if (req.headers.has('range') || req.destination === 'audio' || req.destination === 'video' ||
       /\.(mp3|m4a|ogg|wav|mp4)(\?|$)/i.test(url.pathname)) return;
 
-  // Halaman utama: network-first, fallback ke cache saat offline
+  // Halaman utama: ambil dari jaringan (selalu versi terbaru), tetapi jika jaringan lambat
+  // (> 2,5 detik) langsung tampilkan salinan tersimpan agar aplikasi tetap terasa cepat.
   if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(SHELL_CACHE).then((c) => c.put('./index.html', copy));
-          return res;
-        })
-        .catch(() =>
-          caches.match('./index.html').then((r) => r || caches.match('./'))
-        )
-    );
+    event.respondWith((async () => {
+      const cache = await caches.open(SHELL_CACHE);
+      const cached = await cache.match('./index.html');
+      const network = fetch(req).then((res) => {
+        if (res && res.ok) cache.put('./index.html', res.clone());
+        return res;
+      });
+      if (!cached) return network;
+      try {
+        return await Promise.race([
+          network,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2500))
+        ]);
+      } catch (e) {
+        network.catch(() => {}); // biarkan unduhan lanjut di latar belakang & memperbarui cache
+        return cached;
+      }
+    })());
     return;
   }
 
