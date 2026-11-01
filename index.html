@@ -1487,6 +1487,7 @@
             updateDoc, 
             deleteDoc, 
             onSnapshot,
+            increment,
             writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -3287,14 +3288,25 @@
             });
         }
 
+        // Catat klik dari SIAPA PUN yang membuka link (pengunjung maupun admin).
+        // increment(1) dijalankan atomik di server Firestore, jadi aman walau banyak orang klik bersamaan.
+        const lastClickAt = {};
         window.trackClick = async function(id) {
             const link = linksList.find(l => l.id === id);
-            if (!link) return;
-            link.clicks = (link.clicks || 0) + 1;
+            if (!link || link.isFolder) return;
+            const now = Date.now();
+            if (now - (lastClickAt[id] || 0) < 1500) return; // abaikan ketukan ganda beruntun
+            lastClickAt[id] = now;
             try {
-                await updateDoc(doc(db, 'biolink', 'public', 'links', id), { clicks: link.clicks });
-            } catch(e) {
-                localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
+                await updateDoc(doc(db, 'biolink', 'public', 'links', id), { clicks: increment(1) });
+            } catch (e) {
+                if (!db) {
+                    // mode demo/lokal (Firebase gagal dimuat)
+                    link.clicks = (link.clicks || 0) + 1;
+                    localStorage.setItem('fallback_lynk_links', JSON.stringify(linksList));
+                } else {
+                    console.warn('Klik gagal dicatat (cek Firestore Rules):', e && e.code ? e.code : e);
+                }
             }
         };
 
