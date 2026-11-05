@@ -64,23 +64,23 @@
 /* ===== BENTUK KARTU: JAJAR GENJANG BERSUDUT TUMPUL =====
    Kartu dimiringkan (skewX) sehingga sudut rounded-xl tetap tumpul tetapi bentuknya jajar genjang.
    Isi kartu dimiringkan balik supaya teks & ikon tetap tegak.
-   Ubah angka -12deg / 12deg (harus saling berlawanan) untuk mengatur kemiringan. */
+   Ubah angka 18deg / -18deg (harus saling berlawanan) untuk mengatur kemiringan. */
 #linksContainer .glass-card,
 #linksLoading .glass-card {
-    transform: skewX(-12deg);
-    margin-left: 6px;   /* ruang agar ujung miring tidak terpotong */
-    margin-right: 6px;
+    transform: skewX(18deg);
+    margin-left: 10px;   /* ruang agar ujung miring tidak terpotong */
+    margin-right: 10px;
 }
 
 #linksContainer .glass-card > * {
-    transform: skewX(12deg);
+    transform: skewX(-18deg);
 }
 
 /* Hover & saat digeser (drag): pertahankan kemiringan */
 #linksContainer .glass-card:hover {
-    transform: translateY(-2px) skewX(-12deg);
+    transform: translateY(-2px) skewX(18deg);
 }
 
 #linksContainer .glass-card.sortable-drag {
-    transform: skewX(-12deg) scale(1.02) !important;
+    transform: skewX(18deg) scale(1.02) !important;
 }
