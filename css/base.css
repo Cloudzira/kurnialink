@@ -1,0 +1,110 @@
+/* ==========================================================
+   base.css
+   Dasar & komponen umum: latar body, panel kaca (glass), kartu, folder, input, drag & drop, animasi folder, scrollbar.
+   ========================================================== */
+
+body {
+    background-color: #05060a;
+}
+
+.glass-panel {
+    background: rgba(15, 17, 26, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Kartu link: tanpa backdrop-filter (blur per kartu sangat berat saat scroll),
+   diganti warna latar yang sedikit lebih pekat agar tampilan tetap bersih */
+.glass-card {
+    background-color: rgba(12, 14, 24, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.glass-card:hover {
+    background-color: rgba(22, 26, 40, 0.9);
+    border-color: rgba(0, 243, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 243, 255, 0.15),
+                inset 0 0 10px rgba(0, 243, 255, 0.05);
+}
+
+.glass-folder {
+    background-color: rgba(8, 17, 28, 0.84);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-folder:hover {
+    border-color: rgba(0, 243, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+}
+
+.glass-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-input:focus {
+    border-color: #00f3ff;
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
+    outline: none;
+}
+
+.sortable-ghost {
+    opacity: 0.35;
+    background: rgba(0, 243, 255, 0.12) !important;
+    border: 2px dashed #00f3ff !important;
+}
+
+.sortable-drag {
+    background: rgba(18, 20, 32, 0.95) !important;
+    box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3) !important;
+    transform: scale(1.02);
+}
+
+.drag-handle {
+    cursor: grab;
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.folder-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out;
+    opacity: 0;
+}
+
+.folder-content.open {
+    max-height: 1200px;
+    opacity: 1;
+}
+
+.chevron-icon {
+    transition: transform 0.3s ease;
+}
+
+.folder-content.open + .folder-header .chevron-icon,
+.folder-header.active .chevron-icon {
+    transform: rotate(180deg);
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(8, 9, 14, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 243, 255, 0.25);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 243, 255, 0.5);
+}

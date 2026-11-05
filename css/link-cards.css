@@ -1,0 +1,62 @@
+/* ==========================================================
+   link-cards.css
+   Kartu link: cahaya neon berputar di tepi kartu, animasi, gaya link terkunci, dan animasi jendela info.
+   ========================================================== */
+
+/* Universal Cross-Browser Link Light Animation via JS */
+#linksContainer .glass-card {
+    position: relative;
+    isolation: isolate;
+}
+
+#linksContainer .glass-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2),
+                0 0 20px var(--link-light-glow, rgba(0, 243, 255, 0.14));
+}
+
+#linksContainer .glass-card::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--link-light-color, #00f3ff) 65%, var(--link-light-highlight, #00ff9d) 72%, transparent 80% 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.24;
+    pointer-events: none;
+}
+
+#linksContainer .glass-card:hover::before {
+    opacity: 0.68;
+}
+
+@keyframes neon-orbit {
+    to { transform: rotate(1turn); }
+}
+
+@keyframes neon-flow {
+    from { background-position: 100% center; }
+    to { background-position: -120% center; }
+}
+
+/* Catatan: blok "prefers-reduced-motion" sengaja dihapus.
+   Di banyak laptop, pengaturan OS "kurangi animasi" aktif, sehingga
+   semua animasi neon otomatis mati. HP biasanya tidak mengaktifkannya. */
+
+/* Link terkunci */
+#linksContainer .glass-card.link-locked {
+    border-color: rgba(251, 191, 36, 0.25);
+}
+#linksContainer .glass-card.link-locked:hover {
+    border-color: rgba(251, 191, 36, 0.55);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 20px rgba(251, 191, 36, 0.16);
+}
+@keyframes info-pop {
+    from { opacity: 0; transform: scale(0.92) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.info-pop { animation: info-pop 0.25s ease-out; }

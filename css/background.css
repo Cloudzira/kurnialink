@@ -1,0 +1,90 @@
+/* ==========================================================
+   background.css
+   Latar futuristik: bintang berkelip, cahaya aurora, grid, dan vignette.
+   ========================================================== */
+
+/* ===== LATAR FUTURISTIK ===== */
+.fx-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(120% 70% at 50% 108%, rgba(0, 243, 255, 0.16) 0%, transparent 60%),
+        linear-gradient(180deg, #05060a 0%, #080a14 55%, #0a0720 100%);
+}
+
+/* Bintang kerlap-kerlip minimalis */
+.fx-stars {
+    position: absolute;
+    inset: 0 0 30% 0;
+}
+.fx-stars i {
+    position: absolute;
+    inset: 0;
+    background-repeat: repeat;
+    opacity: 0.2;
+    will-change: opacity;
+}
+.fx-stars .s1 {
+    background-image:
+        radial-gradient(1px 1px at 12% 22%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 47% 68%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 81% 33%, #cfeeff 50%, transparent 51%),
+        radial-gradient(1px 1px at 33% 88%, #fff 50%, transparent 51%);
+    background-size: 380px 330px;
+    animation: fxTwinkle 3.2s ease-in-out infinite;
+}
+.fx-stars .s2 {
+    background-image:
+        radial-gradient(1.5px 1.5px at 24% 41%, #8ff7ff 50%, transparent 51%),
+        radial-gradient(1px 1px at 63% 15%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 91% 72%, #e3b8ff 50%, transparent 51%),
+        radial-gradient(1px 1px at 8% 79%, #fff 50%, transparent 51%);
+    background-size: 450px 400px;
+    animation: fxTwinkle 4.6s ease-in-out -1.7s infinite;
+}
+.fx-stars .s3 {
+    background-image:
+        radial-gradient(1px 1px at 38% 10%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 72% 52%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 17% 58%, #8ff7ff 50%, transparent 51%),
+        radial-gradient(1px 1px at 95% 92%, #fff 50%, transparent 51%);
+    background-size: 520px 460px;
+    animation: fxTwinkle 5.8s ease-in-out -3.4s infinite;
+}
+
+/* Cahaya aurora melayang */
+/* Cahaya aurora memakai gradasi radial (jauh lebih ringan daripada filter blur besar) */
+.fx-orb {
+    position: absolute;
+    border-radius: 50%;
+}
+.fx-orb.o1 { width: 46vmax; height: 46vmax; left: -14vmax; top: -16vmax; background: radial-gradient(circle closest-side, rgba(176, 38, 255, 0.30), rgba(176, 38, 255, 0.12) 55%, transparent 100%); }
+.fx-orb.o2 { width: 40vmax; height: 40vmax; right: -12vmax; top: 6vh; background: radial-gradient(circle closest-side, rgba(0, 243, 255, 0.20), rgba(0, 243, 255, 0.08) 55%, transparent 100%); }
+.fx-orb.o3 { width: 34vmax; height: 34vmax; left: 30vw; bottom: -18vmax; background: radial-gradient(circle closest-side, rgba(255, 0, 127, 0.18), rgba(255, 0, 127, 0.07) 55%, transparent 100%); }
+
+/* Grid persegi (square) memenuhi layar */
+.fx-grid {
+    position: absolute;
+    inset: 0;
+    /* Angka terakhir (0.04) = tingkat transparan garis grid. Makin kecil makin samar (0 = hilang). */
+    background-image:
+        linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* Vignette agar konten tetap terbaca */
+.fx-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(3, 4, 8, 0.75) 100%);
+}
+
+@keyframes fxTwinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+
+@media (max-width: 640px) {
+    .fx-grid { background-size: 32px 32px; }
+}

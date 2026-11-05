@@ -1,0 +1,36 @@
+/* ==========================================================
+   profile-admin.css
+   Bingkai neon foto profil dan garis animasi pada panel admin.
+   ========================================================== */
+
+#profileFrame { isolation: isolate; }
+#profileFrame::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0 50%, #00f3ff 62%, #b026ff 80%, #ff007f 92%, transparent 100%);
+    animation: neon-orbit 7s linear infinite;
+    pointer-events: none;
+}
+#profileFrame > #profileAvatar {
+    z-index: 1;
+    border-color: #06070b;
+    box-shadow: 0 0 24px rgba(0, 243, 255, 0.2);
+}
+#profileFrame > span { z-index: 2; }
+
+#adminPanel { position: relative; }
+#adminPanel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00f3ff, #b026ff, #ff007f, transparent);
+    background-size: 260% 100%;
+    animation: neon-flow 4.5s linear infinite;
+    pointer-events: none;
+}

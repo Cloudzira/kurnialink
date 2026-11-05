@@ -1,0 +1,29 @@
+/* ==========================================================
+   splash.css
+   Splash screen: animasi logo dan bar loading.
+   ========================================================== */
+
+/* Splash Screen Custom Animations */
+#splashScreen {
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s ease;
+}
+#splashScreen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+@keyframes splash-pulse-glow {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(0,243,255,0.4)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(176,38,255,0.7)); }
+}
+.splash-logo-anim {
+    animation: splash-pulse-glow 3s ease-in-out infinite;
+}
+@keyframes line-loading {
+    0% { width: 0%; }
+    50% { width: 75%; }
+    100% { width: 100%; }
+}
+.splash-loader-bar {
+    animation: line-loading 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

@@ -4,7 +4,7 @@
    - Aset CDN: stale-while-revalidate
    - Firebase/Firestore/Auth TIDAK di-cache (data selalu fresh)
    Naikkan angka VERSION setiap kali mengganti file ini. */
-const VERSION = 'v5';
+const VERSION = 'v6';
 const SHELL_CACHE = 'kurniapedia-shell-' + VERSION;
 const RUNTIME_CACHE = 'kurniapedia-runtime-' + VERSION;
 
@@ -13,7 +13,38 @@ const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './favicon.png'
+  './favicon.png',
+  './css/background.css',
+  './css/banner.css',
+  './css/base.css',
+  './css/link-cards.css',
+  './css/murottal.css',
+  './css/profile-admin.css',
+  './css/splash.css',
+  './js/admin-form.js',
+  './js/admin-ui.js',
+  './js/auth.js',
+  './js/banner-admin.js',
+  './js/banner.js',
+  './js/config.js',
+  './js/firebase.js',
+  './js/link-light.js',
+  './js/link-lock.js',
+  './js/links-actions.js',
+  './js/links-render.js',
+  './js/main.js',
+  './js/murottal-data.js',
+  './js/murottal.js',
+  './js/profile-edit.js',
+  './js/profile.js',
+  './js/pwa-early.js',
+  './js/pwa.js',
+  './js/search.js',
+  './js/share.js',
+  './js/splash.js',
+  './js/state.js',
+  './js/tailwind-config.js',
+  './js/utils.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -66,6 +97,30 @@ self.addEventListener('fetch', (event) => {
         if (res && res.ok) cache.put('./index.html', res.clone());
         return res;
       });
+      if (!cached) return network;
+      try {
+        return await Promise.race([
+          network,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2500))
+        ]);
+      } catch (e) {
+        network.catch(() => {}); // biarkan unduhan lanjut di latar belakang & memperbarui cache
+        return cached;
+      }
+    })());
+    return;
+  }
+
+  // File kode aplikasi (folder js/ dan css/): sama seperti halaman utama, ambil dari jaringan
+  // supaya update selalu terbaru; jika jaringan lambat (> 2,5 detik) / offline, pakai salinan tersimpan.
+  if (url.origin === self.location.origin && /\.(js|css)$/i.test(url.pathname)) {
+    event.respondWith((async () => {
+      const cache = await caches.open(SHELL_CACHE);
+      const network = fetch(req).then((res) => {
+        if (res && res.ok) cache.put(req, res.clone());
+        return res;
+      });
+      const cached = await cache.match(req);
       if (!cached) return network;
       try {
         return await Promise.race([
