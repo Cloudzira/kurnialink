@@ -60,3 +60,27 @@
     to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 .info-pop { animation: info-pop 0.25s ease-out; }
+
+/* ===== BENTUK KARTU: JAJAR GENJANG BERSUDUT TUMPUL =====
+   Kartu dimiringkan (skewX) sehingga sudut rounded-xl tetap tumpul tetapi bentuknya jajar genjang.
+   Isi kartu dimiringkan balik supaya teks & ikon tetap tegak.
+   Ubah angka -12deg / 12deg (harus saling berlawanan) untuk mengatur kemiringan. */
+#linksContainer .glass-card,
+#linksLoading .glass-card {
+    transform: skewX(-12deg);
+    margin-left: 6px;   /* ruang agar ujung miring tidak terpotong */
+    margin-right: 6px;
+}
+
+#linksContainer .glass-card > * {
+    transform: skewX(12deg);
+}
+
+/* Hover & saat digeser (drag): pertahankan kemiringan */
+#linksContainer .glass-card:hover {
+    transform: translateY(-2px) skewX(-12deg);
+}
+
+#linksContainer .glass-card.sortable-drag {
+    transform: skewX(-12deg) scale(1.02) !important;
+}
