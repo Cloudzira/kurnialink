@@ -7,6 +7,7 @@ import { initFirebase } from './firebase.js';
 import { initBanner } from './banner.js';
 import { refreshInstallButton, registerServiceWorker } from './pwa.js';
 import { startSplashTimers } from './splash.js';
+import { initAiChat } from './ai-chat.js';
 import './config.js';
 import './utils.js';
 import './link-light.js';
@@ -30,6 +31,7 @@ function startApp() {
     initFirebase();
     refreshInstallButton();
     initBanner();
+    initAiChat();
 
     startSplashTimers();
 

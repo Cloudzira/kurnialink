@@ -13,6 +13,9 @@ kurnialink-main/
 ├── manifest.json       ← pengaturan PWA (nama, ikon, warna)
 ├── sw.js               ← Service Worker (cache supaya cepat & bisa offline)
 ├── firestore.rules     ← aturan keamanan database Firestore
+├── functions/
+│   └── api/
+│       └── chat.js     ← SERVER perantara ke Google Gemini (Cloudflare Pages Function; tempat API key dipakai)
 ├── *.png               ← ikon & favicon
 │
 ├── css/                ← semua gaya tampilan (urutan dimuat diatur di index.html)
@@ -49,6 +52,7 @@ kurnialink-main/
     ├── banner-admin.js     pengaturan banner oleh admin
     ├── murottal-data.js    daftar 114 surat & sumber audio
     ├── murottal.js         pemutar murottal
+    ├── ai-chat.js          Cloudz AI: tombol & popup chat (kirim ke /api/chat)
     │
     ├── pwa.js              tombol Install & pendaftaran Service Worker
     ├── pwa-early.js        menangkap event install lebih awal (script biasa)
@@ -78,13 +82,21 @@ kurnialink-main/
 | Lama tampil splash screen               | `js/splash.js`                 |
 | Ikon medsos & footer                    | `index.html`                   |
 | Aturan siapa boleh menulis ke database  | `firestore.rules`              |
+| Kepribadian / aturan Cloudz AI          | `functions/api/chat.js` (SYSTEM_PROMPT) |
+| Model AI yang dipakai                   | Variabel Cloudflare `GEMINI_MODEL` |
+| Tampilan popup Cloudz AI                | `css/ai-chat.css`              |
 
-## Deploy (GitHub + Vercel)
+## Deploy (GitHub + Cloudflare Pages)
 
-Tidak ada langkah baru: unggah seluruh isi folder ke GitHub, Vercel akan otomatis menayangkan.
-Tidak butuh proses build.
+Unggah seluruh isi folder ke GitHub, Cloudflare Pages akan otomatis menayangkan (tanpa build; folder `functions/` otomatis dikenali).
 
 **Penting:** setiap kali mengubah `sw.js` (misalnya menambah file baru di daftar `SHELL_ASSETS`),
 naikkan angka `VERSION` di bagian atas `sw.js` supaya cache lama di HP pengunjung diganti.
 File di folder `js/` dan `css/` selalu diambil versi terbaru saat online, jadi untuk perubahan
 kode biasa tidak perlu menaikkan `VERSION`.
+
+## Cloudz AI (Google Gemini) — aman
+
+API key **tidak boleh** ditulis di file mana pun di proyek ini. Key disimpan di Cloudflare:
+Workers & Pages → project → Settings → Variables and Secrets → tambah `GEMINI_API_KEY` bertipe **Secret**,
+lalu deploy ulang. Browser hanya bicara ke `/api/chat`; fungsi di `functions/api/chat.js` yang memakai key di server.
