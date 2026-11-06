@@ -100,3 +100,9 @@ kode biasa tidak perlu menaikkan `VERSION`.
 API key **tidak boleh** ditulis di file mana pun di proyek ini. Key disimpan di Cloudflare:
 Workers & Pages → project → Settings → Variables and Secrets → tambah `GEMINI_API_KEY` bertipe **Secret**,
 lalu deploy ulang. Browser hanya bicara ke `/api/chat`; fungsi di `functions/api/chat.js` yang memakai key di server.
+
+### Cloudz AI membaca isi tiap web
+Server membaca daftar link dari Firestore, lalu membuka halaman tiap link untuk mengambil ringkasan
+(`<meta name="description">` dan judul bagian `h1`-`h3`). Supaya AI paham aplikasi Anda, isi **meta description**
+yang jelas di tiap aplikasi dan isi kolom **deskripsi** link. Link terkunci/tersembunyi dan media sosial tidak dibuka.
+Ringkasan terisi bertahap beberapa menit setelah deploy dan disimpan 12 jam.

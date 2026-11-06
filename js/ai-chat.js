@@ -14,10 +14,8 @@ const REQUEST_TIMEOUT_MS = 35000;
 
 const WELCOME = 'Halo! Saya **Cloudz AI** ✨\nSilakan tanya apa saja, saya siap membantu.';
 const SUGGESTIONS = [
-    'Kamu bisa bantu apa saja?',
-    'Beri saya motivasi hari ini',
-    'Tips belajar yang efektif',
-    'Buatkan caption untuk postingan'
+    'Motivasi islami hari ini',
+    'Tips semangat belajar dan bertumbuh'
 ];
 
 let history = [];
@@ -86,7 +84,7 @@ function buildUI() {
     const wrap = document.createElement('div');
     wrap.id = 'czRoot';
     wrap.innerHTML = `
-        <button id="czFab" class="cz-fab" type="button" aria-label="Buka Cloudz AI" aria-haspopup="dialog" aria-expanded="false" aria-controls="czPanel">
+        <button id="czFab" class="cz-fab" type="button" aria-label="Buka Cloudz AI" aria-haspopup="dialog" aria-expanded="false" aria-controls="czPanel" title="Klik untuk buka, geser untuk memindahkan">
             <i class="fa-solid fa-wand-magic-sparkles cz-fab-icon" aria-hidden="true"></i>
             <span class="cz-fab-text">Cloudz AI</span>
         </button>
@@ -199,6 +197,31 @@ function autoGrow() {
     els.input.style.height = Math.min(els.input.scrollHeight, 110) + 'px';
 }
 
+
+/* ---------- Menyesuaikan popup dengan keyboard HP ---------- */
+// Di HP, keyboard tidak mengecilkan halaman, jadi popup yang menempel di bawah layar ikut tertutup.
+// visualViewport memberi tahu area layar yang benar-benar terlihat; popup kita naikkan & pendekkan agar pas di atas keyboard.
+function resetPanelFit() {
+    if (!els.panel) return;
+    els.panel.style.bottom = '';
+    els.panel.style.height = '';
+}
+
+function fitPanel() {
+    const vv = window.visualViewport;
+    if (!vv || !isOpen) { resetPanelFit(); return; }
+
+    // Tinggi keyboard = bagian layar yang tertutup di bawah area terlihat
+    const keyboard = Math.round(window.innerHeight - vv.height - vv.offsetTop);
+    if (keyboard < 80) { resetPanelFit(); return; }   // keyboard tidak tampil
+
+    resetPanelFit();                                   // ukur dulu tinggi bawaan dari CSS
+    const baseHeight = els.panel.offsetHeight;
+    els.panel.style.bottom = (keyboard + 8) + 'px';
+    els.panel.style.height = Math.max(220, Math.min(baseHeight, Math.floor(vv.height) - 16)) + 'px';
+    scrollToBottom();
+}
+
 /* ---------- Buka / tutup ---------- */
 function openPanel() {
     isOpen = true;
@@ -207,6 +230,7 @@ function openPanel() {
     els.panel.classList.add('open');
     els.fab.classList.add('is-hidden');
     els.fab.setAttribute('aria-expanded', 'true');
+    fitPanel();
     scrollToBottom();
     setTimeout(() => { if (isOpen) els.input.focus({ preventScroll: true }); }, 220);
 }
@@ -217,6 +241,7 @@ function closePanel() {
     els.panel.inert = true;
     els.fab.classList.remove('is-hidden');
     els.fab.setAttribute('aria-expanded', 'false');
+    resetPanelFit();
     els.fab.focus({ preventScroll: true });
 }
 
@@ -288,6 +313,106 @@ function clearChat() {
     renderAll();
 }
 
+
+/* ---------- Tombol bisa digeser ---------- */
+const POS_KEY = 'czai_fab_pos_v1';
+const EDGE = 8;            // jarak minimal tombol dari tepi layar (px)
+const DRAG_THRESHOLD = 6;  // geseran lebih kecil dari ini dianggap klik biasa
+let fabPos = null;         // { side: 'left' | 'right', y: 0..1 }  (posisi disimpan secara relatif)
+let justDragged = false;
+
+function clamp(v, min, max) { return Math.min(Math.max(v, min), Math.max(min, max)); }
+
+function loadFabPos() {
+    try {
+        const p = JSON.parse(localStorage.getItem(POS_KEY) || 'null');
+        if (p && (p.side === 'left' || p.side === 'right') && typeof p.y === 'number') {
+            fabPos = { side: p.side, y: clamp(p.y, 0, 1) };
+        }
+    } catch (e) { fabPos = null; }
+}
+function saveFabPos() {
+    try { localStorage.setItem(POS_KEY, JSON.stringify(fabPos)); } catch (e) { /* abaikan */ }
+}
+
+// Menempatkan tombol sesuai posisi tersimpan (dipanggil juga saat layar berubah ukuran)
+function placeFab() {
+    if (!fabPos || !els.fab) return;
+    const w = els.fab.offsetWidth, h = els.fab.offsetHeight;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const left = fabPos.side === 'left' ? EDGE : vw - w - EDGE;
+    const top = clamp(fabPos.y * (vh - h), EDGE, vh - h - EDGE);
+    els.fab.style.left = left + 'px';
+    els.fab.style.top = top + 'px';
+    els.fab.style.right = 'auto';
+    els.fab.style.bottom = 'auto';
+}
+
+function initFabDrag() {
+    const fab = els.fab;
+    let pid = null, moved = false, startX = 0, startY = 0, originLeft = 0, originTop = 0;
+
+    fab.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        const r = fab.getBoundingClientRect();
+        pid = e.pointerId;
+        moved = false;
+        justDragged = false;
+        startX = e.clientX; startY = e.clientY;
+        originLeft = r.left; originTop = r.top;
+        try { fab.setPointerCapture(pid); } catch (err) { /* abaikan */ }
+    });
+
+    fab.addEventListener('pointermove', (e) => {
+        if (e.pointerId !== pid) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        if (!moved) {
+            if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+            moved = true;
+            fab.classList.remove('is-snapping');
+            fab.classList.add('is-dragging');
+        }
+        const w = fab.offsetWidth, h = fab.offsetHeight;
+        fab.style.left = clamp(originLeft + dx, EDGE, window.innerWidth - w - EDGE) + 'px';
+        fab.style.top = clamp(originTop + dy, EDGE, window.innerHeight - h - EDGE) + 'px';
+        fab.style.right = 'auto';
+        fab.style.bottom = 'auto';
+    });
+
+    const endDrag = (e) => {
+        if (e.pointerId !== pid) return;
+        try { fab.releasePointerCapture(pid); } catch (err) { /* abaikan */ }
+        pid = null;
+        fab.classList.remove('is-dragging');
+        if (!moved) return;
+
+        // Setelah digeser: jangan dianggap klik, lalu "menempel" ke tepi kiri/kanan terdekat
+        justDragged = true;
+        setTimeout(() => { justDragged = false; }, 350);
+        const r = fab.getBoundingClientRect();
+        const range = window.innerHeight - r.height;
+        fabPos = {
+            side: r.left + r.width / 2 < window.innerWidth / 2 ? 'left' : 'right',
+            y: range > 0 ? clamp(r.top / range, 0, 1) : 0
+        };
+        fab.classList.add('is-snapping');
+        placeFab();
+        saveFabPos();
+    };
+    fab.addEventListener('pointerup', endDrag);
+    fab.addEventListener('pointercancel', endDrag);
+
+    window.addEventListener('resize', placeFab);
+    window.addEventListener('orientationchange', placeFab);
+    window.addEventListener('load', placeFab);
+    placeFab();
+}
+
+function onFabClick(e) {
+    if (justDragged) { e.preventDefault(); justDragged = false; return; }
+    openPanel();
+}
+
 /* ---------- Dipanggil dari main.js ---------- */
 export function initAiChat() {
     if (document.getElementById('czRoot')) return;
@@ -295,11 +420,19 @@ export function initAiChat() {
     buildUI();
     renderAll();
 
-    els.fab.addEventListener('click', openPanel);
+    els.fab.addEventListener('click', onFabClick);
+    loadFabPos();
+    initFabDrag();
     els.close.addEventListener('click', closePanel);
     els.clear.addEventListener('click', clearChat);
     els.form.addEventListener('submit', (e) => { e.preventDefault(); sendMessage(els.input.value); });
     els.input.addEventListener('input', autoGrow);
+    els.input.addEventListener('focus', () => { setTimeout(fitPanel, 150); setTimeout(fitPanel, 450); });
+    els.input.addEventListener('blur', () => setTimeout(fitPanel, 150));
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', fitPanel);
+        window.visualViewport.addEventListener('scroll', fitPanel);
+    }
     els.input.addEventListener('keydown', (e) => {
         // Enter = kirim, Shift+Enter = baris baru
         if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
