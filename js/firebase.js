@@ -55,12 +55,30 @@ async function setupAuthListeners() {
     });
 }
 
+// Tanda pengenal isi daftar link (tanpa jumlah klik) untuk mengetahui apakah perlu menggambar ulang
+let lastLinksSignature = '';
+let linksRenderedOnce = false;
+function linksSignature(list) {
+    return JSON.stringify(list.map((l) => {
+        const { clicks, ...rest } = l;
+        return rest;
+    }));
+}
+function updateClickCountsInPlace(list, prev) {
+    const before = new Map(prev.map((l) => [l.id, l.clicks || 0]));
+    list.forEach((l) => {
+        if ((l.clicks || 0) === before.get(l.id)) return;
+        document.querySelectorAll('[data-click-count="' + l.id + '"]').forEach((el) => { el.textContent = l.clicks || 0; });
+    });
+}
+
 let dataSubscribed = false;
 let dataHadError = false;
 
 function subscribeToFirestoreData() {
     dataSubscribed = true;
     dataHadError = false;
+    linksRenderedOnce = false;
     const linksCollectionRef = collection(state.db, 'biolink', 'public', 'links');
     const profileDocRef = doc(state.db, 'biolink', 'public', 'profile', 'header');
 
@@ -86,7 +104,23 @@ function subscribeToFirestoreData() {
             return (b.createdAt || 0) - (a.createdAt || 0);
         });
 
+        // Hemat kerja: data sama persis -> tidak perlu menggambar ulang;
+        // hanya jumlah klik yang berubah -> cukup perbarui angkanya (tanpa membangun ulang seluruh daftar)
+        const sig = linksSignature(fetchedLinks);
+        const prevLinks = state.linksList;
+        const isFirstRender = !linksRenderedOnce;
         state.linksList = fetchedLinks;
+        if (!isFirstRender && sig === lastLinksSignature) {
+            if (!document.getElementById('linksLoading').classList.contains('hidden')) {
+                document.getElementById('linksLoading').classList.add('hidden');
+                document.getElementById('linksContainer').classList.remove('hidden');
+            }
+            updateClickCountsInPlace(fetchedLinks, prevLinks);
+            markAppReady();
+            return;
+        }
+        lastLinksSignature = sig;
+        linksRenderedOnce = true;
         updateFolderDropdownOptions();
         filterLinks();
         

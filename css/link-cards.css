@@ -93,3 +93,13 @@
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
 }
+
+
+/* Performa: ikon & label kecil di dalam daftar link tidak perlu blur latar (backdrop-filter) maupun bayangan besar.
+   Dengan puluhan kartu, efek ini membuat scroll berat. Tampilan nyaris sama karena latarnya sudah gelap. */
+#linksContainer .glass-panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    background: rgba(15, 17, 26, 0.92);
+}

@@ -1,12 +1,12 @@
 /**
  * splash.js
- * Splash screen: tampil minimal 1,1 detik, hilang saat data siap (maksimal 3 detik), lalu memulai murottal.
+ * Splash screen: tampil minimal 0,7 detik, hilang saat data siap (maksimal 3 detik), lalu memulai murottal.
  */
 
 import { initMurottal } from './murottal.js';
 
-// ---- Splash pintar: tampil minimal 1,1 detik, lalu hilang begitu data siap (maks. 3 detik) ----
-const SPLASH_MIN_MS = 1100;
+// ---- Splash pintar: tampil minimal 0,7 detik, lalu hilang begitu data siap (maks. 3 detik) ----
+const SPLASH_MIN_MS = 700;
 const SPLASH_MAX_MS = 3000;
 let appReady = false;
 let splashMinPassed = false;
@@ -29,7 +29,7 @@ export function markAppReady() {
     if (splashMinPassed) dismissSplash();
 }
 
-// Mengatur waktu tampil splash: minimal 1,1 detik, maksimal 3 detik.
+// Mengatur waktu tampil splash: minimal 0,7 detik, maksimal 3 detik.
 // (Dipisah dari startApp agar variabel splash hanya diubah di file splash.js)
 export function startSplashTimers() {
     setTimeout(() => {

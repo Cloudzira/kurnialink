@@ -168,7 +168,7 @@ function createSingleLinkElement(link, isInsideFolder = false) {
 
         <div class="flex items-center gap-1.5 flex-shrink-0">
             <span class="text-[9px] text-slate-400 glass-panel px-1.5 py-0.5 rounded-full flex items-center gap-1 font-mono" title="Jumlah Klik">
-                <i class="fa-solid fa-arrow-pointer text-[8px] text-neon-cyan"></i> ${link.clicks || 0}
+                <i class="fa-solid fa-arrow-pointer text-[8px] text-neon-cyan"></i> <span data-click-count="${link.id}">${link.clicks || 0}</span>
             </span>
 
             ${state.currentUser ? `

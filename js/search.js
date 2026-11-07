@@ -48,3 +48,10 @@ window.clearSearch = function() {
         filterLinks();
     }
 };
+
+// Dipakai kolom pencarian: tunggu sebentar setelah berhenti mengetik, baru menyaring (tidak berat di setiap ketukan)
+let searchTimer = null;
+window.filterLinksDebounced = function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => window.filterLinks(), 140);
+};

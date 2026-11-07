@@ -22,6 +22,15 @@ export function getLinkLightHue(linkId) {
 }
 
 let linkLightLastDraw = 0;
+
+// Saat halaman sedang di-scroll, animasi cahaya dijeda sebentar supaya scroll tetap mulus (terutama di HP)
+let linkLightScrolling = false;
+let linkLightScrollTimer = null;
+window.addEventListener('scroll', () => {
+    linkLightScrolling = true;
+    clearTimeout(linkLightScrollTimer);
+    linkLightScrollTimer = setTimeout(() => { linkLightScrolling = false; }, 140);
+}, { passive: true });
 // Kartu di luar layar tidak dianimasikan (hemat CPU/baterai)
 const linkLightObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
@@ -32,8 +41,8 @@ const linkLightObserver = ('IntersectionObserver' in window)
 function updateLinkLights(now) {
     linkLightAnimFrame = null;
 
-    // batasi ~30 fps: cahaya tetap mulus namun beban jauh lebih ringan
-    if (now - linkLightLastDraw >= 32) {
+    // batasi ~20 fps (putaran 10 detik, jadi tetap terlihat mulus) dan jeda saat scroll / tab tidak terlihat
+    if (!linkLightScrolling && !document.hidden && now - linkLightLastDraw >= 50) {
         linkLightLastDraw = now;
         const elapsed = now - linkLightStartTime;
         linkLightCards.forEach((anim, card) => {
