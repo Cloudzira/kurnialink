@@ -603,6 +603,21 @@
             <h3 id="infoModalTitle" class="text-sm font-bold text-white mb-1">Aplikasi Dikunci</h3>
             <p id="infoModalName" class="hidden text-[11px] font-semibold text-neon-cyan mb-2 break-words"></p>
             <p id="infoModalMsg" class="text-[11px] text-slate-300 leading-relaxed mb-4" style="white-space: pre-line;"></p>
+
+            <!-- Kode akses: hanya tampil untuk link terkunci -->
+            <div id="infoModalCodeWrap" class="hidden mb-3 text-left">
+                <p class="text-[10px] text-slate-400 leading-relaxed mb-1.5 text-center">
+                    <i class="fa-solid fa-key text-amber-400 mr-1"></i>Punya kode akses? Masukkan kode di bawah untuk tetap membuka aplikasi ini.
+                </p>
+                <div class="flex items-center gap-1.5">
+                    <input type="text" id="infoModalCode" placeholder="Masukkan kode" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="40" class="flex-1 min-w-0 glass-input text-xs p-2 rounded-lg text-center tracking-wider">
+                    <button type="button" onclick="submitLockCode()" class="flex-shrink-0 bg-amber-500/90 hover:bg-amber-400 text-slate-900 font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                        Buka
+                    </button>
+                </div>
+                <p id="infoModalCodeErr" class="hidden text-[10px] text-neon-pink mt-1.5 text-center">Kode salah. Coba lagi.</p>
+            </div>
+
             <button type="button" onclick="closeInfoModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-md shadow-cyan-500/20">
                 Mengerti
             </button>

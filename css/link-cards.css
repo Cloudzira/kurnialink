@@ -84,3 +84,12 @@
 #linksContainer .glass-card.sortable-drag {
     transform: skewX(18deg) scale(1.02) !important;
 }
+
+
+/* Kolom kode akses: bergetar saat kode salah */
+#infoModalCode.code-wrong { border-color: rgba(255, 0, 128, .7); animation: codeShake .35s ease; }
+@keyframes codeShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}

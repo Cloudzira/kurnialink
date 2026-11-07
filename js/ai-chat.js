@@ -13,7 +13,12 @@ const MAX_HISTORY = 16;
 const MAX_INPUT = 1000;
 const REQUEST_TIMEOUT_MS = 35000;
 
-const WELCOME = 'Halo! Saya **Cloudz AI** ✨\nSilakan tanya apa saja, saya siap membantu.';
+// Sapaan menyesuaikan jam di perangkat pengguna
+function getWelcome() {
+    const h = new Date().getHours();
+    const greet = h >= 4 && h < 11 ? 'Selamat pagi' : h >= 11 && h < 15 ? 'Selamat siang' : h >= 15 && h < 18 ? 'Selamat sore' : 'Selamat malam';
+    return greet + '! Saya **Cloudz AI** ✨\nSilakan tanya apa saja, saya siap membantu.';
+}
 const SUGGESTIONS = [
     'Motivasi islami hari ini',
     'Tips semangat belajar dan bertumbuh'
@@ -232,7 +237,7 @@ function addTyping() {
 
 function renderAll() {
     els.messages.innerHTML = '';
-    addMessage('model', WELCOME);
+    addMessage('model', getWelcome());
     if (!history.length) {
         const chips = document.createElement('div');
         chips.className = 'cz-chips';
@@ -335,7 +340,10 @@ async function sendMessage(text) {
         const res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: history.slice(-MAX_HISTORY) }),
+            body: JSON.stringify({
+                messages: history.slice(-MAX_HISTORY),
+                clientTime: { hour: new Date().getHours(), minute: new Date().getMinutes() }   // agar jawaban sesuai waktu pengguna
+            }),
             signal: ctrl.signal
         });
 
