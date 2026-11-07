@@ -5,6 +5,7 @@
  */
 
 import { escapeHtml } from './utils.js';
+import { state } from './state.js';
 
 const API_URL = '/api/chat';
 const STORAGE_KEY = 'czai_history_v1';
@@ -39,12 +40,73 @@ function saveHistory() {
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_HISTORY))); } catch (e) { /* abaikan */ }
 }
 
+/* ---------- Alamat dari AI menjadi tombol yang bisa diklik ---------- */
+// Hanya alamat yang benar-benar ada di daftar link halaman ini yang dijadikan tombol.
+// Alamat lain (misalnya hasil karangan AI) tetap tampil sebagai teks biasa, demi keamanan.
+function normalizeUrl(u) {
+    try {
+        const x = new URL(u);
+        if (x.protocol !== 'https:' && x.protocol !== 'http:') return '';
+        return x.host.toLowerCase() + x.pathname.replace(/\/+$/, '') + x.search;
+    } catch (e) { return ''; }
+}
+
+function findKnownLink(url) {
+    const key = normalizeUrl(url);
+    if (!key) return null;
+    const list = Array.isArray(state.linksList) ? state.linksList : [];
+    return list.find((l) => l && !l.isFolder && l.url && normalizeUrl(l.url) === key) || null;
+}
+
+function linkButtonHtml(item, link) {
+    const label = escapeHtml(link.title || 'aplikasi');
+    return '<a class="cz-linkbtn" href="' + escapeHtml(link.url) + '" target="_blank" rel="noopener noreferrer"' +
+        ' data-link-id="' + escapeHtml(link.id || '') + '">' +
+        '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Buka ' + label + '</span></a>';
+}
+
+// Tombol untuk aplikasi terkunci: tidak membuka alamat, tetapi menampilkan jendela "Aplikasi Dikunci"
+function lockedButtonHtml(link) {
+    const label = escapeHtml(link.title || 'aplikasi');
+    return '<a class="cz-linkbtn cz-locked" href="#" role="button"' +
+        ' data-link-id="' + escapeHtml(link.id || '') + '">' +
+        '<i class="fa-solid fa-lock" aria-hidden="true"></i><span>Buka ' + label + '</span></a>';
+}
+
+function findLinkById(id) {
+    const list = Array.isArray(state.linksList) ? state.linksList : [];
+    return list.find((l) => l && l.id === id && !l.isFolder) || null;
+}
+
 /* ---------- Mengubah teks AI menjadi HTML aman (bold, kode, daftar) ---------- */
 function renderMarkdown(text) {
     const blocks = [];
     let s = String(text || '').replace(/```(?:[\w-]+)?\n?([\s\S]*?)```/g, (_, code) => {
         blocks.push(code.replace(/\n$/, ''));
         return '\u0000B' + (blocks.length - 1) + '\u0000';
+    });
+
+    // Ambil alamat (format [teks](alamat) atau alamat polos) sebelum teks di-escape
+    const buttons = [];
+    const takeLink = (url, rawText) => {
+        const link = findKnownLink(url);
+        if (!link) return rawText;   // bukan alamat dari daftar link: biarkan teks biasa
+        buttons.push(linkButtonHtml(url, link));
+        return '\u0000K' + (buttons.length - 1) + '\u0000';
+    };
+    // Kode tombol [[LINK:id]] dari AI (dipakai untuk aplikasi terkunci yang alamatnya disembunyikan)
+    s = s.replace(/\[\[LINK:([A-Za-z0-9_-]{1,64})\]\]/g, (m, id) => {
+        const link = findLinkById(id);
+        if (!link) return '';   // kode tidak dikenal: buang
+        // Kalau ternyata sudah tidak terkunci, jadikan tombol biasa menuju alamatnya
+        buttons.push(link.locked === true ? lockedButtonHtml(link) : (link.url ? linkButtonHtml(link.url, link) : ''));
+        return '\u0000K' + (buttons.length - 1) + '\u0000';
+    });
+    s = s.replace(/\[([^\]\n]{1,100})\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => takeLink(url, label));
+    s = s.replace(/https?:\/\/[^\s<>"'()\[\]]+/g, (m) => {
+        const trail = (m.match(/[.,;:!?]+$/) || [''])[0];
+        const url = trail ? m.slice(0, -trail.length) : m;
+        return takeLink(url, m) + (findKnownLink(url) ? trail : '');
     });
 
     s = escapeHtml(s);
@@ -76,6 +138,7 @@ function renderMarkdown(text) {
     }
     closeList();
 
+    out = out.replace(/\u0000K(\d+)\u0000/g, (_, i) => buttons[Number(i)] || '');
     return out.replace(/\u0000B(\d+)\u0000/g, (_, i) => '<pre><code>' + escapeHtml(blocks[Number(i)]) + '</code></pre>');
 }
 
@@ -423,6 +486,13 @@ export function initAiChat() {
     els.fab.addEventListener('click', onFabClick);
     loadFabPos();
     initFabDrag();
+    // Klik tombol link di jawaban AI: ikut dihitung sebagai klik, sama seperti di daftar link
+    els.messages.addEventListener('click', (e) => {
+        const a = e.target.closest ? e.target.closest('a.cz-linkbtn') : null;
+        if (!a) return;
+        const id = a.getAttribute('data-link-id');
+        if (id && typeof window.handleLinkClick === 'function') window.handleLinkClick(id, e);
+    });
     els.close.addEventListener('click', closePanel);
     els.clear.addEventListener('click', clearChat);
     els.form.addEventListener('submit', (e) => { e.preventDefault(); sendMessage(els.input.value); });

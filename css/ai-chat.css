@@ -255,3 +255,33 @@
 @media (prefers-reduced-motion: reduce) {
     .cz-fab, .cz-panel, .cz-typing i { animation: none; transition: none; }
 }
+
+/* ===== Tombol link di jawaban AI ===== */
+.cz-bubble a.cz-linkbtn {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin: 4px 0 2px; padding: 8px 13px;
+    max-width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 243, 255, 0.5);
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.18), rgba(138, 43, 226, 0.22));
+    color: #fff; font: 700 12px/1.2 'Outfit', 'Inter', sans-serif;
+    text-decoration: none; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.cz-bubble a.cz-linkbtn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cz-bubble a.cz-linkbtn i { font-size: 11px; color: #7df9ff; flex-shrink: 0; }
+.cz-bubble a.cz-linkbtn:hover, .cz-bubble a.cz-linkbtn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 0 14px rgba(0, 243, 255, 0.35);
+    outline: none;
+}
+
+/* Tombol untuk aplikasi terkunci (nuansa amber) */
+.cz-bubble a.cz-linkbtn.cz-locked {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.14), rgba(138, 43, 226, 0.18));
+}
+.cz-bubble a.cz-linkbtn.cz-locked i { color: #fbbf24; }
+.cz-bubble a.cz-linkbtn.cz-locked:hover, .cz-bubble a.cz-linkbtn.cz-locked:focus-visible {
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+}
