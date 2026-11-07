@@ -40,6 +40,7 @@ window.handleAddLink = async function(e) {
     const title = document.getElementById('linkTitle').value.trim();
     const url = document.getElementById('linkUrl').value.trim();
     const desc = document.getElementById('linkDesc').value.trim();
+    const aiNote = document.getElementById('linkAiNote').value.trim().slice(0, 1500);
     const icon = document.getElementById('linkIconValue').value;
     const parentId = document.getElementById('linkFolderParent').value;
     const locked = document.getElementById('linkLocked').checked;
@@ -54,6 +55,7 @@ window.handleAddLink = async function(e) {
             title,
             url: isFolder ? '' : url,
             desc,
+            aiNote,
             icon,
             isFolder,
             parentId: isFolder ? '' : (parentId || ''),
@@ -117,6 +119,7 @@ window.openEditModal = function(id) {
     document.getElementById('editLinkTitle').value = item.title || '';
     document.getElementById('editLinkUrl').value = item.url || '';
     document.getElementById('editLinkDesc').value = item.desc || '';
+    document.getElementById('editLinkAiNote').value = item.aiNote || '';
     document.getElementById('editLinkFolderParent').value = item.parentId || '';
 
     const iconVal = item.icon || (item.isFolder ? 'fa-solid fa-folder' : 'fa-solid fa-globe');
@@ -173,6 +176,7 @@ window.handleSaveEdit = async function(e) {
     const title = document.getElementById('editLinkTitle').value.trim();
     const url = document.getElementById('editLinkUrl').value.trim();
     const desc = document.getElementById('editLinkDesc').value.trim();
+    const aiNote = document.getElementById('editLinkAiNote').value.trim().slice(0, 1500);
     const icon = document.getElementById('editLinkIconValue').value;
     const parentId = document.getElementById('editLinkFolderParent').value;
     const locked = document.getElementById('editLinkLocked').checked;
@@ -182,6 +186,7 @@ window.handleSaveEdit = async function(e) {
         await updateDoc(doc(state.db, 'biolink', 'public', 'links', id), {
             title,
             desc,
+            aiNote,
             icon,
             url: isFolder ? '' : url,
             parentId: isFolder ? '' : parentId,
