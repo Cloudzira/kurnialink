@@ -108,3 +108,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 243, 255, 0.5);
 }
+
+/* Jendela (modal) yang isinya panjang: batasi tinggi sesuai layar dan bisa di-scroll */
+.modal-scroll {
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
