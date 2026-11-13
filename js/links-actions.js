@@ -45,6 +45,7 @@ window.handleAddLink = async function(e) {
     const parentId = document.getElementById('linkFolderParent').value;
     const locked = document.getElementById('linkLocked').checked;
     const lockMessage = document.getElementById('linkLockMsg').value.trim();
+    const lockCode = document.getElementById('linkLockCode').value.trim();   // kosong = pakai kode default
     const btn = document.getElementById('submitAddLinkBtn');
 
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
@@ -63,6 +64,7 @@ window.handleAddLink = async function(e) {
             visible: true,
             locked: isFolder ? false : locked,
             lockMessage: isFolder ? '' : lockMessage,
+            lockCode: isFolder ? '' : lockCode,
             order: state.linksList.length,
             createdAt: Date.now()
         });
@@ -148,6 +150,7 @@ window.openEditModal = function(id) {
     const editLockOption = document.getElementById('editLockOptionContainer');
     document.getElementById('editLinkLocked').checked = item.locked === true;
     document.getElementById('editLockMsg').value = item.lockMessage || '';
+    document.getElementById('editLinkLockCode').value = item.lockCode || '';
     toggleLockFields('edit');
 
     if (item.isFolder) {
@@ -181,6 +184,7 @@ window.handleSaveEdit = async function(e) {
     const parentId = document.getElementById('editLinkFolderParent').value;
     const locked = document.getElementById('editLinkLocked').checked;
     const lockMessage = document.getElementById('editLockMsg').value.trim();
+    const lockCode = document.getElementById('editLinkLockCode').value.trim();   // kosong = pakai kode default
 
     try {
         await updateDoc(doc(state.db, 'biolink', 'public', 'links', id), {
@@ -191,7 +195,8 @@ window.handleSaveEdit = async function(e) {
             url: isFolder ? '' : url,
             parentId: isFolder ? '' : parentId,
             locked: isFolder ? false : locked,
-            lockMessage: isFolder ? '' : lockMessage
+            lockMessage: isFolder ? '' : lockMessage,
+            lockCode: isFolder ? '' : lockCode
         });
 
         closeEditModal();

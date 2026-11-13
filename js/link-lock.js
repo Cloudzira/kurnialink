@@ -1,7 +1,7 @@
 /**
  * link-lock.js
  * Fitur kunci link & jendela info: klik link, kunci/buka kunci oleh admin, dan jendela informasi (Dikunci / Bantuan Install).
- * Link terkunci tetap bisa dibuka pengunjung yang punya kode akses (lihat LOCK_ACCESS_CODE di config.js).
+ * Link terkunci tetap bisa dibuka pengunjung yang punya kode akses (kode per link; kalau kosong memakai LOCK_ACCESS_CODE di config.js).
  */
 
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -54,7 +54,11 @@ window.submitLockCode = function() {
     const link = state.linksList.find(l => l.id === pendingLockedId);
     if (!link) return;
 
-    if (typed && typed === String(LOCK_ACCESS_CODE).trim().toLowerCase()) {
+    // Kode milik link ini; kalau admin tidak mengisi, pakai kode default (LOCK_ACCESS_CODE = "awan")
+    const customCode = String(link.lockCode || '').trim();
+    const validCode = (customCode || String(LOCK_ACCESS_CODE).trim()).toLowerCase();
+
+    if (typed && typed === validCode) {
         const url = link.url;
         window.closeInfoModal();
         if (!url) { showToast('Link ini belum punya alamat', 'error'); return; }

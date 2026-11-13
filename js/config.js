@@ -15,6 +15,6 @@ export const firebaseConfig = {
   appId: "1:812035410453:web:32d495b7e3007d6afb1c1c"
 };
 
-// Kode akses untuk membuka link yang dikunci (tidak peduli huruf besar/kecil). Ganti di sini bila ingin kode lain.
+// Kode akses DEFAULT untuk link terkunci (tidak peduli huruf besar/kecil). Dipakai bila admin tidak mengisi kode khusus pada link tersebut.
 // Catatan: ini kunci "ringan" di sisi pengunjung; cocok untuk menahan pengunjung umum, bukan untuk rahasia penting.
 export const LOCK_ACCESS_CODE = "awan";
