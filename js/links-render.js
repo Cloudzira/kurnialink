@@ -7,6 +7,8 @@ import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/fireb
 import { state } from './state.js';
 import { escapeHtml, safeUrl, showToast } from './utils.js';
 import { getLinkLightHue, registerLinkLightAnimation } from './link-light.js';
+import { isInsta } from './theme.js';
+import { createInstaFolder, createInstaPost, markWideRuns, refreshInstaProfile } from './theme-insta.js';
 
 let sortableInstances = [];
 
@@ -27,21 +29,32 @@ export function renderLinks(linksToRender) {
                 ? 'Tidak ada link atau folder yang cocok dengan pencarian.' 
                 : 'Belum ada link atau folder yang tersedia.';
         }
+        refreshInstaProfile();
         return;
     } else {
         emptyState.classList.add('hidden');
     }
 
     const rootItems = visibleItems.filter(item => !item.parentId);
-    rootItems.forEach(item => {
-        if (item.isFolder) {
-            container.appendChild(createFolderElement(item, visibleItems));
-        } else {
-            container.appendChild(createSingleLinkElement(item));
-        }
-    });
+    if (isInsta()) {
+        // Tema Instagram: link = posting feed (2 kolom), folder = koleksi lebar penuh
+        markWideRuns(rootItems).forEach(({ item, wide }) => {
+            container.appendChild(item.isFolder
+                ? createInstaFolder(item, visibleItems)
+                : createInstaPost(item, { wide }));
+        });
+    } else {
+        rootItems.forEach(item => {
+            if (item.isFolder) {
+                container.appendChild(createFolderElement(item, visibleItems));
+            } else {
+                container.appendChild(createSingleLinkElement(item));
+            }
+        });
+    }
 
     initSortable();
+    refreshInstaProfile();
 }
 
 function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClass = '') {
@@ -207,6 +220,7 @@ window.toggleFolderOpen = function(folderId, event) {
         folderContentDiv.classList.add('open');
         if (chevron) chevron.classList.add('rotate-180');
     }
+    event.currentTarget.setAttribute('aria-expanded', String(state.openFolders.has(folderId)));
 };
 
 function initSortable() {

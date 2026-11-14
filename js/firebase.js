@@ -14,6 +14,7 @@ import { updateFolderDropdownOptions } from './admin-form.js';
 import { loadFallbackLocalData, updateAdminUI } from './admin-ui.js';
 import { subscribeToBanner } from './banner.js';
 import { markAppReady } from './splash.js';
+import { refreshInstaProfile } from './theme-insta.js';
 
 let app; // instance aplikasi Firebase (hanya dipakai di file ini)
 
@@ -119,6 +120,7 @@ function subscribeToFirestoreData() {
                 document.getElementById('linksContainer').classList.remove('hidden');
             }
             updateClickCountsInPlace(fetchedLinks, prevLinks);
+            refreshInstaProfile();
             markAppReady();
             return;
         }

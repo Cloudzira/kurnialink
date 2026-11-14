@@ -25,6 +25,7 @@ import './murottal-data.js';
 import './murottal.js';
 import './banner-admin.js';
 import { initFuturistic } from './futuristic.js';
+import { initTheme } from './theme.js';
 
 // Dijalankan langsung (modul sudah tertunda sampai HTML selesai dibaca),
 // tanpa menunggu semua gambar/font selesai seperti window.onload.
@@ -34,6 +35,7 @@ function startApp() {
     initBanner();
     initAiChat();
     initFuturistic();
+    initTheme();
 
     startSplashTimers();
 

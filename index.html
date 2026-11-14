@@ -15,6 +15,9 @@
     <meta property="og:image" content="https://kurniapedia.my.id/icon-512.png">
     <meta name="twitter:card" content="summary">
 
+    <!-- Tema: terapkan pilihan tema tersimpan sebelum halaman tampil (mencegah kedipan) -->
+    <script src="js/theme-early.js"></script>
+
     <!-- PWA: installable di HP & laptop -->
     <meta name="theme-color" content="#06070b">
     <meta name="application-name" content="Kurniapedia">
@@ -58,6 +61,7 @@
     <link rel="stylesheet" href="css/background.css"> <!-- Latar futuristik -->
     <link rel="stylesheet" href="css/ai-chat.css"> <!-- Cloudz AI (popup chat) -->
     <link rel="stylesheet" href="css/futuristic.css"> <!-- Lapisan efek futuristik tambahan -->
+    <link rel="stylesheet" href="css/theme-insta.css"> <!-- Tema kedua: profil Instagram (aktif bila data-theme="insta") -->
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
@@ -115,9 +119,9 @@
     <div id="profileShell" class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
-        <div class="w-full flex justify-between items-center mb-2.5">
+        <div id="topBar" class="ig-topbar w-full flex justify-between items-center mb-2.5">
             <div class="flex items-center gap-2">
-                <span class="text-[12px] font-bold tracking-widest text-neon-cyan uppercase font-display">Kurniapedia</span>
+                <span class="ig-brand text-[12px] font-bold tracking-widest text-neon-cyan uppercase font-display">Kurniapedia</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -127,6 +131,9 @@
                 </button>
                 <button onclick="shareProfile()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-cyan-500/50 transition-all" title="Bagikan Profile" aria-label="Bagikan Profile">
                     <i class="fa-solid fa-share-nodes text-neon-cyan"></i>
+                </button>
+                <button id="themeToggleBtn" type="button" onclick="toggleTheme()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-cyan-500/50 transition-all" title="Ganti tema" aria-label="Ganti tema">
+                    <i id="themeToggleIcon" class="fa-solid fa-palette text-neon-purple"></i>
                 </button>
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-red-500/50 transition-all" title="Cloudzone" aria-label="Cloudzone">
                     <i id="adminStatusIcon" class="fa-solid fa-lock text-red-500 text-[12px]"></i>
@@ -184,7 +191,7 @@
         </div>
 
         <!-- Header Profile Section -->
-        <div class="text-center w-full flex flex-col items-center mb-6">
+        <div class="ig-profile text-center w-full flex flex-col items-center mb-6">
             <div id="profileFrame" class="relative group mb-3">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur opacity-70 group-hover:opacity-100 transition duration-700"></div>
                 <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%2306070b'/%3E%3Ccircle cx='80' cy='80' r='58' fill='none' stroke='%2300f3ff' stroke-opacity='.45' stroke-width='2'/%3E%3Ctext x='80' y='100' text-anchor='middle' font-family='sans-serif' font-size='56' font-weight='700' fill='%23fff'%3EK%3C/text%3E%3C/svg%3E" 
@@ -193,6 +200,14 @@
                 <span class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full" title="Active Now"></span>
             </div>
             
+
+            <!-- (Tema Instagram) Statistik profil -->
+            <div class="ig-stats ig-only" aria-label="Statistik profil">
+                <div class="ig-stat"><b id="igStatLinks">0</b><span>Link</span></div>
+                <div class="ig-stat"><b id="igStatClicks">0</b><span>Klik</span></div>
+                <div class="ig-stat"><b id="igStatFolders">0</b><span>Folder</span></div>
+            </div>
+
             <h1 id="profileName" class="font-display font-semibold text-l tracking-wide text-white mb-1 flex items-center justify-center gap-1.5">
                 Cloudzone
                 <i id="profileVerified" class="fa-solid fa-circle-check text-neon-cyan text-xs" title="Verified Profile"></i>
@@ -213,6 +228,13 @@
                     <i class="fa-brands fa-threads"></i>
                 </a>
             </div>
+
+            <!-- (Tema Instagram) Tombol aksi & sorotan folder -->
+            <div class="ig-actions ig-only">
+                <button type="button" class="ig-btn ig-btn-primary" onclick="shareProfile()"><i class="fa-solid fa-share-nodes"></i> Bagikan Profil</button>
+                <button type="button" class="ig-btn" onclick="var f=document.getElementById('czFab'); if(f) f.click();"><i class="fa-solid fa-wand-magic-sparkles"></i> Cloudz AI</button>
+            </div>
+            <div id="igHighlights" class="ig-highlights ig-only" role="list" aria-label="Folder"></div>
         </div>
 
         <!-- Banner Slider (di bawah ikon medsos) -->
@@ -238,7 +260,7 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="w-1/2 mx-auto mb-4 relative">
+        <div class="ig-search w-1/2 mx-auto mb-4 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
             <input type="text" id="searchInput" oninput="filterLinksDebounced()" placeholder="Search.." 
                    class="w-full glass-input text-xs pl-9 pr-8 py-2.5 rounded-xl placeholder:text-slate-500">
@@ -350,7 +372,13 @@
             </form>
         </div>
 
+        <!-- (Tema Instagram) Tab feed -->
+        <div class="ig-tabs ig-only" role="tablist">
+            <button type="button" class="ig-tab active" role="tab" aria-selected="true"><i class="fa-solid fa-table-cells-large"></i><span>Feed Link</span></button>
+        </div>
+
         <div id="linksLoading" class="w-full space-y-2.5">
+            <div class="glass-card rounded-xl p-3 h-14 animate-pulse"></div>
             <div class="glass-card rounded-xl p-3 h-14 animate-pulse"></div>
             <div class="glass-card rounded-xl p-3 h-14 animate-pulse"></div>
             <div class="glass-card rounded-xl p-3 h-14 animate-pulse"></div>

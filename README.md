@@ -132,3 +132,17 @@ lalu commit `css/tailwind.css` yang baru.
 - `_headers`: CSP saat ini `Report-Only`. Buka web, cek Console browser; bila tidak ada pelanggaran, ubah nama header menjadi `Content-Security-Policy` agar dipaksakan.
 - Kode link terkunci tetap kunci "ringan" (terbaca publik di Firestore); jangan dipakai untuk rahasia penting.
 - Di Cloudflare: matikan Rocket Loader, dan buat aturan Rate Limiting untuk `/api/chat`.
+
+
+## Tema (baru): Neon & Instagram
+
+Tombol palet di sebelah tombol Bagikan mengganti tema. Pilihan tersimpan di perangkat pengunjung (`localStorage` kunci `kp_theme`).
+
+| Berkas | Fungsi |
+|---|---|
+| `js/theme-early.js` | menerapkan tema tersimpan sebelum halaman tampil (tanpa kedipan) |
+| `js/theme.js` | tombol ganti tema, penyimpanan pilihan, sinkron antar-tab |
+| `js/theme-insta.js` | kartu posting 2 kolom, folder koleksi, statistik profil, sorotan folder |
+| `css/theme-insta.css` | seluruh gaya tema Instagram (aktif hanya bila `<html data-theme="insta">`) |
+
+Tema Instagram memakai data yang sama persis dengan tema neon (Firestore tidak berubah). Mengubah warna: variabel `--ig-*` di bagian atas `css/theme-insta.css`.
