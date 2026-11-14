@@ -5,7 +5,7 @@
 
 import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { state } from './state.js';
-import { escapeHtml, showToast } from './utils.js';
+import { escapeHtml, safeUrl, showToast } from './utils.js';
 import { getLinkLightHue, registerLinkLightAnimation } from './link-light.js';
 
 let sortableInstances = [];
@@ -149,7 +149,7 @@ function createSingleLinkElement(link, isInsideFolder = false) {
                 </div>
             ` : ''}
 
-            <a href="${isLocked ? '#' : escapeHtml(link.url)}" ${isLocked ? '' : 'target="_blank" rel="noopener"'} onclick="window.handleLinkClick('${link.id}', event)" class="flex items-center gap-2 flex-1 min-w-0">
+            <a href="${isLocked ? '#' : escapeHtml(safeUrl(link.url))}" ${isLocked ? '' : 'target="_blank" rel="noopener"'} onclick="window.handleLinkClick('${link.id}', event)" class="flex items-center gap-2 flex-1 min-w-0">
                 <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg glass-panel flex items-center justify-center text-neon-cyan text-xs flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
                     ${renderIconMarkup(link.icon, 'fa-solid fa-globe')}
                 </div>

@@ -68,7 +68,10 @@ function updateClickCountsInPlace(list, prev) {
     const before = new Map(prev.map((l) => [l.id, l.clicks || 0]));
     list.forEach((l) => {
         if ((l.clicks || 0) === before.get(l.id)) return;
-        document.querySelectorAll('[data-click-count="' + l.id + '"]').forEach((el) => { el.textContent = l.clicks || 0; });
+        document.querySelectorAll('[data-click-count="' + l.id + '"]').forEach((el) => {
+            el.textContent = l.clicks || 0;
+            el.classList.remove('count-bump'); void el.offsetWidth; el.classList.add('count-bump');
+        });
     });
 }
 

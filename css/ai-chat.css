@@ -300,20 +300,20 @@
     content: '';
     position: absolute; inset: -1px;
     border-radius: 999px;
-    border: 1px solid rgba(0, 243, 255, 0.35);
+    border: 1px solid rgba(0, 243, 255, 0.5);
     pointer-events: none;
     animation: cz-ping 4s ease-out infinite;
 }
 .cz-fab.is-dragging::before { animation: none; opacity: 0; }
 .cz-fab-icon { animation: cz-twinkle 4s ease-in-out infinite; }
 @keyframes cz-ping {
-    0%   { transform: scale(1);          opacity: 0.35; }
+    0%   { transform: scale(1);          opacity: 0.5; }
     60%  { transform: scale(1.25, 1.55); opacity: 0; }
     100% { transform: scale(1.25, 1.55); opacity: 0; }
 }
 @keyframes cz-twinkle {
     0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(0, 243, 255, 0)); }
-    50%      { transform: scale(1.1);  filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.45)); }
+    50%      { transform: scale(1.1);  filter: drop-shadow(0 0 5px rgba(0, 243, 255, 0.65)); }
 }
 
 /* Isi popup berada di atas lapisan efek */
@@ -327,8 +327,8 @@
     padding: 1px;
     border-radius: inherit;
     pointer-events: none;
-    opacity: 0.6;
-    background: conic-gradient(from var(--cz-angle), transparent 0 60%, rgba(0, 243, 255, 0.55) 78%, rgba(176, 38, 255, 0.45) 90%, transparent 100%);
+    opacity: 0.8;
+    background: conic-gradient(from var(--cz-angle), transparent 0 60%, rgba(0, 243, 255, 0.7) 78%, rgba(176, 38, 255, 0.6) 90%, transparent 100%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
             mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -342,8 +342,8 @@
     content: '';
     position: absolute; left: 0; right: 0; top: -28px; height: calc(100% + 28px);
     background:
-        linear-gradient(rgba(0, 243, 255, 0.025) 1px, transparent 1px) 0 0 / 28px 28px,
-        linear-gradient(90deg, rgba(0, 243, 255, 0.025) 1px, transparent 1px) 0 0 / 28px 28px;
+        linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px) 0 0 / 28px 28px,
+        linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px) 0 0 / 28px 28px;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 40%, #000 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, #000 40%, #000 100%);
     animation: cz-grid 10s linear infinite;
@@ -353,20 +353,20 @@
     content: '';
     position: absolute; inset: 7px;
     background:
-        linear-gradient(rgba(0, 243, 255, 0.5), rgba(0, 243, 255, 0.5)) left bottom / 10px 1px no-repeat,
-        linear-gradient(rgba(0, 243, 255, 0.5), rgba(0, 243, 255, 0.5)) left bottom / 1px 10px no-repeat,
-        linear-gradient(rgba(176, 38, 255, 0.5), rgba(176, 38, 255, 0.5)) right bottom / 10px 1px no-repeat,
-        linear-gradient(rgba(176, 38, 255, 0.5), rgba(176, 38, 255, 0.5)) right bottom / 1px 10px no-repeat;
+        linear-gradient(rgba(0, 243, 255, 0.7), rgba(0, 243, 255, 0.7)) left bottom / 10px 1px no-repeat,
+        linear-gradient(rgba(0, 243, 255, 0.7), rgba(0, 243, 255, 0.7)) left bottom / 1px 10px no-repeat,
+        linear-gradient(rgba(176, 38, 255, 0.7), rgba(176, 38, 255, 0.7)) right bottom / 10px 1px no-repeat,
+        linear-gradient(rgba(176, 38, 255, 0.7), rgba(176, 38, 255, 0.7)) right bottom / 1px 10px no-repeat;
     animation: cz-hud 5s ease-in-out infinite;
 }
-@keyframes cz-hud { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.55; } }
+@keyframes cz-hud { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
 
 /* ----- Kepala: garis energi tipis, avatar, judul ----- */
 .cz-head { overflow: hidden; }
 .cz-head::after {
     content: '';
     position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 243, 255, 0.55) 40%, rgba(176, 38, 255, 0.5) 60%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 243, 255, 0.75) 40%, rgba(176, 38, 255, 0.65) 60%, transparent 100%);
     background-size: 50% 100%; background-repeat: no-repeat;
     animation: cz-flow 5s ease-in-out infinite;
 }
@@ -377,18 +377,18 @@
     content: '';
     position: absolute; inset: -4px;
     border-radius: 14px;
-    border: 1px dashed rgba(0, 243, 255, 0.22);
+    border: 1px dashed rgba(0, 243, 255, 0.35);
     animation: cz-orbit 18s linear infinite;
 }
 .cz-avatar i { animation: cz-twinkle 4s ease-in-out infinite; }
 @keyframes cz-orbit { to { transform: rotate(360deg); } }
 @keyframes cz-avatar-glow {
-    0%, 100% { box-shadow: 0 0 4px rgba(0, 243, 255, 0.12); }
-    50%      { box-shadow: 0 0 10px rgba(0, 243, 255, 0.28); }
+    0%, 100% { box-shadow: 0 0 5px rgba(0, 243, 255, 0.2); }
+    50%      { box-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
 }
 
 .cz-title strong {
-    background: linear-gradient(90deg, #fff 0%, #fff 40%, #bdf8ff 50%, #fff 60%, #fff 100%);
+    background: linear-gradient(90deg, #fff 0%, #fff 40%, #9ff3ff 50%, #fff 60%, #fff 100%);
     background-size: 250% 100%;
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent; color: transparent;
@@ -411,7 +411,7 @@
     position: absolute; inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(110deg, transparent 35%, rgba(125, 249, 255, 0.08) 50%, transparent 65%) no-repeat;
+    background: linear-gradient(110deg, transparent 35%, rgba(125, 249, 255, 0.13) 50%, transparent 65%) no-repeat;
     background-size: 250% 100%;
     background-position: 160% 0;
     animation: cz-sweep 1.2s ease-out 0.1s 1 both;
@@ -431,7 +431,7 @@
 .cz-panel.is-busy::before { animation-duration: 3.5s; }
 .cz-panel.is-busy .cz-head::after { animation-duration: 1.8s; }
 .cz-panel.is-busy .cz-dot { background: #00f3ff; box-shadow: 0 0 8px #00f3ff; animation-duration: 1s; }
-.cz-panel.is-busy .cz-input { border-color: rgba(176, 38, 255, 0.45); }
+.cz-panel.is-busy .cz-input { border-color: rgba(176, 38, 255, 0.6); }
 
 /* ----- Tombol kirim: kilap tipis hanya saat disentuh ----- */
 .cz-send { position: relative; overflow: hidden; }
