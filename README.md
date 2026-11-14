@@ -3,16 +3,12 @@
 Halaman link/folder dengan pengaturan admin ("Cloudzone"), banner slider, pemutar murottal,
 dan PWA yang bisa di-install. Data disimpan di Firebase (Firestore + Auth).
 
-> Versi ini: keamanan diperketat (rules hanya untuk UID admin, header keamanan), lebih cepat (Tailwind statis, ikon dikompres,
-> Cloudz AI tidak lagi menunggu pembacaan halaman) dan ditambah lapisan efek futuristik (`css/futuristic.css`, `js/futuristic.js`).
+> Kode ini **hanya dirapikan** (dipecah per fitur). Fitur dan tampilan sama persis dengan versi sebelumnya.
 
 ## Struktur folder
 
 ```
 kurnialink-main/
-├── _headers            ← header keamanan & cache Cloudflare Pages (CSP masih mode Report-Only)
-├── tailwind.config.js  ← pengaturan Tailwind (warna neon & font) untuk build CSS
-├── src/tailwind.input.css
 ├── index.html          ← kerangka halaman (HTML saja, tanpa CSS/JS di dalamnya)
 ├── manifest.json       ← pengaturan PWA (nama, ikon, warna)
 ├── sw.js               ← Service Worker (cache supaya cepat & bisa offline)
@@ -29,9 +25,7 @@ kurnialink-main/
 │   ├── murottal.css        pemutar murottal
 │   ├── banner.css          banner slider
 │   ├── splash.css          splash screen
-│   ├── background.css      latar futuristik (bintang, aurora, grid)
-│   ├── tailwind.css        HASIL BUILD Tailwind (jangan diedit tangan)
-│   └── futuristic.css      efek tambahan: cahaya kursor, grain, denyut klik, boot splash
+│   └── background.css      latar futuristik (bintang, aurora, grid)
 │
 └── js/                 ← semua logika program, satu file = satu tugas
     ├── main.js             TITIK MASUK: memuat semua file lalu menjalankan aplikasi
@@ -63,7 +57,7 @@ kurnialink-main/
     ├── pwa.js              tombol Install & pendaftaran Service Worker
     ├── pwa-early.js        menangkap event install lebih awal (script biasa)
     ├── splash.js           splash screen
-    └── futuristic.js       teks boot splash, cahaya kursor, pintasan Ctrl+K
+    └── tailwind-config.js  warna & font Tailwind (script biasa)
 ```
 
 ## Cara kerja singkat
@@ -84,7 +78,7 @@ kurnialink-main/
 | Qari / daftar surat / sumber audio      | `js/murottal-data.js`          |
 | Tampilan kartu link atau folder         | `css/link-cards.css`, `css/base.css` |
 | Tampilan banner                         | `css/banner.css`               |
-| Warna neon / font                       | `tailwind.config.js` lalu `npm run build:css` |
+| Warna neon / font                       | `js/tailwind-config.js`        |
 | Lama tampil splash screen               | `js/splash.js`                 |
 | Ikon medsos & footer                    | `index.html`                   |
 | Aturan siapa boleh menulis ke database  | `firestore.rules`              |
@@ -112,23 +106,3 @@ Server membaca daftar link dari Firestore, lalu membuka halaman tiap link untuk 
 (`<meta name="description">` dan judul bagian `h1`-`h3`). Supaya AI paham aplikasi Anda, isi **meta description**
 yang jelas di tiap aplikasi dan isi kolom **deskripsi** link. Link terkunci/tersembunyi dan media sosial tidak dibuka.
 Ringkasan terisi bertahap beberapa menit setelah deploy dan disimpan 12 jam.
-
-## Tailwind (build statis)
-
-`css/tailwind.css` adalah hasil build dan sudah disertakan, jadi **Cloudflare Pages tidak perlu build command**.
-Bangun ulang hanya jika Anda menambah class Tailwind baru di `index.html` atau `js/`:
-
-```
-npm install
-npm run build:css
-```
-lalu commit `css/tailwind.css` yang baru.
-
-## Keamanan
-
-- `firestore.rules`: hanya UID admin yang boleh menulis; pengunjung hanya boleh menambah `clicks` sebanyak 1. Salin isinya ke Firebase Console → Firestore → Rules → Publish.
-- Matikan pendaftaran akun baru: Authentication → Settings → User actions → nonaktifkan "Enable create (sign-up)".
-- Batasi API key Firebase ke domain Anda di Google Cloud Console → Credentials.
-- `_headers`: CSP saat ini `Report-Only`. Buka web, cek Console browser; bila tidak ada pelanggaran, ubah nama header menjadi `Content-Security-Policy` agar dipaksakan.
-- Kode link terkunci tetap kunci "ringan" (terbaca publik di Firestore); jangan dipakai untuk rahasia penting.
-- Di Cloudflare: matikan Rocket Loader, dan buat aturan Rate Limiting untuk `/api/chat`.

@@ -6,7 +6,7 @@
 
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { state } from './state.js';
-import { showToast, safeUrl } from './utils.js';
+import { showToast } from './utils.js';
 import { LOCK_ACCESS_CODE } from './config.js';
 
 let pendingLockedId = null;   // id link terkunci yang sedang ditampilkan di jendela info
@@ -59,9 +59,9 @@ window.submitLockCode = function() {
     const validCode = (customCode || String(LOCK_ACCESS_CODE).trim()).toLowerCase();
 
     if (typed && typed === validCode) {
-        const url = link.url ? safeUrl(link.url) : '';
+        const url = link.url;
         window.closeInfoModal();
-        if (!url || url === '#') { showToast('Link ini belum punya alamat', 'error'); return; }
+        if (!url) { showToast('Link ini belum punya alamat', 'error'); return; }
         window.trackClick(link.id);
         window.open(url, '_blank', 'noopener');
         showToast('Kode benar, membuka ' + (link.title || 'link'));

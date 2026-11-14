@@ -285,3 +285,245 @@
 .cz-bubble a.cz-linkbtn.cz-locked:hover, .cz-bubble a.cz-linkbtn.cz-locked:focus-visible {
     box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
 }
+
+
+/* ==========================================================
+   EFEK FUTURISTIK Cloudz AI
+   Hanya memakai transform/opacity (ringan di HP). Otomatis mati
+   bila perangkat memilih "kurangi gerakan" (lihat bagian paling bawah).
+   ========================================================== */
+
+@property --cz-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+/* ----- Tombol melayang: cincin sonar + ikon berkilau ----- */
+.cz-fab::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 243, 255, 0.7);
+    pointer-events: none;
+    animation: cz-ping 2.8s ease-out infinite;
+}
+.cz-fab.is-dragging::before { animation: none; opacity: 0; }
+.cz-fab-icon { animation: cz-twinkle 3s ease-in-out infinite; }
+@keyframes cz-ping {
+    0%   { transform: scale(1);    opacity: 0.65; }
+    70%  { transform: scale(1.32, 1.7); opacity: 0; }
+    100% { transform: scale(1.32, 1.7); opacity: 0; }
+}
+@keyframes cz-twinkle {
+    0%, 100% { transform: rotate(0) scale(1);        filter: drop-shadow(0 0 0 rgba(0, 243, 255, 0)); }
+    50%      { transform: rotate(14deg) scale(1.18); filter: drop-shadow(0 0 6px rgba(0, 243, 255, 0.95)); }
+}
+
+/* ----- Popup: efek "boot" saat dibuka ----- */
+.cz-panel.open { animation: cz-boot 0.55s cubic-bezier(0.2, 0.9, 0.3, 1); }
+@keyframes cz-boot {
+    0%   { opacity: 0; transform: translateY(22px) scale(0.93); filter: blur(7px) brightness(1.7); }
+    60%  { opacity: 1; filter: blur(0) brightness(1.25); }
+    100% { opacity: 1; transform: none; filter: none; }
+}
+
+/* Semua isi popup berada di atas lapisan efek */
+.cz-head, .cz-messages, .cz-form, .cz-note { position: relative; z-index: 1; }
+
+/* ----- Garis tepi neon yang berputar ----- */
+.cz-panel::before {
+    content: '';
+    position: absolute; inset: 0;
+    z-index: 3;
+    padding: 1.5px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: conic-gradient(from var(--cz-angle), transparent 0 55%, #00f3ff 72%, #b026ff 88%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    animation: cz-spin 6s linear infinite;
+}
+@keyframes cz-spin { to { --cz-angle: 360deg; } }
+
+/* ----- Sinar scan yang menyapu popup ----- */
+.cz-panel::after {
+    content: '';
+    position: absolute; left: 0; right: 0; top: -90px; height: 90px;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.07) 70%, rgba(0, 243, 255, 0.22) 100%, transparent 100%);
+    animation: cz-scan 5.5s linear infinite;
+}
+@keyframes cz-scan { from { transform: translateY(0); } to { transform: translateY(740px); } }
+
+/* ----- Lapisan latar: grid bergerak, partikel melayang, sudut HUD ----- */
+.cz-fx { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+.cz-fx::before {                                   /* grid cyber */
+    content: '';
+    position: absolute; left: 0; right: 0; top: -28px; height: calc(100% + 28px);
+    background:
+        linear-gradient(rgba(0, 243, 255, 0.055) 1px, transparent 1px) 0 0 / 28px 28px,
+        linear-gradient(90deg, rgba(0, 243, 255, 0.055) 1px, transparent 1px) 0 0 / 28px 28px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 35%, #000 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 35%, #000 100%);
+    animation: cz-grid 4s linear infinite;
+}
+@keyframes cz-grid { to { transform: translateY(28px); } }
+.cz-fx::after {                                    /* sudut HUD kiri-kanan bawah */
+    content: '';
+    position: absolute; inset: 7px;
+    opacity: 0.55;
+    background:
+        linear-gradient(#00f3ff, #00f3ff) left bottom / 12px 1.5px no-repeat,
+        linear-gradient(#00f3ff, #00f3ff) left bottom / 1.5px 12px no-repeat,
+        linear-gradient(#b026ff, #b026ff) right bottom / 12px 1.5px no-repeat,
+        linear-gradient(#b026ff, #b026ff) right bottom / 1.5px 12px no-repeat;
+    animation: cz-hud 3.4s ease-in-out infinite;
+}
+@keyframes cz-hud { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
+.cz-fx i {                                         /* partikel */
+    position: absolute; bottom: -12px; left: var(--x, 50%);
+    width: var(--s, 3px); height: var(--s, 3px);
+    border-radius: 50%;
+    background: #00f3ff; box-shadow: 0 0 8px #00f3ff;
+    opacity: 0;
+    animation: cz-float var(--d, 9s) linear var(--dl, 0s) infinite;
+}
+.cz-fx i:nth-child(1) { --x: 8%;  --s: 3px; --d: 9s;  --dl: 0s; }
+.cz-fx i:nth-child(2) { --x: 24%; --s: 2px; --d: 12s; --dl: 2.5s;  background: #b026ff; box-shadow: 0 0 8px #b026ff; }
+.cz-fx i:nth-child(3) { --x: 41%; --s: 3px; --d: 10s; --dl: 5s; }
+.cz-fx i:nth-child(4) { --x: 58%; --s: 2px; --d: 13s; --dl: 1.2s;  background: #b026ff; box-shadow: 0 0 8px #b026ff; }
+.cz-fx i:nth-child(5) { --x: 73%; --s: 3px; --d: 11s; --dl: 3.8s; }
+.cz-fx i:nth-child(6) { --x: 88%; --s: 2px; --d: 14s; --dl: 6.5s;  background: #ff007f; box-shadow: 0 0 8px #ff007f; }
+.cz-fx i:nth-child(7) { --x: 50%; --s: 2px; --d: 15s; --dl: 8s; }
+@keyframes cz-float {
+    0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+    12%  { opacity: 0.75; }
+    85%  { opacity: 0.4; }
+    100% { transform: translateY(-720px) scale(1.1); opacity: 0; }
+}
+
+/* ----- Kepala: garis energi, avatar berorbit, judul berkilau ----- */
+.cz-head { overflow: hidden; }
+.cz-head::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #00f3ff 40%, #b026ff 60%, transparent 100%);
+    background-size: 50% 100%; background-repeat: no-repeat;
+    opacity: 0.8;
+    animation: cz-flow 3.2s ease-in-out infinite;
+}
+@keyframes cz-flow { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+
+.cz-avatar { position: relative; animation: cz-avatar-glow 3s ease-in-out infinite; }
+.cz-avatar::before {                               /* cincin orbit putus-putus */
+    content: '';
+    position: absolute; inset: -5px;
+    border-radius: 15px;
+    border: 1.5px dashed rgba(0, 243, 255, 0.55);
+    animation: cz-orbit 9s linear infinite;
+}
+.cz-avatar i { animation: cz-twinkle 3s ease-in-out infinite; }
+@keyframes cz-orbit { to { transform: rotate(360deg); } }
+@keyframes cz-avatar-glow {
+    0%, 100% { box-shadow: 0 0 6px rgba(0, 243, 255, 0.2); }
+    50%      { box-shadow: 0 0 16px rgba(0, 243, 255, 0.55), 0 0 26px rgba(176, 38, 255, 0.25); }
+}
+
+.cz-title strong {
+    background: linear-gradient(90deg, #fff 0%, #7df9ff 35%, #d9a3ff 55%, #fff 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: cz-shimmer 5s linear infinite;
+}
+@keyframes cz-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+.cz-status { font-weight: 400; }
+.cz-dot { animation: cz-dot 1.8s ease-in-out infinite; }
+@keyframes cz-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.6; } }
+
+/* ----- Pesan: muncul meluncur + kilatan pindai pada balasan AI ----- */
+.cz-row { animation: cz-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.cz-bot  { transform-origin: left bottom; }
+.cz-user { transform-origin: right bottom; }
+@keyframes cz-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.96); filter: blur(3px); }
+    to   { opacity: 1; transform: none; filter: none; }
+}
+.cz-bot .cz-bubble {
+    position: relative;
+    box-shadow: -2px 0 14px -6px rgba(0, 243, 255, 0.55);
+}
+.cz-bot .cz-bubble::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 35%, rgba(125, 249, 255, 0.22) 50%, transparent 65%) no-repeat;
+    background-size: 250% 100%;
+    background-position: 160% 0;
+    animation: cz-sweep 1.1s ease-out 0.15s 1 both;
+}
+@keyframes cz-sweep { from { background-position: 160% 0; } to { background-position: -60% 0; } }
+.cz-user .cz-bubble { animation: cz-user-glow 3.6s ease-in-out infinite; }
+@keyframes cz-user-glow {
+    0%, 100% { box-shadow: 0 4px 14px rgba(6, 182, 212, 0.22); }
+    50%      { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.45); }
+}
+
+/* Saran pertanyaan muncul bergantian */
+.cz-chip { animation: cz-chip-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.cz-chip:nth-child(1) { animation-delay: 0.25s; }
+.cz-chip:nth-child(2) { animation-delay: 0.35s; }
+.cz-chip:nth-child(3) { animation-delay: 0.45s; }
+.cz-chip:nth-child(4) { animation-delay: 0.55s; }
+.cz-chip:nth-child(5) { animation-delay: 0.65s; }
+.cz-chip:nth-child(n+6) { animation-delay: 0.75s; }
+@keyframes cz-chip-in { from { opacity: 0; transform: translateX(-10px) scale(0.94); } to { opacity: 1; transform: none; } }
+.cz-chip:hover { transform: translateY(-1px); box-shadow: 0 0 14px rgba(0, 243, 255, 0.3); }
+
+/* ----- Indikator mengetik: titik bercahaya bergelombang ----- */
+.cz-typing i { box-shadow: 0 0 8px rgba(0, 243, 255, 0.9); }
+
+/* ----- Saat AI berpikir: semua efek mengebut ----- */
+.cz-panel.is-busy::before { animation-duration: 1.6s; }
+.cz-panel.is-busy::after  { animation-duration: 2.2s; }
+.cz-panel.is-busy .cz-head::after { animation-duration: 1s; opacity: 1; height: 3px; }
+.cz-panel.is-busy .cz-fx::before { animation-duration: 1.6s; }
+.cz-panel.is-busy .cz-avatar::before { animation-duration: 2.2s; border-color: rgba(176, 38, 255, 0.85); }
+.cz-panel.is-busy .cz-dot { background: #00f3ff; box-shadow: 0 0 10px #00f3ff; animation-duration: 0.7s; }
+.cz-panel.is-busy .cz-input { border-color: rgba(176, 38, 255, 0.6); }
+
+/* ----- Kotak input & tombol kirim ----- */
+.cz-send { position: relative; overflow: hidden; animation: cz-send-glow 2.8s ease-in-out infinite; }
+.cz-send:disabled { animation: none; }
+.cz-send::after {                                  /* kilap saat disentuh */
+    content: '';
+    position: absolute; top: 0; bottom: 0; left: -60%; width: 50%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+.cz-send:not(:disabled):hover::after { left: 120%; }
+.cz-send i { position: relative; transition: transform 0.25s ease; }
+.cz-send:not(:disabled):hover i { transform: translate(2px, -2px) rotate(-8deg); }
+@keyframes cz-send-glow {
+    0%, 100% { box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3); }
+    50%      { box-shadow: 0 4px 22px rgba(6, 182, 212, 0.65), 0 0 14px rgba(37, 99, 235, 0.4); }
+}
+
+/* ----- Hemat baterai: animasi berhenti saat popup tertutup ----- */
+.cz-panel:not(.open)::before, .cz-panel:not(.open)::after,
+.cz-panel:not(.open) *, .cz-panel:not(.open) *::before, .cz-panel:not(.open) *::after {
+    animation-play-state: paused !important;
+}
+
+/* ----- Hormati pengaturan "kurangi gerakan" ----- */
+@media (prefers-reduced-motion: reduce) {
+    .cz-fab::before, .cz-fab-icon,
+    .cz-panel, .cz-panel::before, .cz-panel::after,
+    .cz-panel *, .cz-panel *::before, .cz-panel *::after {
+        animation: none !important;
+    }
+    .cz-fx i { display: none; }
+}

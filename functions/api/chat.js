@@ -359,9 +359,7 @@ async function buildKnowledge() {
     return !c || now - c.at > (c.ok ? PAGE_TTL_MS : PAGE_FAIL_TTL_MS);
   }).slice(0, PAGE_FETCH_PER_REQUEST);
 
-  // Dijalankan di LATAR BELAKANG (lihat context.waitUntil di getKnowledge): jawaban AI tidak lagi menunggu
-  // halaman dibuka. Ringkasan yang baru terbaca dipakai pada permintaan berikutnya.
-  const warm = Promise.all(todo.map(async (x) => {
+  await Promise.all(todo.map(async (x) => {
     try {
       pageCache.set(x.url, { text: await summarizePage(x.url), at: Date.now(), ok: true });
     } catch (e) {
@@ -370,7 +368,7 @@ async function buildKnowledge() {
     }
   }));
   if (pageCache.size > 500) pageCache.clear();
-  const pending = candidates.filter((x) => !pageCache.has(x.url)).length + (todo.length ? 1 : 0);
+  const pending = candidates.filter((x) => !pageCache.has(x.url)).length;
 
   const line = (x, indent) => {
     let t = indent + '- ' + x.title;
@@ -406,19 +404,17 @@ async function buildKnowledge() {
     }
   }
 
-  return { text: out.join('\n').slice(0, KNOWLEDGE_MAX_CHARS), pending, warm };
+  return { text: out.join('\n').slice(0, KNOWLEDGE_MAX_CHARS), pending };
 }
 
 // Jika gagal, AI tetap berjalan normal (hanya tanpa pengetahuan daftar link).
 // Selama masih ada halaman yang belum dibaca, data diperbarui lebih sering (15 detik) agar cepat terisi.
-async function getKnowledge(ctx) {
+async function getKnowledge() {
   const now = Date.now();
   if (knowledgeCache.text && now < knowledgeCache.expires) return knowledgeCache.text;
   if (!inflight) {
     inflight = buildKnowledge()
       .then((r) => {
-        // Biarkan pembacaan halaman selesai di latar belakang walau jawaban sudah terkirim
-        if (r.warm && ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(r.warm.catch(() => {}));
         knowledgeCache = { text: r.text, expires: Date.now() + (r.pending > 0 ? 15e3 : KNOWLEDGE_TTL_MS) };
         return r.text;
       })
@@ -437,7 +433,7 @@ export async function onRequest(context) {
   return json(405, { error: 'Metode tidak diizinkan.' }, { Allow: 'POST' });
 }
 
-async function handlePost({ request, env, waitUntil }) {
+async function handlePost({ request, env }) {
   if (!isOriginAllowed(request, env)) {
     return json(403, { error: 'Akses ditolak.' });
   }
@@ -454,8 +450,6 @@ async function handlePost({ request, env, waitUntil }) {
   }
 
   // ---------- Validasi isi permintaan ----------
-  const ctype = request.headers.get('Content-Type') || '';
-  if (!/application\/json/i.test(ctype)) return json(415, { error: 'Format permintaan tidak didukung.' });
   const len = Number(request.headers.get('Content-Length') || 0);
   if (len > 60000) return json(413, { error: 'Pesan terlalu besar.' });
 
@@ -473,7 +467,7 @@ async function handlePost({ request, env, waitUntil }) {
     return json(400, { error: 'Pesan tidak valid.' });
   }
 
-  const knowledge = await getKnowledge({ waitUntil });
+  const knowledge = await getKnowledge();
   let today = '';
   try {
     today = new Date().toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });

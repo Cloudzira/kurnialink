@@ -158,11 +158,12 @@ function buildUI() {
         </button>
 
         <section id="czPanel" class="cz-panel" role="dialog" aria-label="Cloudz AI" aria-hidden="true" inert>
+            <div class="cz-fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
             <header class="cz-head">
                 <div class="cz-avatar" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                 <div class="cz-title">
                     <strong>Cloudz AI</strong>
-                    <span><i class="cz-dot"></i> Asisten pintar Kurniapedia</span>
+                    <span><i class="cz-dot"></i> <b id="czStatus" class="cz-status">Asisten pintar Kurniapedia</b></span>
                 </div>
                 <button id="czClear" class="cz-iconbtn" type="button" title="Hapus percakapan" aria-label="Hapus percakapan">
                     <i class="fa-solid fa-trash-can"></i>
@@ -193,7 +194,8 @@ function buildUI() {
         input: document.getElementById('czInput'),
         send: document.getElementById('czSend'),
         clear: document.getElementById('czClear'),
-        close: document.getElementById('czClose')
+        close: document.getElementById('czClose'),
+        status: document.getElementById('czStatus')
     };
 }
 
@@ -258,6 +260,7 @@ function setBusy(v) {
     busy = v;
     els.send.disabled = v;
     els.panel.classList.toggle('is-busy', v);
+    if (els.status) els.status.textContent = v ? 'Sedang berpikir...' : 'Asisten pintar Kurniapedia';
 }
 
 function autoGrow() {

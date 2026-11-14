@@ -4,16 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kurniapedia</title>
-    <meta name="description" content="Kurniapedia - kumpulan link, aplikasi, dan murottal dalam satu ruang digital. Dilengkapi asisten Cloudz AI.">
-    <meta name="color-scheme" content="dark">
-    <link rel="canonical" href="https://kurniapedia.my.id/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Kurniapedia">
-    <meta property="og:title" content="Kurniapedia">
-    <meta property="og:description" content="Kumpulan link, aplikasi, dan murottal dalam satu ruang digital.">
-    <meta property="og:url" content="https://kurniapedia.my.id/">
-    <meta property="og:image" content="https://kurniapedia.my.id/icon-512.png">
-    <meta name="twitter:card" content="summary">
 
     <!-- PWA: installable di HP & laptop -->
     <meta name="theme-color" content="#06070b">
@@ -23,7 +13,7 @@
     <meta name="apple-mobile-web-app-title" content="Kurniapedia">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Tangkap event install PWA lebih awal (js/pwa-early.js) -->
     <script src="js/pwa-early.js"></script>
@@ -35,8 +25,8 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js">
 
-    <!-- Tailwind CSS (build statis: css/tailwind.css; bangun ulang dengan "npm run build:css") -->
-    <link rel="stylesheet" href="css/tailwind.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons CDN (tidak memblokir tampilan) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
@@ -48,6 +38,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"></noscript>
    
+    <!-- Pengaturan Tailwind (warna neon & font) -->
+    <script src="js/tailwind-config.js"></script>
+
     <!-- Gaya tampilan (urutan penting, jangan ditukar) -->
     <link rel="stylesheet" href="css/base.css"> <!-- Dasar & komponen umum -->
     <link rel="stylesheet" href="css/profile-admin.css"> <!-- Profil & panel admin -->
@@ -57,7 +50,6 @@
     <link rel="stylesheet" href="css/splash.css"> <!-- Splash screen -->
     <link rel="stylesheet" href="css/background.css"> <!-- Latar futuristik -->
     <link rel="stylesheet" href="css/ai-chat.css"> <!-- Cloudz AI (popup chat) -->
-    <link rel="stylesheet" href="css/futuristic.css"> <!-- Lapisan efek futuristik tambahan -->
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
