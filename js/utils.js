@@ -34,3 +34,11 @@ export function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+// Hanya izinkan alamat http/https (menolak javascript:, data:, dll.). Mengembalikan '#' bila tidak aman.
+export function safeUrl(u) {
+    try {
+        const p = new URL(String(u || '').trim(), location.href);
+        return (p.protocol === 'https:' || p.protocol === 'http:') ? p.href : '#';
+    } catch (e) { return '#'; }
+}
