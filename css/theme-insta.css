@@ -100,7 +100,7 @@
     border-color: transparent;
 }
 [data-theme="insta"] #themeToggleIcon { transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); }
-[data-theme="insta"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(-24deg) scale(1.1); }
+[data-theme="insta"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(180deg); }
 
 /* ---------- Header profil (grid: foto kiri, statistik kanan) ---------- */
 [data-theme="insta"] .ig-profile {
@@ -111,7 +111,6 @@
         "name   name"
         "bio    bio"
         "social social"
-        "actions actions"
         "hl     hl";
     column-gap: 22px;
     align-items: center;
@@ -182,37 +181,6 @@
     gap: 8px;
     margin-bottom: 14px;
 }
-
-[data-theme="insta"] .ig-actions {
-    display: grid;
-    grid-area: actions;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-[data-theme="insta"] .ig-btn {
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    border-radius: 10px;
-    border: 1px solid var(--ig-line);
-    background: rgba(255, 255, 255, 0.07);
-    color: var(--ig-text);
-    font: 600 12.5px 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-}
-[data-theme="insta"] .ig-btn:hover { background: rgba(255, 255, 255, 0.13); }
-[data-theme="insta"] .ig-btn:active { transform: scale(0.97); }
-[data-theme="insta"] .ig-btn-primary {
-    background: linear-gradient(135deg, #00b4ff, #0072ff);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(0, 114, 255, 0.28);
-}
-[data-theme="insta"] .ig-btn-primary:hover { background: linear-gradient(135deg, #22c0ff, #1a82ff); }
 
 /* Sorotan folder (story highlights) */
 [data-theme="insta"] .ig-highlights {
@@ -366,6 +334,25 @@
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 [data-theme="insta"] .ig-folder .ig-post { background: var(--ig-card-2); }
+/* Cahaya neon yang berputar di tepi kartu (sudut --link-light-angle digerakkan js/link-light.js, sama seperti tema neon) */
+[data-theme="insta"] .ig-post::before {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--link-light-color, #00f3ff) 65%, var(--link-light-highlight, #00ff9d) 72%, transparent 80% 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+[data-theme="insta"] .ig-post:hover::before { opacity: 0.85; }
+[data-theme="insta"] .ig-post.is-hidden::before { opacity: 0.15; }
 [data-theme="insta"] .ig-post:hover {
     transform: translateY(-2px);
     border-color: hsl(var(--h) 90% 62% / 0.5);

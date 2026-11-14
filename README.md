@@ -140,8 +140,8 @@ Tombol palet di sebelah tombol Bagikan mengganti tema. Pilihan tersimpan di pera
 
 | Berkas | Fungsi |
 |---|---|
-| `js/theme-early.js` | menerapkan tema tersimpan sebelum halaman tampil (tanpa kedipan) |
-| `js/theme.js` | tombol ganti tema, penyimpanan pilihan, sinkron antar-tab |
+| `js/theme-early.js` | menerapkan tema tersimpan sebelum halaman tampil, dan berisi `toggleTheme()` (tombol selalu bekerja) |
+| `js/theme.js` | toast & statistik profil saat tema berganti |
 | `js/theme-insta.js` | kartu posting 2 kolom, folder koleksi, statistik profil, sorotan folder |
 | `css/theme-insta.css` | seluruh gaya tema Instagram (aktif hanya bila `<html data-theme="insta">`) |
 

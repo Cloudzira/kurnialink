@@ -9,7 +9,7 @@
 
 import { state } from './state.js';
 import { escapeHtml, safeUrl } from './utils.js';
-import { getLinkLightHue } from './link-light.js';
+import { getLinkLightHue, registerLinkLightAnimation } from './link-light.js';
 
 const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const numberFmt = new Intl.NumberFormat('id-ID', { notation: 'compact', maximumFractionDigits: 1 });
@@ -72,6 +72,9 @@ export function createInstaPost(link, { wide = false } = {}) {
     card.setAttribute('data-id', link.id);
     card.className = 'ig-post' + (wide ? ' ig-wide' : '') + (isHidden ? ' is-hidden' : '') + (isLocked ? ' is-locked' : '');
     card.style.setProperty('--h', hue);
+    card.style.setProperty('--link-light-color', `hsl(${hue} 92% 64%)`);
+    card.style.setProperty('--link-light-highlight', `hsl(${(hue + 48) % 360} 96% 68%)`);
+    registerLinkLightAnimation(card);   // cahaya berputar di tepi kartu, sama seperti tema neon
 
     card.innerHTML = `
         <a href="${href}" ${target} ${click} class="ig-media-link" aria-label="${title}">

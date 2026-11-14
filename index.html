@@ -133,7 +133,7 @@
                     <i class="fa-solid fa-share-nodes text-neon-cyan"></i>
                 </button>
                 <button id="themeToggleBtn" type="button" onclick="toggleTheme()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-cyan-500/50 transition-all" title="Ganti tema" aria-label="Ganti tema">
-                    <i id="themeToggleIcon" class="fa-solid fa-palette text-neon-purple"></i>
+                    <i id="themeToggleIcon" class="fa-solid fa-circle-half-stroke text-neon-cyan"></i>
                 </button>
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-red-500/50 transition-all" title="Cloudzone" aria-label="Cloudzone">
                     <i id="adminStatusIcon" class="fa-solid fa-lock text-red-500 text-[12px]"></i>
@@ -229,11 +229,7 @@
                 </a>
             </div>
 
-            <!-- (Tema Instagram) Tombol aksi & sorotan folder -->
-            <div class="ig-actions ig-only">
-                <button type="button" class="ig-btn ig-btn-primary" onclick="shareProfile()"><i class="fa-solid fa-share-nodes"></i> Bagikan Profil</button>
-                <button type="button" class="ig-btn" onclick="var f=document.getElementById('czFab'); if(f) f.click();"><i class="fa-solid fa-wand-magic-sparkles"></i> Cloudz AI</button>
-            </div>
+            <!-- (Tema Instagram) Sorotan folder -->
             <div id="igHighlights" class="ig-highlights ig-only" role="list" aria-label="Folder"></div>
         </div>
 
