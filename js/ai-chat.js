@@ -158,7 +158,7 @@ function buildUI() {
         </button>
 
         <section id="czPanel" class="cz-panel" role="dialog" aria-label="Cloudz AI" aria-hidden="true" inert>
-            <div class="cz-fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="cz-fx" aria-hidden="true"></div>
             <header class="cz-head">
                 <div class="cz-avatar" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                 <div class="cz-title">
