@@ -6,6 +6,10 @@
 import { state } from './state.js';
 import { escapeHtml, showToast } from './utils.js';
 import { compressAvatarFile } from './profile.js';
+import { fillIconSelects } from './icon-catalog.js';
+
+// Isi daftar ikon (lengkap, dikelompokkan) pada form tambah & edit
+fillIconSelects();
 
 let linkIconPreviewObjectUrl = null;
 let editIconPreviewObjectUrl = null;

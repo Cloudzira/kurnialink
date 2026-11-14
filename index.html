@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="insta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
     <script src="js/theme-early.js"></script>
 
     <!-- PWA: installable di HP & laptop -->
-    <meta name="theme-color" content="#06070b">
+    <meta name="theme-color" content="#05060a">
     <meta name="application-name" content="Kurniapedia">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -218,13 +218,13 @@
 
             <!-- Social Media Icon Bar -->
             <div id="socialMediaRow" class="flex items-center justify-center gap-2.5">
-                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/65 transition-all text-xs">
+                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/65 transition-all text-xs">
                     <i class="fa-brands fa-instagram"></i>
                 </a>
                 <a href="https://tiktok.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple/65 transition-all text-xs">
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
-                <a href="https://www.threads.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/65 transition-all text-xs" aria-label="Threads">
+                <a href="https://www.threads.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/65 transition-all text-xs" aria-label="Threads">
                     <i class="fa-brands fa-threads"></i>
                 </a>
             </div>
@@ -341,19 +341,7 @@
                         </div>
                         <div class="flex-1 min-w-0 space-y-1">
                             <select id="linkIconSelect" onchange="handleIconSelectChange(this.value)" class="w-full glass-input text-[11px] p-1.5 rounded-lg bg-slate-900">
-                                <option value="fa-solid fa-globe">🌐 Web / Umum</option>
-                                <option value="fa-solid fa-folder">📁 Folder Umum</option>
-                                <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
-                                <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
-                                <option value="fa-brands fa-github">🐙 GitHub</option>
-                                <option value="fa-brands fa-instagram">📸 Instagram</option>
-                                <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
-                                <option value="fa-brands fa-youtube">▶️ YouTube</option>
-                                <option value="fa-brands fa-tiktok">🎵 TikTok</option>
-                                <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
-                                <option value="fa-solid fa-briefcase">💼 Portfolio</option>
-                                <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                                <option value="CUSTOM_FILE">📁 Unggah dari File Lokal...</option>
+                                <!-- Opsi ikon diisi oleh js/icon-catalog.js -->
                             </select>
                             <input type="file" id="linkIconLocalFile" accept="image/*" onchange="handleLinkLocalFileSelected(event)" class="hidden w-full glass-input text-[10px] p-1 rounded file:mr-2 file:px-2 file:py-0.5 file:rounded file:border-0 file:bg-cyan-500/20 file:text-cyan-200">
                         </div>
@@ -495,19 +483,7 @@
                         </div>
                         <div class="flex-1 min-w-0 space-y-1">
                             <select id="editLinkIconSelect" onchange="handleEditIconSelectChange(this.value)" class="w-full glass-input text-[11px] p-1.5 rounded-lg bg-slate-900">
-                                <option value="fa-solid fa-globe">🌐 Web / Umum</option>
-                                <option value="fa-solid fa-folder">📁 Folder Umum</option>
-                                <option value="fa-solid fa-box-archive">📦 Koleksi Aplikasi</option>
-                                <option value="fa-solid fa-layer-group">📚 Kategori Produk</option>
-                                <option value="fa-brands fa-github">🐙 GitHub</option>
-                                <option value="fa-brands fa-instagram">📸 Instagram</option>
-                                <option value="fa-brands fa-linkedin">💼 LinkedIn</option>
-                                <option value="fa-brands fa-youtube">▶️ YouTube</option>
-                                <option value="fa-brands fa-tiktok">🎵 TikTok</option>
-                                <option value="fa-brands fa-whatsapp">💬 WhatsApp</option>
-                                <option value="fa-solid fa-briefcase">💼 Portfolio</option>
-                                <option value="fa-solid fa-store">🛍️ Toko Online</option>
-                                <option value="CUSTOM_FILE">📁 Unggah dari File Lokal...</option>
+                                <!-- Opsi ikon diisi oleh js/icon-catalog.js -->
                             </select>
                             <input type="file" id="editLinkIconLocalFile" accept="image/*" onchange="handleEditLinkLocalFileSelected(event)" class="hidden w-full glass-input text-[10px] p-1 rounded file:mr-2 file:px-2 file:py-0.5 file:rounded file:border-0 file:bg-purple-500/20 file:text-purple-200">
                         </div>

@@ -4,7 +4,7 @@
  *  1) menerapkan tema tersimpan sebelum halaman digambar (tanpa kedipan)
  *  2) menyediakan window.toggleTheme() SEGERA, tanpa menunggu modul lain,
  *     sehingga tombol tema selalu berfungsi (juga di HP / browser lama).
- * Tema bawaan = "neon" (tanpa atribut). Tema kedua = "insta".
+ * Tema bawaan = "insta" (data-theme="insta" di <html>). Tema neon = tanpa atribut (dipilih lewat tombol, disimpan sebagai "neon").
  * Modul js/theme.js mendengarkan event "kp-themechange" untuk toast & statistik profil.
  */
 (function () {
@@ -15,9 +15,11 @@
 
     function current() { return root.getAttribute('data-theme') === 'insta' ? 'insta' : 'neon'; }
 
+    // Bawaan = Instagram (atribut sudah ada di <html>). Hanya bila pengunjung pernah memilih neon, atribut dilepas.
     try {
-        if (localStorage.getItem(KEY) === 'insta') root.setAttribute('data-theme', 'insta');
-    } catch (e) { /* localStorage diblokir: pakai tema bawaan */ }
+        if (localStorage.getItem(KEY) === 'neon') root.removeAttribute('data-theme');
+        else root.setAttribute('data-theme', 'insta');
+    } catch (e) { root.setAttribute('data-theme', 'insta'); }
 
     function syncButton() {
         var btn = document.getElementById('themeToggleBtn');
@@ -58,7 +60,7 @@
 
     // Ikuti perubahan tema dari tab lain
     window.addEventListener('storage', function (e) {
-        if (e.key === KEY) apply(e.newValue === 'insta' ? 'insta' : 'neon', false, false);
+        if (e.key === KEY) apply(e.newValue === 'neon' ? 'neon' : 'insta', false, false);
     });
 
     document.addEventListener('DOMContentLoaded', syncButton);

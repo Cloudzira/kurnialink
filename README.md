@@ -136,11 +136,12 @@ lalu commit `css/tailwind.css` yang baru.
 
 ## Tema (baru): Neon & Instagram
 
-Tombol palet di sebelah tombol Bagikan mengganti tema. Pilihan tersimpan di perangkat pengunjung (`localStorage` kunci `kp_theme`).
+Tema bawaan = Instagram. Tombol di sebelah tombol Bagikan mengganti ke tema Neon (dan sebaliknya). Pilihan tersimpan di perangkat pengunjung (`localStorage` kunci `kp_theme`).
 
 | Berkas | Fungsi |
 |---|---|
 | `js/theme-early.js` | menerapkan tema tersimpan sebelum halaman tampil, dan berisi `toggleTheme()` (tombol selalu bekerja) |
+| `js/icon-catalog.js` | daftar ikon link/folder (umum, belajar, media, islami, medsos); tambah ikon di sini |
 | `js/theme.js` | toast & statistik profil saat tema berganti |
 | `js/theme-insta.js` | kartu posting 2 kolom, folder koleksi, statistik profil, sorotan folder |
 | `css/theme-insta.css` | seluruh gaya tema Instagram (aktif hanya bila `<html data-theme="insta">`) |
