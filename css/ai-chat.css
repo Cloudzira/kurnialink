@@ -316,13 +316,6 @@
     50%      { transform: scale(1.1);  filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.45)); }
 }
 
-/* ----- Popup: muncul halus saat dibuka ----- */
-.cz-panel.open { animation: cz-boot 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
-@keyframes cz-boot {
-    0%   { opacity: 0; transform: translateY(14px) scale(0.96); filter: blur(3px); }
-    100% { opacity: 1; transform: none; filter: none; }
-}
-
 /* Isi popup berada di atas lapisan efek */
 .cz-head, .cz-messages, .cz-form, .cz-note { position: relative; z-index: 1; }
 
@@ -462,7 +455,7 @@
          efek samar (kilau, garis tepi) tetap jalan ----- */
 @media (prefers-reduced-motion: reduce) {
     .cz-fab::before,
-    .cz-panel.open, .cz-row, .cz-chip,
+    .cz-row, .cz-chip,
     .cz-avatar::before, .cz-fx::before, .cz-fab-icon, .cz-avatar i {
         animation: none !important;
     }
