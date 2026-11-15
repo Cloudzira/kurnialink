@@ -66,39 +66,48 @@
 }
 
 /* ---------- Bilah atas (menempel di atas saat scroll) ---------- */
+[data-theme="insta"] #topBarSentinel { display: block; height: 1px; margin-bottom: -1px; pointer-events: none; }
 [data-theme="insta"] .ig-topbar {
     position: sticky;
     top: 0;
     z-index: 40;
-    margin: 0 -6px 8px;
+    min-height: 56px;
+    margin: 0 -6px 6px;
     padding: 10px 6px;
-    background: rgba(5, 6, 10, 0.55);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+[data-theme="insta"] .ig-topbar.is-stuck {
+    background: rgba(5, 6, 10, 0.72);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
     backdrop-filter: blur(16px) saturate(140%);
-    border-bottom: 1px solid var(--ig-line);
+    border-bottom-color: var(--ig-line);
 }
+[data-theme="insta"] .ig-topbar > div:last-child { gap: 8px; }
 [data-theme="insta"] .ig-brand {
     font-family: 'Outfit', 'Inter', sans-serif;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.01em;
+    line-height: 1;
     text-transform: none;
-    background: var(--ig-grad);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #00f3ff;
+    text-shadow: 0 0 22px rgba(0, 243, 255, 0.35);
 }
-[data-theme="insta"] .ig-topbar button:not(#installBtn) {
-    width: 36px;
+[data-theme="insta"] .ig-topbar button {
     height: 36px;
-    background: transparent;
-    border-color: transparent;
-    font-size: 15px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--ig-line);
+    font-size: 14px;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
+[data-theme="insta"] .ig-topbar button:not(#installBtn) { width: 36px; }
 [data-theme="insta"] .ig-topbar button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(0, 243, 255, 0.35);
 }
+[data-theme="insta"] .ig-topbar button:active { transform: scale(0.94); }
 [data-theme="insta"] #themeToggleIcon { transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); }
 [data-theme="insta"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(180deg); }
 
@@ -127,7 +136,11 @@
     border: 3px solid var(--ig-bg);
     box-shadow: none;
 }
-[data-theme="insta"] #profileFrame::before { inset: -4px; }
+[data-theme="insta"] #profileFrame::before {
+    inset: -4px;
+    background: conic-gradient(from 0deg, #00f3ff, #b026ff, #ff007f, #b026ff, #00f3ff);
+    animation-duration: 10s;
+}
 [data-theme="insta"] #profileFrame > span {
     width: 16px;
     height: 16px;
@@ -242,6 +255,26 @@
     background: #0a0c14;
     color: #e8f9ff;
     font-size: 20px;
+}
+[data-theme="insta"] .ig-ring-in { position: relative; }
+
+/* Sorotan: ikon aplikasi bergantian di dalam lingkaran */
+[data-theme="insta"] .ig-hl-ico {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: scale(0.4) rotate(-40deg);
+    transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+[data-theme="insta"] .ig-hl-ico.is-active { opacity: 1; transform: none; }
+[data-theme="insta"] .ig-hl-ico.is-leaving { opacity: 0; transform: scale(1.5) rotate(25deg); }
+[data-theme="insta"] .ig-hl.is-pulse .ig-ring { animation: igHlPulse 0.9s ease-out; }
+@keyframes igHlPulse {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.55); }
+    40%  { transform: scale(1.08); box-shadow: 0 0 0 7px rgba(176, 38, 255, 0.0), 0 0 18px rgba(0, 243, 255, 0.45); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
 }
 [data-theme="insta"] .ig-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -637,5 +670,7 @@
     [data-theme="insta"] .ig-go,
     [data-theme="insta"] .ig-ring { transition: none; }
     [data-theme="insta"] .ig-post:hover { transform: none; }
+    [data-theme="insta"] .ig-hl-ico { transition: none; }
+    [data-theme="insta"] .ig-hl.is-pulse .ig-ring { animation: none; }
     [data-theme="insta"] #linksLoading > .glass-card { animation: none; }
 }

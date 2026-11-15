@@ -57,14 +57,9 @@ export function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     if (!(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) return;
 
-    const hadController = !!navigator.serviceWorker.controller;
-    let reloading = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!hadController || reloading) return; // jangan reload pada install pertama
-        reloading = true;
-        window.location.reload();
-    });
-
+    // Catatan: dulu halaman di-reload otomatis saat service worker baru aktif, sehingga aplikasi
+    // "merefresh sendiri" ketika pengunjung sedang membaca. Sekarang tidak lagi: karena sw.js memakai
+    // strategi network-first, versi terbaru otomatis dipakai pada kunjungan/pembukaan berikutnya.
     navigator.serviceWorker.register('sw.js').catch(err => {
         console.warn('Service worker gagal didaftarkan:', err);
     });

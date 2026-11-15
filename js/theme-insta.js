@@ -186,22 +186,65 @@ export function refreshInstaProfile() {
     setText('igStatClicks', numberFmt.format(clicks));
     setText('igStatFolders', numberFmt.format(folders.length));
 
-    renderHighlights(folders);
+    renderHighlights(folders, items);
+    startHighlightTicker();
 }
 
-function renderHighlights(folders) {
+function renderHighlights(folders, items) {
     const box = document.getElementById('igHighlights');
     if (!box) return;
-    const sig = folders.map(f => [f.id, f.title, f.icon && f.icon.length > 80 ? f.icon.length : f.icon, f.visible].join('|')).join('~');
+
+    // Tiap sorotan memuat ikon aplikasi (link) di dalam foldernya; ikon folder dipakai bila folder kosong
+    const data = folders.map(f => {
+        const kids = items.filter(i => !i.isFolder && i.parentId === f.id).slice(0, 8);
+        const icons = kids.length ? kids.map(k => k.icon) : [f.icon];
+        return { f, icons, fallback: kids.length ? 'fa-solid fa-globe' : 'fa-solid fa-folder' };
+    });
+
+    const iconSig = (v) => (isImageIcon(v) ? 'img' + v.length : String(v || ''));
+    const sig = data.map(d => [d.f.id, d.f.title, d.f.visible, d.icons.map(iconSig).join(',')].join('|')).join('~');
     if (sig === lastHighlightSig && box.childElementCount === folders.length) return;
     lastHighlightSig = sig;
 
-    box.innerHTML = folders.map(f => `
+    box.innerHTML = data.map(({ f, icons, fallback }) => `
         <button type="button" role="listitem" class="ig-hl ${f.visible === false ? 'is-hidden' : ''}" onclick="window.igJumpFolder('${f.id}')" title="${escapeHtml(f.title)}">
-            <span class="ig-ring"><span class="ig-ring-in">${iconMarkup(f.icon, 'fa-solid fa-folder')}</span></span>
+            <span class="ig-ring"><span class="ig-ring-in">${icons.map((ic, i) =>
+                `<span class="ig-hl-ico${i === 0 ? ' is-active' : ''}">${iconMarkup(ic, fallback)}</span>`).join('')}</span></span>
             <span class="ig-hl-label">${escapeHtml(f.title)}</span>
         </button>
     `).join('');
+}
+
+/* Animasi sorotan: bergantian satu per satu; setiap giliran, ikon di dalam sorotan berganti ke aplikasi berikutnya */
+let hlTick = 0;
+let hlTimer = null;
+
+function advanceHighlight(hl) {
+    const layers = hl.querySelectorAll('.ig-hl-ico');
+    if (layers.length > 1) {
+        let cur = Array.prototype.findIndex.call(layers, l => l.classList.contains('is-active'));
+        if (cur < 0) cur = 0;
+        const next = (cur + 1) % layers.length;
+        layers[cur].classList.remove('is-active');
+        layers[cur].classList.add('is-leaving');
+        layers[next].classList.add('is-active');
+        setTimeout(() => layers[cur].classList.remove('is-leaving'), 700);
+    }
+    hl.classList.add('is-pulse');
+    setTimeout(() => hl.classList.remove('is-pulse'), 900);
+}
+
+function tickHighlights() {
+    if (document.hidden || document.documentElement.getAttribute('data-theme') !== 'insta') return;
+    const list = document.querySelectorAll('#igHighlights .ig-hl');
+    if (!list.length) return;
+    advanceHighlight(list[hlTick % list.length]);
+    hlTick++;
+}
+
+function startHighlightTicker() {
+    if (hlTimer || REDUCED) return;
+    hlTimer = setInterval(tickHighlights, 1500);
 }
 
 // Ketuk sorotan: buka folder & geser layar ke sana

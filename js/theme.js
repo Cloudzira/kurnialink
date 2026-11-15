@@ -18,6 +18,16 @@ export function isInsta() {
 
 export function initTheme() {
     refreshInstaProfile();
+
+    // Bilah atas (tema Instagram): transparan di puncak halaman, berubah jadi kaca saat di-scroll
+    const bar = document.getElementById('topBar');
+    const sentinel = document.getElementById('topBarSentinel');
+    if (bar && sentinel && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+            bar.classList.toggle('is-stuck', !entry.isIntersecting);
+        }).observe(sentinel);
+    }
+
     document.addEventListener('kp-themechange', (e) => {
         refreshInstaProfile();
         if (e.detail && e.detail.announce) showToast('Tema ' + e.detail.label + ' aktif');
