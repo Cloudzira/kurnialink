@@ -166,7 +166,7 @@
     grid-area: stats;
     align-self: start;
     justify-content: flex-start;
-    gap: 44px;
+    gap: 50px;
     text-align: left;
 }
 [data-theme="insta"] .ig-stat b {
@@ -239,8 +239,8 @@
     display: flex;
     gap: 14px;
     overflow-x: auto;
-    padding: 2px 2px 6px;
-    margin: 0 -2px;
+    padding: 12px 12px 12px;      /* ruang untuk cahaya cincin agar tidak terpotong */
+    margin: -12px -12px -4px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
 }
@@ -309,9 +309,18 @@
 [data-theme="insta"] .ig-hl-ico.is-active { opacity: 1; transform: none; }
 [data-theme="insta"] .ig-hl-ico.is-leaving { opacity: 0; transform: scale(1.5) rotate(25deg); }
 [data-theme="insta"] .ig-hl.is-playing .ig-hl-label { color: #00f3ff; }
-/* Cincin sorotan: putih, tipis */
-[data-theme="insta"] .ig-hl .ig-ring { background: rgba(255, 255, 255, 0.92); padding: 1.5px; }
-[data-theme="insta"] .ig-hl .ig-ring-in { border-width: 2px; }
+/* Cincin sorotan: bulat, tipis, hijau-cyan berpendar (warna sama dengan cincin tombol Cloudz AI / murottal) */
+[data-theme="insta"] .ig-hl .ig-ring {
+    width: 56px;
+    height: 56px;
+    padding: 3px;
+    background: transparent;
+    border: 1px solid rgba(0, 243, 255, 0.45);
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.28);
+}
+[data-theme="insta"] .ig-hl .ig-ring-in { border: 0; font-size: 18px; }
+[data-theme="insta"] .ig-hl { width: 64px; }
+[data-theme="insta"] .ig-hl-label { max-width: 64px; }
 [data-theme="insta"] .ig-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ---------- Banner: bingkai tipis, tanpa HUD neon ---------- */
@@ -739,7 +748,7 @@
 @media (max-width: 360px) {
     [data-theme="insta"] .ig-profile { column-gap: 14px; }
     [data-theme="insta"] #profileFrame > #profileAvatar { width: 76px; height: 76px; }
-    [data-theme="insta"] .ig-stats { gap: 28px; }
+    [data-theme="insta"] .ig-stats { gap: 30px; }
     [data-theme="insta"] .ig-stat b { font-size: 15px; }
     [data-theme="insta"] .ig-brand { font-size: 14px; }
     [data-theme="insta"] .ig-glyph { width: 52px; height: 52px; font-size: 21px; }

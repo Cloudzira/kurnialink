@@ -4,7 +4,7 @@
    - Aset CDN: stale-while-revalidate
    - Firebase/Firestore/Auth TIDAK di-cache (data selalu fresh)
    Naikkan angka VERSION setiap kali mengganti file ini. */
-const VERSION = 'v32';
+const VERSION = 'v33';
 const SHELL_CACHE = 'kurniapedia-shell-' + VERSION;
 const RUNTIME_CACHE = 'kurniapedia-runtime-' + VERSION;
 
@@ -26,6 +26,7 @@ const SHELL_ASSETS = [
   './css/tailwind.css',
   './css/futuristic.css',
   './css/theme-insta.css',
+  './css/update-banner.css',
   './js/admin-form.js',
   './js/admin-ui.js',
   './js/ai-chat.js',

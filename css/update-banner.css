@@ -1,0 +1,75 @@
+/* ==========================================================
+   update-banner.css
+   Kartu notifikasi "Pembaruan tersedia" (js/pwa.js). Berlaku di kedua tema.
+   ========================================================== */
+.kp-update {
+    position: fixed;
+    z-index: 9000;
+    top: max(12px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100vw - 24px), 420px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px 10px 12px;
+    border-radius: 16px;
+    background: rgba(10, 12, 20, 0.94);
+    border: 1px solid rgba(0, 243, 255, 0.35);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 22px rgba(0, 243, 255, 0.18);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    animation: kpUpdateIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+.kp-update.is-leaving { opacity: 0; transform: translate(-50%, -12px); transition: opacity 0.25s ease, transform 0.25s ease; }
+@keyframes kpUpdateIn {
+    from { opacity: 0; transform: translate(-50%, -16px) scale(0.97); }
+    to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.kp-update-ico {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #00f3ff;
+    background: rgba(0, 243, 255, 0.1);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+}
+.kp-update-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.kp-update-text b { font-size: 13px; font-weight: 700; color: #f4f6fb; }
+.kp-update-text span { font-size: 11.5px; line-height: 1.35; color: #98a2b8; }
+.kp-update-btn {
+    flex: none;
+    height: 32px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    font: 700 12px 'Inter', sans-serif;
+    color: #04121a;
+    background: linear-gradient(135deg, #00f3ff, #00b4ff);
+    box-shadow: 0 4px 14px rgba(0, 200, 255, 0.35);
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.2s ease;
+}
+.kp-update-btn:hover { filter: brightness(1.1); }
+.kp-update-btn:active { transform: scale(0.95); }
+.kp-update-x {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #8b93a7;
+    background: transparent;
+    cursor: pointer;
+}
+.kp-update-x:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+@media (prefers-reduced-motion: reduce) {
+    .kp-update { animation: none; }
+}

@@ -53,14 +53,56 @@ window.handleInstallClick = async function() {
     }
 };
 
+/**
+ * Notifikasi pembaruan: saat versi baru aplikasi terpasang (service worker baru mengambil alih),
+ * tampilkan kartu kecil dengan tombol "Perbarui". Halaman TIDAK di-reload otomatis,
+ * jadi pengunjung yang sedang membaca tidak terganggu: mereka memilih sendiri kapan memuat ulang.
+ */
+export function showUpdateBanner() {
+    if (document.getElementById('updateBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'updateBanner';
+    banner.className = 'kp-update';
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-live', 'polite');
+    banner.innerHTML = `
+        <span class="kp-update-ico" aria-hidden="true"><i class="fa-solid fa-circle-arrow-up"></i></span>
+        <div class="kp-update-text">
+            <b>Pembaruan tersedia</b>
+            <span>Muat ulang untuk memakai versi terbaru.</span>
+        </div>
+        <button type="button" class="kp-update-btn" id="updateNowBtn">Perbarui</button>
+        <button type="button" class="kp-update-x" id="updateLaterBtn" aria-label="Tutup">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+    `;
+    document.body.appendChild(banner);
+    banner.querySelector('#updateNowBtn').addEventListener('click', () => window.location.reload());
+    banner.querySelector('#updateLaterBtn').addEventListener('click', () => {
+        banner.classList.add('is-leaving');
+        setTimeout(() => banner.remove(), 300);
+    });
+}
+window.showUpdateBanner = showUpdateBanner;
+
 export function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     if (!(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) return;
 
-    // Catatan: dulu halaman di-reload otomatis saat service worker baru aktif, sehingga aplikasi
-    // "merefresh sendiri" ketika pengunjung sedang membaca. Sekarang tidak lagi: karena sw.js memakai
-    // strategi network-first, versi terbaru otomatis dipakai pada kunjungan/pembukaan berikutnya.
-    navigator.serviceWorker.register('sw.js').catch(err => {
+    // Pemasangan pertama kali (belum ada service worker sebelumnya) bukan pembaruan: jangan tampilkan notifikasi
+    let hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) { hadController = true; return; }
+        showUpdateBanner();
+    });
+
+    navigator.serviceWorker.register('sw.js').then(reg => {
+        // Cek versi baru saat aplikasi dibuka kembali dan tiap 30 menit selama terbuka
+        const check = () => { reg.update().catch(() => {}); };
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+        setInterval(check, 30 * 60 * 1000);
+    }).catch(err => {
         console.warn('Service worker gagal didaftarkan:', err);
     });
 }
