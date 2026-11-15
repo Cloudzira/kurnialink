@@ -282,8 +282,11 @@ function startHighlightTicker() {
     highlightLoop();
 }
 
-// Ketuk sorotan: buka folder, tunggu sampai isinya selesai mengembang, lalu geser layar tepat ke folder & isinya
+// Ketuk sorotan: buka folder lalu geser layar sampai folder + isinya pas di bawah bilah atas.
+// Posisi dihitung ulang di setiap frame, sehingga tetap tepat walau isi folder masih mengembang
+// atau tinggi halaman berubah (tidak berhenti di tengah jalan).
 let focusTimer = null;
+let jumpToken = 0;
 
 window.igJumpFolder = function (id) {
     const content = document.getElementById('folderContent-' + id);
@@ -291,7 +294,6 @@ window.igJumpFolder = function (id) {
     const wrap = content.closest('[data-id]');
     if (!wrap) return;
 
-    const wasOpen = content.classList.contains('open');
     state.openFolders.add(id);
     content.classList.add('open');
     const chev = wrap.querySelector('.chevron-icon');
@@ -299,23 +301,38 @@ window.igJumpFolder = function (id) {
     const head = wrap.querySelector('.folder-header');
     if (head) head.setAttribute('aria-expanded', 'true');
 
-    let done = false;
-    const go = () => {
-        if (done) return;
-        done = true;
-        content.removeEventListener('transitionend', onEnd);
-        // Posisi dihitung SETELAH folder terbuka penuh, jadi folder + isinya pas di layar
-        wrap.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
-        wrap.classList.add('is-focus');
-        clearTimeout(focusTimer);
-        focusTimer = setTimeout(() => wrap.classList.remove('is-focus'), 2200);
-    };
-    const onEnd = (e) => { if (e.target === content && e.propertyName === 'max-height') go(); };
+    wrap.classList.add('is-focus');
+    clearTimeout(focusTimer);
+    focusTimer = setTimeout(() => wrap.classList.remove('is-focus'), 2200);
 
-    if (wasOpen || REDUCED) {
-        go();
-    } else {
-        content.addEventListener('transitionend', onEnd);
-        setTimeout(go, 700);   // cadangan bila transisi tidak terpicu
-    }
+    const token = ++jumpToken;
+    const bar = document.getElementById('topBar');
+    const start = performance.now();
+    const events = ['wheel', 'touchstart', 'keydown', 'mousedown'];
+    let cancelled = false;
+
+    const finish = () => events.forEach(t => window.removeEventListener(t, cancel));
+    const cancel = () => { cancelled = true; finish(); };   // pengunjung menggulir sendiri: hentikan
+    events.forEach(t => window.addEventListener(t, cancel, { passive: true }));
+
+    const step = () => {
+        if (cancelled || token !== jumpToken || !wrap.isConnected) return finish();
+        const offset = (bar ? bar.getBoundingClientRect().height : 56) + 8;
+        const target = Math.max(0, Math.round(wrap.getBoundingClientRect().top + window.scrollY - offset));
+        const cur = window.scrollY;
+        const diff = target - cur;
+        const elapsed = performance.now() - start;
+
+        let next = target;
+        if (!REDUCED && Math.abs(diff) > 1) {
+            const move = diff * 0.22;
+            next = cur + (Math.abs(move) < 2 ? Math.sign(diff) * Math.min(2, Math.abs(diff)) : move);
+        }
+        window.scrollTo({ top: next, left: 0, behavior: 'instant' });
+
+        // lanjut sampai folder selesai mengembang (~0,9 dtk) dan posisi sudah pas; batas aman 2,5 dtk
+        if (elapsed < 900 || (Math.abs(diff) > 1 && elapsed < 2500)) requestAnimationFrame(step);
+        else finish();
+    };
+    requestAnimationFrame(step);
 };
