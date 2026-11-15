@@ -162,12 +162,12 @@
 }
 
 [data-theme="insta"] .ig-stats {
-    display: grid;
+    display: flex;
     grid-area: stats;
     align-self: start;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    text-align: center;
+    justify-content: flex-start;
+    gap: 22px;
+    text-align: left;
 }
 [data-theme="insta"] .ig-stat b {
     display: block;
@@ -184,6 +184,8 @@
 
 [data-theme="insta"] #profileName {
     grid-area: name;
+    letter-spacing: 0.02em;
+    text-align: left;
     align-self: end;
     justify-content: flex-start;
     min-width: 0;
