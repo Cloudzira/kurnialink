@@ -96,13 +96,14 @@
 }
 [data-theme="insta"] .ig-topbar.is-stuck::before { opacity: 1; }
 [data-theme="insta"] .ig-topbar > div:last-child { gap: 8px; }
+/* Judul: gaya sama dengan tema neon (font display, huruf kapital, renggang), ukuran menyesuaikan tombol 36px */
+.ig-brand { font-size: 16px; }
 [data-theme="insta"] .ig-brand {
-    font-family: 'Outfit', 'Inter', sans-serif;
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.1em;
     line-height: 1;
-    text-transform: none;
+    text-transform: uppercase;
     color: #00f3ff;
     text-shadow: 0 0 22px rgba(0, 243, 255, 0.35);
 }
@@ -169,14 +170,14 @@
 }
 [data-theme="insta"] .ig-stat b {
     display: block;
-    font: 700 19px/1.1 'Outfit', 'Inter', sans-serif;
+    font: 700 16px/1.1 'Outfit', 'Inter', sans-serif;
     color: var(--ig-text);
     font-variant-numeric: tabular-nums;
 }
 [data-theme="insta"] .ig-stat span {
     display: block;
-    margin-top: 4px;
-    font-size: 12px;
+    margin-top: 3px;
+    font-size: 11px;
     color: var(--ig-muted);
 }
 
@@ -664,7 +665,8 @@
 @media (max-width: 360px) {
     [data-theme="insta"] .ig-profile { column-gap: 14px; }
     [data-theme="insta"] #profileFrame > #profileAvatar { width: 76px; height: 76px; }
-    [data-theme="insta"] .ig-stat b { font-size: 17px; }
+    [data-theme="insta"] .ig-stat b { font-size: 15px; }
+    [data-theme="insta"] .ig-brand { font-size: 16px; }
     [data-theme="insta"] .ig-glyph { width: 52px; height: 52px; font-size: 21px; }
     [data-theme="insta"] .ig-title { font-size: 12.5px; }
     [data-theme="insta"] .ig-host { display: none; }
