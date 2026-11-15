@@ -590,7 +590,7 @@
 [data-theme="insta"] .ig-folder {
     grid-column: 1 / -1;
     overflow: hidden;
-    scroll-margin-top: 72px;
+    scroll-margin-top: 68px;
     background: var(--ig-card);
     border: 1px solid var(--ig-line);
     border-radius: 18px;
@@ -599,6 +599,13 @@
 [data-theme="insta"] .ig-folder:hover {
     border-color: rgba(0, 243, 255, 0.32);
     box-shadow: 0 0 24px rgba(0, 243, 255, 0.08);
+}
+/* Penanda singkat saat folder dituju dari sorotan */
+[data-theme="insta"] .ig-folder.is-focus { animation: igFolderFocus 2.2s ease-out; }
+@keyframes igFolderFocus {
+    0%   { border-color: rgba(0, 243, 255, 0.9); box-shadow: 0 0 0 3px rgba(0, 243, 255, 0.22), 0 0 34px rgba(0, 243, 255, 0.35); }
+    70%  { border-color: rgba(0, 243, 255, 0.5); box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.10), 0 0 22px rgba(0, 243, 255, 0.18); }
+    100% { border-color: var(--ig-line); box-shadow: none; }
 }
 [data-theme="insta"] .ig-folder.is-hidden { opacity: 0.55; border-style: dashed; }
 [data-theme="insta"] .ig-folder-head {
@@ -689,5 +696,6 @@
     [data-theme="insta"] .ig-post:hover { transform: none; }
     [data-theme="insta"] .ig-hl-ico { transition: none; }
     [data-theme="insta"] .ig-hl.is-pulse .ig-ring { animation: none; }
+    [data-theme="insta"] .ig-folder.is-focus { animation: none; border-color: rgba(0, 243, 255, 0.6); }
     [data-theme="insta"] #linksLoading > .glass-card { animation: none; }
 }

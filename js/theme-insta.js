@@ -282,18 +282,40 @@ function startHighlightTicker() {
     highlightLoop();
 }
 
-// Ketuk sorotan: buka folder & geser layar ke sana
+// Ketuk sorotan: buka folder, tunggu sampai isinya selesai mengembang, lalu geser layar tepat ke folder & isinya
+let focusTimer = null;
+
 window.igJumpFolder = function (id) {
     const content = document.getElementById('folderContent-' + id);
     if (!content) return;
     const wrap = content.closest('[data-id]');
+    if (!wrap) return;
+
+    const wasOpen = content.classList.contains('open');
     state.openFolders.add(id);
     content.classList.add('open');
-    if (wrap) {
-        const chev = wrap.querySelector('.chevron-icon');
-        if (chev) chev.classList.add('rotate-180');
-        const head = wrap.querySelector('.folder-header');
-        if (head) head.setAttribute('aria-expanded', 'true');
+    const chev = wrap.querySelector('.chevron-icon');
+    if (chev) chev.classList.add('rotate-180');
+    const head = wrap.querySelector('.folder-header');
+    if (head) head.setAttribute('aria-expanded', 'true');
+
+    let done = false;
+    const go = () => {
+        if (done) return;
+        done = true;
+        content.removeEventListener('transitionend', onEnd);
+        // Posisi dihitung SETELAH folder terbuka penuh, jadi folder + isinya pas di layar
         wrap.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        wrap.classList.add('is-focus');
+        clearTimeout(focusTimer);
+        focusTimer = setTimeout(() => wrap.classList.remove('is-focus'), 2200);
+    };
+    const onEnd = (e) => { if (e.target === content && e.propertyName === 'max-height') go(); };
+
+    if (wasOpen || REDUCED) {
+        go();
+    } else {
+        content.addEventListener('transitionend', onEnd);
+        setTimeout(go, 700);   // cadangan bila transisi tidak terpicu
     }
 };
