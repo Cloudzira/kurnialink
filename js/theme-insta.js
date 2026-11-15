@@ -33,14 +33,14 @@ function hostOf(url) {
 }
 
 // Tombol admin (urutan, kunci, tampil/sembunyi, edit, hapus). Hanya muncul saat admin login.
-function adminBar(item, { isFolder }) {
+function adminBar(item, { isFolder, drag = true }) {
     if (!state.currentUser) return '';
     const isHidden = item.visible === false;
     const isLocked = item.locked === true;
     const id = item.id;
     return `
         <div class="ig-admin" onclick="event.stopPropagation()">
-            <span class="drag-handle ig-abtn" title="Tarik untuk mengubah urutan"><i class="fa-solid fa-grip-vertical"></i></span>
+            ${drag ? '<span class="drag-handle ig-abtn" title="Tarik untuk mengubah urutan"><i class="fa-solid fa-grip-vertical"></i></span>' : ''}
             ${isFolder ? '' : `
             <button type="button" class="ig-abtn ${isLocked ? 'is-lock' : ''}" onclick="window.toggleLinkLock('${id}',${!isLocked})" title="${isLocked ? 'Buka Kunci' : 'Kunci Link'}" aria-label="${isLocked ? 'Buka Kunci' : 'Kunci Link'}">
                 <i class="fa-solid ${isLocked ? 'fa-lock' : 'fa-lock-open'}"></i>
@@ -102,68 +102,136 @@ export function createInstaPost(link, { wide = false } = {}) {
     return card;
 }
 
-/* ---------- Folder = koleksi (lebar penuh), isinya grid 2 kolom ---------- */
-export function createInstaFolder(folder, allVisibleItems) {
-    const wrap = document.createElement('section');
-    const isHidden = folder.visible === false;
-    const isOpen = state.openFolders.has(folder.id);
-    const children = allVisibleItems.filter(i => i.parentId === folder.id);
+/* ---------- Tab: Feed Link + folder ---------- */
+let activeTab = 'feed';
+let tabSig = '';
+let tabSortable = null;
+let onTabReorder = null;
 
-    wrap.setAttribute('data-id', folder.id);
-    wrap.className = 'ig-folder' + (isHidden ? ' is-hidden' : '');
+export function setTabReorder(fn) { onTabReorder = fn; }
 
-    wrap.innerHTML = `
-        <div class="folder-header ig-folder-head" onclick="window.toggleFolderOpen('${folder.id}', event)" role="button" tabindex="0" aria-expanded="${isOpen}">
-            <span class="ig-ring"><span class="ig-ring-in">${iconMarkup(folder.icon, 'fa-solid fa-folder')}</span></span>
-            <div class="ig-folder-info">
-                <div class="ig-folder-top">
-                    <h3 class="ig-folder-title">${escapeHtml(folder.title)}</h3>
-                    <span class="ig-count">${children.length} Item</span>
-                    ${isHidden ? '<span class="ig-chip">Hidden</span>' : ''}
-                </div>
-                ${folder.desc ? `<p class="ig-folder-desc">${escapeHtml(folder.desc)}</p>` : ''}
-            </div>
-            <i class="fa-solid fa-chevron-down chevron-icon ig-chev ${isOpen ? 'rotate-180' : ''}" aria-hidden="true"></i>
-        </div>
-        ${adminBar(folder, { isFolder: true })}
-        <div id="folderContent-${folder.id}" class="folder-content ig-grid ${isOpen ? 'open' : ''}">
-            ${children.length === 0 ? '<p class="ig-empty">Folder ini masih kosong.</p>' : ''}
-        </div>
-    `;
-
-    const content = wrap.querySelector('.folder-content');
-    markWideRuns(children).forEach(({ item, wide }) => {
-        if (item.isFolder) return;
-        content.appendChild(createInstaPost(item, { wide }));
-    });
-
-    // Buka-tutup folder juga bisa dengan keyboard
-    const head = wrap.querySelector('.ig-folder-head');
-    head.addEventListener('keydown', (e) => {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target === head) {
-            e.preventDefault();
-            head.click();
-        }
-    });
-    return wrap;
+function isSearchingNow() {
+    const input = document.getElementById('searchInput');
+    return !!(input && input.value.trim().length > 0);
 }
 
-/**
- * Link terakhir yang "sendirian" di baris sebelum folder (lebar penuh) dibuat melebar
- * supaya tidak ada lubang kosong di grid. Link terakhir di paling bawah tetap setengah lebar.
- */
-export function markWideRuns(items) {
-    const out = items.map(item => ({ item, wide: false }));
-    let run = 0;
-    for (let i = 0; i < out.length; i++) {
-        if (out[i].item.isFolder) {
-            if (run % 2 === 1) out[i - 1].wide = true;
-            run = 0;
-        } else {
-            run++;
-        }
+function currentFolders() {
+    return state.linksList.filter(i => i.isFolder && !i.parentId && (state.currentUser || i.visible !== false));
+}
+
+export function renderTabs() {
+    const box = document.getElementById('igTabs');
+    if (!box) return;
+
+    const folders = currentFolders();
+    if (activeTab !== 'feed' && !folders.some(f => f.id === activeTab)) activeTab = 'feed';
+    const searching = isSearchingNow();
+
+    const iconSig = (v) => (isImageIcon(v) ? 'img' + v.length : String(v || ''));
+    const sig = [activeTab, searching, state.currentUser ? 1 : 0,
+        folders.map(f => [f.id, f.title, f.visible, iconSig(f.icon)].join('|')).join('~')].join('#');
+    if (sig === tabSig && box.querySelector('.ig-tabs-scroll')) return;
+    tabSig = sig;
+
+    const prev = box.querySelector('.ig-tabs-scroll');
+    const keepLeft = prev ? prev.scrollLeft : 0;
+
+    if (tabSortable) { tabSortable.destroy(); tabSortable = null; }
+
+    box.innerHTML = `<div class="ig-tabs-scroll${searching ? ' is-searching' : ''}" role="tablist">
+        <button type="button" role="tab" class="ig-tab ig-tab-feed${activeTab === 'feed' ? ' active' : ''}" aria-selected="${activeTab === 'feed'}" onclick="window.igSelectTab('feed')">
+            <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span class="ig-tab-label">Feed Link</span>
+        </button>
+        ${folders.map(f => `
+        <button type="button" role="tab" data-id="${f.id}" class="ig-tab ig-tab-folder${activeTab === f.id ? ' active' : ''}${f.visible === false ? ' is-hidden' : ''}" aria-selected="${activeTab === f.id}" onclick="window.igSelectTab('${f.id}')" title="${escapeHtml(f.title)}">
+            <span class="ig-tab-ico">${iconMarkup(f.icon, 'fa-solid fa-folder')}</span><span class="ig-tab-label">${escapeHtml(f.title)}</span>
+        </button>`).join('')}
+    </div>`;
+
+    const scroller = box.querySelector('.ig-tabs-scroll');
+    scroller.scrollLeft = keepLeft;
+    const act = scroller.querySelector('.ig-tab.active');
+    if (act && activeTab !== 'feed') {
+        const left = act.offsetLeft - (scroller.clientWidth - act.offsetWidth) / 2;
+        scroller.scrollTo({ left: Math.max(0, left), behavior: REDUCED ? 'auto' : 'smooth' });
     }
-    return out;
+
+    // Admin: urutan tab folder bisa diubah dengan menahan lalu menggeser tab
+    if (state.currentUser && !searching && typeof Sortable !== 'undefined' && onTabReorder) {
+        tabSortable = new Sortable(scroller, {
+            animation: 150,
+            draggable: '.ig-tab-folder',
+            delay: 300,
+            delayOnTouchOnly: true,
+            touchStartThreshold: 6,
+            ghostClass: 'sortable-ghost',
+            onStart: () => { state.isDraggingActive = true; },
+            onEnd: async () => {
+                state.isDraggingActive = false;
+                await onTabReorder(scroller);
+            }
+        });
+    }
+}
+
+function switchAnimation() {
+    const c = document.getElementById('linksContainer');
+    if (!c || REDUCED) return;
+    c.classList.remove('ig-switching');
+    void c.offsetWidth;
+    c.classList.add('ig-switching');
+    setTimeout(() => c.classList.remove('ig-switching'), 450);
+}
+
+function resetSearch() {
+    const input = document.getElementById('searchInput');
+    if (input && input.value) input.value = '';
+}
+
+window.igSelectTab = function (id) {
+    const searching = isSearchingNow();
+    if (id === activeTab && !searching) return;
+    activeTab = id;
+    resetSearch();
+    switchAnimation();
+    window.filterLinks();
+};
+
+/* ---------- Isi feed sesuai tab aktif ---------- */
+export function renderInstaFeed(container, visibleItems, isSearching) {
+    const folder = (!isSearching && activeTab !== 'feed')
+        ? currentFolders().find(f => f.id === activeTab) || null
+        : null;
+    if (!isSearching && !folder) activeTab = 'feed';
+
+    let list;
+    if (isSearching) list = visibleItems.filter(i => !i.isFolder);
+    else if (folder) list = visibleItems.filter(i => !i.isFolder && i.parentId === folder.id);
+    else list = visibleItems.filter(i => !i.isFolder && !i.parentId);
+
+    if (folder) {
+        const bar = document.createElement('div');
+        bar.className = 'ig-tabinfo' + (folder.visible === false ? ' is-hidden' : '');
+        bar.innerHTML = `
+            <div class="ig-tabinfo-text">
+                <div class="ig-tabinfo-top">
+                    <h3>${escapeHtml(folder.title)}</h3>
+                    <span class="ig-count">${list.length} Item</span>
+                    ${folder.visible === false ? '<span class="ig-chip">Hidden</span>' : ''}
+                </div>
+                ${folder.desc ? `<p>${escapeHtml(folder.desc)}</p>` : ''}
+            </div>
+            ${adminBar(folder, { isFolder: true, drag: false })}`;
+        container.appendChild(bar);
+    }
+
+    if (list.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'ig-empty';
+        empty.textContent = folder ? 'Folder ini masih kosong.' : 'Belum ada link di feed ini.';
+        container.appendChild(empty);
+    }
+    list.forEach(item => container.appendChild(createInstaPost(item)));
 }
 
 /* ---------- Statistik & sorotan di header profil ---------- */
@@ -186,6 +254,7 @@ export function refreshInstaProfile() {
     setText('igStatClicks', numberFmt.format(clicks));
     setText('igStatFolders', numberFmt.format(folders.length));
 
+    renderTabs();
     renderHighlights(folders, items);
     startHighlightTicker();
 }
@@ -282,57 +351,20 @@ function startHighlightTicker() {
     highlightLoop();
 }
 
-// Ketuk sorotan: buka folder lalu geser layar sampai folder + isinya pas di bawah bilah atas.
-// Posisi dihitung ulang di setiap frame, sehingga tetap tepat walau isi folder masih mengembang
-// atau tinggi halaman berubah (tidak berhenti di tengah jalan).
-let focusTimer = null;
-let jumpToken = 0;
-
+// Ketuk sorotan: pindah ke tab folder tersebut, lalu geser layar sampai tab + isinya pas di bawah bilah atas
 window.igJumpFolder = function (id) {
-    const content = document.getElementById('folderContent-' + id);
-    if (!content) return;
-    const wrap = content.closest('[data-id]');
-    if (!wrap) return;
+    if (!currentFolders().some(f => f.id === id)) return;
+    activeTab = id;
+    resetSearch();
+    switchAnimation();
+    window.filterLinks();
 
-    state.openFolders.add(id);
-    content.classList.add('open');
-    const chev = wrap.querySelector('.chevron-icon');
-    if (chev) chev.classList.add('rotate-180');
-    const head = wrap.querySelector('.folder-header');
-    if (head) head.setAttribute('aria-expanded', 'true');
-
-    wrap.classList.add('is-focus');
-    clearTimeout(focusTimer);
-    focusTimer = setTimeout(() => wrap.classList.remove('is-focus'), 2200);
-
-    const token = ++jumpToken;
-    const bar = document.getElementById('topBar');
-    const start = performance.now();
-    const events = ['wheel', 'touchstart', 'keydown', 'mousedown'];
-    let cancelled = false;
-
-    const finish = () => events.forEach(t => window.removeEventListener(t, cancel));
-    const cancel = () => { cancelled = true; finish(); };   // pengunjung menggulir sendiri: hentikan
-    events.forEach(t => window.addEventListener(t, cancel, { passive: true }));
-
-    const step = () => {
-        if (cancelled || token !== jumpToken || !wrap.isConnected) return finish();
-        const offset = (bar ? bar.getBoundingClientRect().height : 56) + 8;
-        const target = Math.max(0, Math.round(wrap.getBoundingClientRect().top + window.scrollY - offset));
-        const cur = window.scrollY;
-        const diff = target - cur;
-        const elapsed = performance.now() - start;
-
-        let next = target;
-        if (!REDUCED && Math.abs(diff) > 1) {
-            const move = diff * 0.22;
-            next = cur + (Math.abs(move) < 2 ? Math.sign(diff) * Math.min(2, Math.abs(diff)) : move);
-        }
-        window.scrollTo({ top: next, left: 0, behavior: 'instant' });
-
-        // lanjut sampai folder selesai mengembang (~0,9 dtk) dan posisi sudah pas; batas aman 2,5 dtk
-        if (elapsed < 900 || (Math.abs(diff) > 1 && elapsed < 2500)) requestAnimationFrame(step);
-        else finish();
-    };
-    requestAnimationFrame(step);
+    requestAnimationFrame(() => {
+        const tabs = document.getElementById('igTabs');
+        const bar = document.getElementById('topBar');
+        if (!tabs) return;
+        const offset = (bar ? bar.getBoundingClientRect().height : 56) + 6;
+        const top = Math.max(0, Math.round(tabs.getBoundingClientRect().top + window.scrollY - offset));
+        window.scrollTo({ top, left: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+    });
 };

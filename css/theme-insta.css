@@ -166,7 +166,7 @@
     grid-area: stats;
     align-self: start;
     justify-content: flex-start;
-    gap: 22px;
+    gap: 44px;
     text-align: left;
 }
 [data-theme="insta"] .ig-stat b {
@@ -308,16 +308,10 @@
 }
 [data-theme="insta"] .ig-hl-ico.is-active { opacity: 1; transform: none; }
 [data-theme="insta"] .ig-hl-ico.is-leaving { opacity: 0; transform: scale(1.5) rotate(25deg); }
-[data-theme="insta"] .ig-hl.is-playing .ig-ring {
-    box-shadow: 0 0 0 3px rgba(0, 243, 255, 0.16), 0 0 20px rgba(0, 243, 255, 0.4);
-}
 [data-theme="insta"] .ig-hl.is-playing .ig-hl-label { color: #00f3ff; }
-[data-theme="insta"] .ig-hl.is-pulse .ig-ring { animation: igHlPulse 0.9s ease-out; }
-@keyframes igHlPulse {
-    0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.55); }
-    40%  { transform: scale(1.08); box-shadow: 0 0 0 7px rgba(176, 38, 255, 0.0), 0 0 18px rgba(0, 243, 255, 0.45); }
-    100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
-}
+/* Cincin sorotan: putih, tipis */
+[data-theme="insta"] .ig-hl .ig-ring { background: rgba(255, 255, 255, 0.92); padding: 1.5px; }
+[data-theme="insta"] .ig-hl .ig-ring-in { border-width: 2px; }
 [data-theme="insta"] .ig-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ---------- Banner: bingkai tipis, tanpa HUD neon ---------- */
@@ -344,35 +338,82 @@
     border-color: transparent;
 }
 
-/* ---------- Tab feed ---------- */
-[data-theme="insta"] .ig-tabs {
+/* ---------- Tab: Feed Link + folder (berjajar ke kanan, bisa digeser) ---------- */
+[data-theme="insta"] .ig-tabs { display: block; width: 100%; margin: 2px 0 12px; }
+[data-theme="insta"] .ig-tabs-scroll {
     display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: 2px 0 12px;
+    overflow-x: auto;
     border-top: 1px solid var(--ig-line);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
+[data-theme="insta"] .ig-tabs-scroll::-webkit-scrollbar { display: none; }
 [data-theme="insta"] .ig-tab {
+    flex: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     margin-top: -1px;
-    padding: 11px 18px 0;
+    padding: 12px 16px 2px;
     border: 0;
     border-style: solid;
     border-width: 2px 0 0 0;
+    border-color: transparent;
     background: none;
     color: var(--ig-muted);
     font: 600 11px 'Inter', sans-serif;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    cursor: default;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease;
 }
+[data-theme="insta"] .ig-tab:hover { color: var(--ig-text); }
 [data-theme="insta"] .ig-tab.active {
     color: var(--ig-text);
     border-image: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f) 1;
 }
-[data-theme="insta"] .ig-tab i { font-size: 13px; }
+[data-theme="insta"] .is-searching .ig-tab.active { color: var(--ig-muted); border-image: none; border-color: transparent; }
+[data-theme="insta"] .ig-tab.is-hidden { opacity: 0.55; }
+[data-theme="insta"] .ig-tab > i { font-size: 13px; }
+[data-theme="insta"] .ig-tab-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    border-radius: 50%;
+    font-size: 13px;
+}
+[data-theme="insta"] .ig-tab-label { max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Judul folder + tombol admin di atas isi tab */
+[data-theme="insta"] .ig-tabinfo {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 2px 2px;
+}
+[data-theme="insta"] .ig-tabinfo.is-hidden { opacity: 0.6; }
+[data-theme="insta"] .ig-tabinfo-text { min-width: 0; }
+[data-theme="insta"] .ig-tabinfo-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+[data-theme="insta"] .ig-tabinfo h3 {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ig-text);
+}
+[data-theme="insta"] .ig-tabinfo p { margin-top: 2px; font-size: 12px; color: var(--ig-muted); }
+[data-theme="insta"] .ig-tabinfo .ig-admin { flex: none; gap: 2px; padding: 0; border: 0; background: none; }
+
+/* Animasi saat berpindah tab */
+[data-theme="insta"] #linksContainer.ig-switching > * { animation: igTabIn 0.35s ease both; }
+@keyframes igTabIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Grid 2 kolom (halaman utama & isi folder) ---------- */
 [data-theme="insta"] #linksContainer:not(.hidden),
@@ -698,6 +739,7 @@
 @media (max-width: 360px) {
     [data-theme="insta"] .ig-profile { column-gap: 14px; }
     [data-theme="insta"] #profileFrame > #profileAvatar { width: 76px; height: 76px; }
+    [data-theme="insta"] .ig-stats { gap: 28px; }
     [data-theme="insta"] .ig-stat b { font-size: 15px; }
     [data-theme="insta"] .ig-brand { font-size: 14px; }
     [data-theme="insta"] .ig-glyph { width: 52px; height: 52px; font-size: 21px; }
@@ -721,7 +763,6 @@
     [data-theme="insta"] .ig-ring { transition: none; }
     [data-theme="insta"] .ig-post:hover { transform: none; }
     [data-theme="insta"] .ig-hl-ico { transition: none; }
-    [data-theme="insta"] .ig-hl.is-pulse .ig-ring { animation: none; }
-    [data-theme="insta"] .ig-folder.is-focus { animation: none; border-color: rgba(0, 243, 255, 0.6); }
+    [data-theme="insta"] #linksContainer.ig-switching > * { animation: none; }
     [data-theme="insta"] #linksLoading > .glass-card { animation: none; }
 }

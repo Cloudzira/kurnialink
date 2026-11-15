@@ -8,7 +8,7 @@ import { state } from './state.js';
 import { escapeHtml, safeUrl, showToast } from './utils.js';
 import { getLinkLightHue, registerLinkLightAnimation } from './link-light.js';
 import { isInsta } from './theme.js';
-import { createInstaFolder, createInstaPost, markWideRuns, refreshInstaProfile } from './theme-insta.js';
+import { renderInstaFeed, refreshInstaProfile, setTabReorder } from './theme-insta.js';
 
 let sortableInstances = [];
 
@@ -37,12 +37,8 @@ export function renderLinks(linksToRender) {
 
     const rootItems = visibleItems.filter(item => !item.parentId);
     if (isInsta()) {
-        // Tema Instagram: link = posting feed (2 kolom), folder = koleksi lebar penuh
-        markWideRuns(rootItems).forEach(({ item, wide }) => {
-            container.appendChild(item.isFolder
-                ? createInstaFolder(item, visibleItems)
-                : createInstaPost(item, { wide }));
-        });
+        // Tema Instagram: tab "Feed Link" + satu tab per folder; isi tab tampil sebagai posting 2 kolom
+        renderInstaFeed(container, visibleItems, isSearching);
     } else {
         rootItems.forEach(item => {
             if (item.isFolder) {
@@ -274,3 +270,6 @@ async function updateOrderFromDOM(containerEl) {
         showToast('Gagal menyimpan urutan', 'error');
     }
 }
+
+// Urutan tab folder (tema Instagram) disimpan dengan cara yang sama seperti urutan daftar
+setTabReorder(updateOrderFromDOM);

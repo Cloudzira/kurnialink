@@ -360,9 +360,11 @@
             </form>
         </div>
 
-        <!-- (Tema Instagram) Tab feed -->
-        <div class="ig-tabs ig-only" role="tablist">
-            <button type="button" class="ig-tab active" role="tab" aria-selected="true"><i class="fa-solid fa-table-cells-large"></i><span>Feed Link</span></button>
+        <!-- (Tema Instagram) Tab: "Feed Link" + satu tab per folder (diisi js/theme-insta.js) -->
+        <div id="igTabs" class="ig-tabs ig-only">
+            <div class="ig-tabs-scroll" role="tablist">
+                <button type="button" class="ig-tab ig-tab-feed active" role="tab" aria-selected="true"><i class="fa-solid fa-table-cells-large"></i><span class="ig-tab-label">Feed Link</span></button>
+            </div>
         </div>
 
         <div id="linksLoading" class="w-full space-y-2.5">
