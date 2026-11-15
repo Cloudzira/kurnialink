@@ -97,9 +97,9 @@
 [data-theme="insta"] .ig-topbar.is-stuck::before { opacity: 1; }
 [data-theme="insta"] .ig-topbar > div:last-child { gap: 8px; }
 /* Judul: gaya sama dengan tema neon (font display, huruf kapital, renggang), ukuran menyesuaikan tombol 36px */
-.ig-brand { font-size: 16px; }
+.ig-brand { font-size: 14px; }
 [data-theme="insta"] .ig-brand {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.1em;
     line-height: 1;
@@ -128,8 +128,8 @@
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas:
+        "avatar name"
         "avatar stats"
-        "name   name"
         "bio    bio"
         "social social"
         "hl     hl";
@@ -164,6 +164,7 @@
 [data-theme="insta"] .ig-stats {
     display: grid;
     grid-area: stats;
+    align-self: start;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
     text-align: center;
@@ -183,8 +184,10 @@
 
 [data-theme="insta"] #profileName {
     grid-area: name;
+    align-self: end;
     justify-content: flex-start;
-    margin: 14px 0 2px;
+    min-width: 0;
+    margin: 0 0 10px;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 0;
@@ -194,17 +197,38 @@
     grid-area: bio;
     max-width: none;
     padding: 0;
-    margin: 0 0 12px;
+    margin: 14px 0 12px;
     font-size: 12px;
     line-height: 1.5;
     color: #c9cfdd;
     text-align: left;
 }
-[data-theme="insta"] #socialMediaRow {
+/* Baris medsos (kiri) + pemutar murottal (kanan) */
+.ig-social-line { display: contents; }
+[data-theme="insta"] .ig-social-line {
     grid-area: social;
-    justify-content: flex-start;
-    gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     margin-bottom: 14px;
+}
+[data-theme="insta"] #socialMediaRow { justify-content: flex-start; gap: 8px; flex: none; }
+[data-theme="insta"] #murottalRow {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    justify-content: flex-end;
+}
+[data-theme="insta"] #murottalRow .murottal-wrap { min-width: 0; }
+[data-theme="insta"] #murottalRow .murottal-pill { padding-right: 10px; }
+/* panel daftar surat rata kanan agar tidak keluar layar */
+[data-theme="insta"] .murottal-panel { left: auto; right: 0; transform: none; }
+[data-theme="insta"] .murottal-panel.open { animation-name: igMurottalPop; }
+@keyframes igMurottalPop {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Sorotan folder (story highlights) */
@@ -673,7 +697,7 @@
     [data-theme="insta"] .ig-profile { column-gap: 14px; }
     [data-theme="insta"] #profileFrame > #profileAvatar { width: 76px; height: 76px; }
     [data-theme="insta"] .ig-stat b { font-size: 15px; }
-    [data-theme="insta"] .ig-brand { font-size: 16px; }
+    [data-theme="insta"] .ig-brand { font-size: 14px; }
     [data-theme="insta"] .ig-glyph { width: 52px; height: 52px; font-size: 21px; }
     [data-theme="insta"] .ig-title { font-size: 12.5px; }
     [data-theme="insta"] .ig-host { display: none; }
