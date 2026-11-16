@@ -3,6 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS KRITIS SPLASH: ditulis langsung di sini supaya splash langsung tampil di frame pertama (tidak menunggu file CSS lain) -->
+    <style>
+        html, body { background: #06070b; margin: 0; }
+        #splashScreen { position: fixed; inset: 0; z-index: 100; background: #06070b; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 1.5rem; box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
+        #splashScreen .sp-top { padding-top: 2rem; }
+        #splashScreen .sp-badge { display: inline-block; padding: 6px 14px; border-radius: 999px; font: 10px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; color: #00f3ff; background: rgba(15,17,26,.8); border: 1px solid rgba(6,182,212,.3); }
+        #splashScreen .sp-badge i { color: #b026ff; margin-right: 4px; }
+        #splashScreen .sp-center { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 20rem; margin: auto 0; }
+        #splashScreen .sp-logo-wrap { position: relative; margin-bottom: 1.5rem; }
+        #splashScreen .sp-glow { position: absolute; inset: -8px; border-radius: 50%; background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f); filter: blur(16px); opacity: .6; }
+        #splashScreen .sp-logo { position: relative; width: 6rem; height: 6rem; border-radius: 50%; border: 2px solid rgba(34,211,238,.5); background: rgba(2,6,23,.8); padding: 4px; box-sizing: border-box; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,.5); }
+        #splashScreen .sp-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+        #splashScreen .sp-title { margin: 0 0 8px; font-family: Outfit, Inter, system-ui, sans-serif; font-weight: 700; font-size: 1.125rem; letter-spacing: .05em; color: #fff; }
+        #splashScreen .sp-sub { margin: 0 0 2rem; font-size: 11px; font-weight: 300; letter-spacing: .025em; color: #94a3b8; }
+        #splashScreen .sp-bar { width: 12rem; height: 6px; background: #0f172a; border-radius: 999px; overflow: hidden; padding: 2px; box-sizing: border-box; border: 1px solid rgba(255,255,255,.05); }
+        #splashScreen .sp-bar > div { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f); }
+        #splashScreen #splashStatusText { display: block; margin-top: 10px; font: 10px/1.2 ui-monospace, Menlo, Consolas, monospace; color: #64748b; }
+        #splashScreen .sp-foot { padding-bottom: 1rem; text-align: center; font-size: 11px; color: #64748b; }
+        #splashScreen { transition: opacity .6s cubic-bezier(.4,0,.2,1), visibility .6s ease; }
+        #splashScreen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        @keyframes spPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(0,243,255,.4)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(176,38,255,.7)); } }
+        @keyframes spLoad { 0% { width: 0; } 50% { width: 75%; } 100% { width: 100%; } }
+        #splashScreen .splash-logo-anim { animation: spPulse 3s ease-in-out infinite; }
+        #splashScreen .splash-loader-bar { animation: spLoad 1.1s cubic-bezier(.4,0,.2,1) forwards; }
+    </style>
+    <link rel="preload" as="image" href="favicon.png">
     <title>Kurniapedia</title>
     <meta name="description" content="Kurniapedia - kumpulan link, aplikasi, dan murottal dalam satu ruang digital. Dilengkapi asisten Cloudz AI.">
     <meta name="color-scheme" content="dark">
@@ -39,7 +65,7 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js">
 
     <!-- Tailwind CSS (build statis: css/tailwind.css; bangun ulang dengan "npm run build:css") -->
-    <link rel="stylesheet" href="css/tailwind.css">
+    <link rel="stylesheet" href="css/tailwind.css" media="print" onload="this.media='all'">
     <!-- FontAwesome Icons CDN (tidak memblokir tampilan) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"></noscript>
@@ -52,17 +78,18 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"></noscript>
    
     <!-- Gaya tampilan (urutan penting, jangan ditukar) -->
-    <link rel="stylesheet" href="css/base.css"> <!-- Dasar & komponen umum -->
-    <link rel="stylesheet" href="css/profile-admin.css"> <!-- Profil & panel admin -->
-    <link rel="stylesheet" href="css/link-cards.css"> <!-- Kartu link -->
-    <link rel="stylesheet" href="css/murottal.css"> <!-- Pemutar murottal -->
-    <link rel="stylesheet" href="css/banner.css"> <!-- Banner slider -->
-    <link rel="stylesheet" href="css/splash.css"> <!-- Splash screen -->
-    <link rel="stylesheet" href="css/background.css"> <!-- Latar futuristik -->
-    <link rel="stylesheet" href="css/ai-chat.css"> <!-- Cloudz AI (popup chat) -->
-    <link rel="stylesheet" href="css/futuristic.css"> <!-- Lapisan efek futuristik tambahan -->
-    <link rel="stylesheet" href="css/update-banner.css"> <!-- Notifikasi pembaruan aplikasi -->
-    <link rel="stylesheet" href="css/theme-insta.css"> <!-- Tema kedua: profil Instagram (aktif bila data-theme="insta") -->
+    <link rel="stylesheet" href="css/base.css" media="print" onload="this.media='all'"> <!-- Dasar & komponen umum -->
+    <link rel="stylesheet" href="css/profile-admin.css" media="print" onload="this.media='all'"> <!-- Profil & panel admin -->
+    <link rel="stylesheet" href="css/link-cards.css" media="print" onload="this.media='all'"> <!-- Kartu link -->
+    <link rel="stylesheet" href="css/murottal.css" media="print" onload="this.media='all'"> <!-- Pemutar murottal -->
+    <link rel="stylesheet" href="css/banner.css" media="print" onload="this.media='all'"> <!-- Banner slider -->
+    <link rel="stylesheet" href="css/splash.css" media="print" onload="this.media='all'"> <!-- Splash screen -->
+    <link rel="stylesheet" href="css/background.css" media="print" onload="this.media='all'"> <!-- Latar futuristik -->
+    <link rel="stylesheet" href="css/ai-chat.css" media="print" onload="this.media='all'"> <!-- Cloudz AI (popup chat) -->
+    <link rel="stylesheet" href="css/futuristic.css" media="print" onload="this.media='all'"> <!-- Lapisan efek futuristik tambahan -->
+    <link rel="stylesheet" href="css/update-banner.css" media="print" onload="this.media='all'"> <!-- Notifikasi pembaruan aplikasi -->
+    <link rel="stylesheet" href="css/theme-insta.css" media="print" onload="this.media='all'"> <!-- Tema kedua: profil Instagram (aktif bila data-theme="insta") -->
+    <noscript><link rel="stylesheet" href="css/tailwind.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/profile-admin.css"><link rel="stylesheet" href="css/link-cards.css"><link rel="stylesheet" href="css/murottal.css"><link rel="stylesheet" href="css/banner.css"><link rel="stylesheet" href="css/splash.css"><link rel="stylesheet" href="css/background.css"><link rel="stylesheet" href="css/ai-chat.css"><link rel="stylesheet" href="css/futuristic.css"><link rel="stylesheet" href="css/update-banner.css"><link rel="stylesheet" href="css/theme-insta.css"></noscript>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
@@ -76,43 +103,27 @@
         <div class="fx-vignette"></div>
     </div>
 
-    <!-- FUTURISTIC & PROFESSIONAL SPLASH SCREEN DENGAN FOTO ICON LOKAL -->
-    <div id="splashScreen" class="fixed inset-0 z-[100] bg-[#06070b] flex flex-col items-center justify-between p-6 select-none">
-        <!-- Top space / badge -->
-        <div class="pt-8">
-            <span class="px-3.5 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase glass-panel text-neon-cyan border-cyan-500/30">
-                <i class="fa-solid fa-shield-halved mr-1 text-neon-purple"></i> Secure Environment
-            </span>
+    <!-- SPLASH SCREEN (gaya inline di <head>, jadi langsung tampil di frame pertama) -->
+    <div id="splashScreen">
+        <div class="sp-top">
+            <span class="sp-badge"><i class="fa-solid fa-shield-halved"></i> Secure Environment</span>
         </div>
 
-        <!-- Center Main Splash Content -->
-        <div class="flex flex-col items-center text-center max-w-xs my-auto">
-            <div class="relative mb-6">
-                <div class="absolute -inset-2 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full blur-lg opacity-60 animate-pulse"></div>
-                <div class="relative w-24 h-24 rounded-full glass-panel flex items-center justify-center border-2 border-cyan-400/50 splash-logo-anim bg-slate-950/80 shadow-2xl p-1 overflow-hidden">
-                    <img src="favicon.png" alt="Icon Kurniapedia" class="w-full h-full object-cover rounded-full">
+        <div class="sp-center">
+            <div class="sp-logo-wrap">
+                <div class="sp-glow"></div>
+                <div class="sp-logo splash-logo-anim">
+                    <img src="favicon.png" alt="Icon Kurniapedia" width="96" height="96">
                 </div>
             </div>
-            
-            <h2 class="font-display font-bold text-l tracking-wider text-white mb-2">
-                KURNIAPEDIA
-            </h2>
-            <p class="text-[11px] text-slate-400 font-light mb-8 tracking-wide">
-                Inisialisasi Sistem Ruang Digital...
-            </p>
-
-            <!-- Futuristic Progress Bar -->
-            <div class="w-48 h-1.5 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-white/5">
-                <div class="h-full bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full splash-loader-bar"></div>
-            </div>
-            <span id="splashStatusText" class="text-[10px] text-slate-500 mt-2.5 font-mono">Loading modules...</span>
+            <h2 class="sp-title">KURNIAPEDIA</h2>
+            <p class="sp-sub">Inisialisasi Sistem Ruang Digital...</p>
+            <div class="sp-bar"><div class="splash-loader-bar"></div></div>
+            <span id="splashStatusText">Loading modules...</span>
         </div>
 
-        <!-- Splash Screen Footer -->
-        <div class="pb-4 text-center">
-            <p class="text-[11px] text-slate-500">
-                Crafted with <span style="color: #ff007f;">♥</span> by <span style="color: #00f2fe; font-weight: 600; text-shadow: 0 0 10px rgba(0,242,254,0.4);">Kurniapedia</span> 2026
-            </p>
+        <div class="sp-foot">
+            Crafted with <span style="color: #ff007f;">♥</span> by <span style="color: #00f2fe; font-weight: 600; text-shadow: 0 0 10px rgba(0,242,254,0.4);">Kurniapedia</span> 2026
         </div>
     </div>
     <!-- END SPLASH SCREEN -->
