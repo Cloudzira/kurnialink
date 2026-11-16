@@ -54,7 +54,7 @@ window.handleInstallClick = async function() {
 };
 
 /**
- * Notifikasi pembaruan: saat versi baru aplikasi terpasang (service worker baru mengambil alih),
+ * Notifikasi pembaruan: saat web dibuka dan ternyata ada versi baru (service worker baru mengambil alih),
  * tampilkan kartu kecil dengan tombol "Perbarui". Halaman TIDAK di-reload otomatis,
  * jadi pengunjung yang sedang membaca tidak terganggu: mereka memilih sendiri kapan memuat ulang.
  */
@@ -98,10 +98,8 @@ export function registerServiceWorker() {
     });
 
     navigator.serviceWorker.register('sw.js').then(reg => {
-        // Cek versi baru saat aplikasi dibuka kembali dan tiap 30 menit selama terbuka
-        const check = () => { reg.update().catch(() => {}); };
-        document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
-        setInterval(check, 30 * 60 * 1000);
+        // Cek versi baru SEKALI saja, ketika web dibuka. Tidak ada pengecekan berkala selama web terbuka.
+        reg.update().catch(() => {});
     }).catch(err => {
         console.warn('Service worker gagal didaftarkan:', err);
     });
