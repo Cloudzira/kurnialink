@@ -15,6 +15,8 @@ let splashDismissed = false;
 function dismissSplash() {
     if (splashDismissed) return;
     splashDismissed = true;
+    window.__splashDone = true;
+    window.dispatchEvent(new Event('kp-splash-done')); // memberi tahu modul lain (mis. notifikasi pembaruan)
     const splash = document.getElementById('splashScreen');
     if (splash) {
         splash.classList.add('fade-out');
