@@ -47,7 +47,7 @@ export function releaseAvatarPreviewUrl() {
     avatarPreviewObjectUrl = null;
 }
 
-function previewSelectedAvatar(event) {
+window.previewSelectedAvatar = function previewSelectedAvatar(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -67,15 +67,15 @@ function previewSelectedAvatar(event) {
     avatarPreviewObjectUrl = URL.createObjectURL(file);
     document.getElementById('editProfileAvatarPreview').src = avatarPreviewObjectUrl;
     document.getElementById('avatarUploadStatus').innerText = `Foto dipilih: ${file.name}`;
-}
+};
 
-function previewAvatarUrl(value) {
+window.previewAvatarUrl = function previewAvatarUrl(value) {
     if (!value.trim()) return;
     releaseAvatarPreviewUrl();
     document.getElementById('editProfileAvatarFile').value = '';
     document.getElementById('editProfileAvatarPreview').src = getSafeAvatarUrl(value.trim());
     document.getElementById('avatarUploadStatus').innerText = 'Pratinjau dari URL foto.';
-}
+};
 
 export async function compressAvatarFile(file, maxDim = 512, maxByteLen = MAX_AVATAR_DATA_URL_LENGTH) {
     return new Promise((resolve, reject) => {
