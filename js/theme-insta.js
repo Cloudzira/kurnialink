@@ -105,7 +105,9 @@ export function createInstaPost(link, { wide = false, feedChild = false } = {}) 
 
 /* ---------- Tab: Feed Link + folder ---------- */
 let activeTab = 'feed';
-let tabSig = '';
+let tabStructSig = '';
+let lastCenteredTab = null;
+let tabObserver = null;
 let tabSortable = null;
 let onTabReorder = null;
 
@@ -120,6 +122,55 @@ function currentFolders() {
     return state.linksList.filter(i => i.isFolder && !i.parentId && (state.currentUser || i.visible !== false));
 }
 
+// Gulirkan tab ke tengah dengan halus agar tab yang dipilih selalu terlihat penuh (tidak terpotong di tepi)
+function centerTab(scroller, tab, smooth) {
+    if (!scroller || !tab) return;
+    const max = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+    const left = tab.offsetLeft - (scroller.clientWidth - tab.offsetWidth) / 2;
+    scroller.scrollTo({ left: Math.min(Math.max(0, left), max), behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
+}
+
+// Garis gradien penanda tab aktif: geser & ubah lebar mengikuti tab aktif
+function placeIndicator(scroller) {
+    const ind = scroller.querySelector('.ig-tab-ind');
+    if (!ind) return;
+    const act = scroller.querySelector('.ig-tab.active');
+    if (!act || !act.offsetWidth || scroller.classList.contains('is-searching')) {
+        ind.style.opacity = '0';
+        return;
+    }
+    ind.style.opacity = '1';
+    ind.style.width = act.offsetWidth + 'px';
+    ind.style.transform = 'translateX(' + act.offsetLeft + 'px)';
+}
+
+// Bayangan pudar di tepi kiri/kanan bila masih ada tab yang tersembunyi
+function updateTabFade(scroller) {
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    scroller.classList.toggle('fade-l', scroller.scrollLeft > 4);
+    scroller.classList.toggle('fade-r', scroller.scrollLeft < max - 4);
+}
+
+function syncTabState(scroller, searching) {
+    scroller.classList.toggle('is-searching', searching);
+    scroller.querySelectorAll('.ig-tab').forEach(tab => {
+        const on = tab.getAttribute('data-tab') === activeTab;
+        tab.classList.toggle('active', on);
+        tab.setAttribute('aria-selected', String(on));
+    });
+    placeIndicator(scroller);
+    if (lastCenteredTab !== activeTab) {
+        lastCenteredTab = activeTab;
+        centerTab(scroller, scroller.querySelector('.ig-tab.active'), true);
+    }
+    updateTabFade(scroller);
+}
+
+window.addEventListener('resize', () => {
+    const s = document.querySelector('#igTabs .ig-tabs-scroll');
+    if (s) { placeIndicator(s); updateTabFade(s); }
+}, { passive: true });
+
 export function renderTabs() {
     const box = document.getElementById('igTabs');
     if (!box) return;
@@ -129,32 +180,58 @@ export function renderTabs() {
     const searching = isSearchingNow();
 
     const iconSig = (v) => (isImageIcon(v) ? 'img' + v.length : String(v || ''));
-    const sig = [activeTab, searching, state.currentUser ? 1 : 0,
+    const structSig = [state.currentUser ? 1 : 0,
         folders.map(f => [f.id, f.title, f.visible, iconSig(f.icon)].join('|')).join('~')].join('#');
-    if (sig === tabSig && box.querySelector('.ig-tabs-scroll')) return;
-    tabSig = sig;
 
-    const prev = box.querySelector('.ig-tabs-scroll');
-    const keepLeft = prev ? prev.scrollLeft : 0;
+    // Daftar tab tidak berubah (hanya tab aktif / mode pencarian): cukup ganti penanda, tanpa menggambar ulang.
+    // Dengan begitu garis penanda bisa meluncur halus dan posisi geser tab tidak melompat.
+    let scroller = box.querySelector('.ig-tabs-scroll');
+    if (scroller && structSig === tabStructSig) {
+        syncTabState(scroller, searching);
+        return;
+    }
+    tabStructSig = structSig;
 
+    const keepLeft = scroller ? scroller.scrollLeft : 0;
     if (tabSortable) { tabSortable.destroy(); tabSortable = null; }
+    if (tabObserver) { tabObserver.disconnect(); tabObserver = null; }
 
-    box.innerHTML = `<div class="ig-tabs-scroll${searching ? ' is-searching' : ''}" role="tablist">
-        <button type="button" role="tab" class="ig-tab ig-tab-feed${activeTab === 'feed' ? ' active' : ''}" aria-selected="${activeTab === 'feed'}" onclick="window.igSelectTab('feed')">
+    box.innerHTML = `<div class="ig-tabs-scroll is-fresh${searching ? ' is-searching' : ''}" role="tablist">
+        <button type="button" role="tab" data-tab="feed" class="ig-tab ig-tab-feed${activeTab === 'feed' ? ' active' : ''}" aria-selected="${activeTab === 'feed'}" onclick="window.igSelectTab('feed')">
             <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span class="ig-tab-label">Feed Link</span>
         </button>
         ${folders.map(f => `
-        <button type="button" role="tab" data-id="${f.id}" class="ig-tab ig-tab-folder${activeTab === f.id ? ' active' : ''}${f.visible === false ? ' is-hidden' : ''}" aria-selected="${activeTab === f.id}" onclick="window.igSelectTab('${f.id}')" title="${escapeHtml(f.title)}">
+        <button type="button" role="tab" data-tab="${f.id}" data-id="${f.id}" class="ig-tab ig-tab-folder${activeTab === f.id ? ' active' : ''}${f.visible === false ? ' is-hidden' : ''}" aria-selected="${activeTab === f.id}" onclick="window.igSelectTab('${f.id}')" title="${escapeHtml(f.title)}">
             <span class="ig-tab-ico">${iconMarkup(f.icon, 'fa-solid fa-folder')}</span><span class="ig-tab-label">${escapeHtml(f.title)}</span>
         </button>`).join('')}
+        <span class="ig-tab-ind" aria-hidden="true"></span>
     </div>`;
 
-    const scroller = box.querySelector('.ig-tabs-scroll');
+    scroller = box.querySelector('.ig-tabs-scroll');
     scroller.scrollLeft = keepLeft;
-    const act = scroller.querySelector('.ig-tab.active');
-    if (act && activeTab !== 'feed') {
-        const left = act.offsetLeft - (scroller.clientWidth - act.offsetWidth) / 2;
-        scroller.scrollTo({ left: Math.max(0, left), behavior: REDUCED ? 'auto' : 'smooth' });
+    scroller.addEventListener('scroll', () => {
+        if (scroller._fadeRaf) return;
+        scroller._fadeRaf = requestAnimationFrame(() => { scroller._fadeRaf = 0; updateTabFade(scroller); });
+    }, { passive: true });
+
+    placeIndicator(scroller);
+    updateTabFade(scroller);
+    // Setelah posisi awal terpasang, aktifkan kembali animasi geser garis penanda
+    requestAnimationFrame(() => requestAnimationFrame(() => scroller.classList.remove('is-fresh')));
+
+    // Tab aktif berganti: gulirkan ke tengah (juga untuk tab Feed Link, kembali ke kiri)
+    if (lastCenteredTab !== activeTab) {
+        lastCenteredTab = activeTab;
+        centerTab(scroller, scroller.querySelector('.ig-tab.active'), true);
+    }
+
+    // Lebar tab bisa berubah (mis. font baru selesai dimuat / tema berganti): hitung ulang posisi garis penanda
+    if ('ResizeObserver' in window) {
+        tabObserver = new ResizeObserver(() => { placeIndicator(scroller); updateTabFade(scroller); });
+        scroller.querySelectorAll('.ig-tab').forEach(tab => tabObserver.observe(tab));
+    }
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { if (scroller.isConnected) { placeIndicator(scroller); updateTabFade(scroller); } });
     }
 
     // Admin: urutan tab folder bisa diubah dengan menahan lalu menggeser tab
@@ -169,6 +246,7 @@ export function renderTabs() {
             onStart: () => { state.isDraggingActive = true; },
             onEnd: async () => {
                 state.isDraggingActive = false;
+                placeIndicator(scroller);
                 await onTabReorder(scroller);
             }
         });

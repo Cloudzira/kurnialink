@@ -341,24 +341,32 @@
 /* ---------- Tab: Feed Link + folder (berjajar ke kanan, bisa digeser) ---------- */
 [data-theme="insta"] .ig-tabs { display: block; width: 100%; margin: 2px 0 12px; }
 [data-theme="insta"] .ig-tabs-scroll {
+    --fade: 0px;
+    position: relative;                 /* penanda garis geser (.ig-tab-ind) ikut tergulir bersama tab */
     display: flex;
     overflow-x: auto;
-    border-top: 1px solid var(--ig-line);
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    /* garis dasar tipis di atas tab (tidak ikut tergulir) */
+    background: linear-gradient(var(--ig-line), var(--ig-line)) top / 100% 1px no-repeat;
+    /* pudar di tepi kiri/kanan sebagai petunjuk bahwa tab masih bisa digeser */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%);
 }
+[data-theme="insta"] .ig-tabs-scroll.fade-l { --fade-l: 26px; }
+[data-theme="insta"] .ig-tabs-scroll.fade-r { --fade-r: 26px; }
 [data-theme="insta"] .ig-tabs-scroll::-webkit-scrollbar { display: none; }
 [data-theme="insta"] .ig-tab {
+    position: relative;
     flex: none;
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    margin-top: -1px;
-    padding: 12px 16px 2px;
+    padding: 13px 16px 3px;
     border: 0;
-    border-style: solid;
-    border-width: 2px 0 0 0;
-    border-color: transparent;
+    border-radius: 10px 10px 0 0;
     background: none;
     color: var(--ig-muted);
     font: 600 11px 'Inter', sans-serif;
@@ -366,16 +374,18 @@
     text-transform: uppercase;
     white-space: nowrap;
     cursor: pointer;
-    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.3s ease, opacity 0.3s ease, transform 0.15s ease;
 }
 [data-theme="insta"] .ig-tab:hover { color: var(--ig-text); }
-[data-theme="insta"] .ig-tab.active {
-    color: var(--ig-text);
-    border-image: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f) 1;
-}
-[data-theme="insta"] .is-searching .ig-tab.active { color: var(--ig-muted); border-image: none; border-color: transparent; }
+[data-theme="insta"] .ig-tab:active { transform: scale(0.96); }
+[data-theme="insta"] .ig-tab:focus-visible { outline: 2px solid rgba(0, 243, 255, 0.5); outline-offset: -3px; }
+[data-theme="insta"] .ig-tab.active { color: var(--ig-text); }
+[data-theme="insta"] .is-searching .ig-tab.active { color: var(--ig-muted); }
 [data-theme="insta"] .ig-tab.is-hidden { opacity: 0.55; }
-[data-theme="insta"] .ig-tab > i { font-size: 13px; }
+[data-theme="insta"] .ig-tab > i { font-size: 13px; transition: transform 0.3s ease; }
+[data-theme="insta"] .ig-tab.active > i,
+[data-theme="insta"] .ig-tab.active .ig-tab-ico { transform: scale(1.08); }
 [data-theme="insta"] .ig-tab-ico {
     display: inline-grid;
     place-items: center;
@@ -384,8 +394,25 @@
     overflow: hidden;
     border-radius: 50%;
     font-size: 13px;
+    transition: transform 0.3s ease;
 }
-[data-theme="insta"] .ig-tab-label { max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+[data-theme="insta"] .ig-tab-label { max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Garis gradien penanda tab aktif: GESER mulus dari tab ke tab (posisi & lebar diatur js/theme-insta.js) */
+[data-theme="insta"] .ig-tab-ind {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #00f3ff, #b026ff, #ff007f);
+    box-shadow: 0 2px 10px rgba(0, 243, 255, 0.35);
+    pointer-events: none;
+    will-change: transform, width;
+    transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), width 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+[data-theme="insta"] .ig-tabs-scroll.is-fresh .ig-tab-ind { transition: none; }   /* saat pertama digambar: langsung di tempat, tidak meluncur dari kiri */
 
 /* Judul folder + tombol admin di atas isi tab */
 [data-theme="insta"] .ig-tabinfo {
@@ -412,8 +439,8 @@
 [data-theme="insta"] .ig-tabinfo .ig-admin { flex: none; gap: 2px; padding: 0; border: 0; background: none; }
 
 /* Animasi saat berpindah tab */
-[data-theme="insta"] #linksContainer.ig-switching > * { animation: igTabIn 0.35s ease both; }
-@keyframes igTabIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+[data-theme="insta"] #linksContainer.ig-switching > * { animation: igTabIn 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes igTabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Grid 2 kolom (halaman utama & isi folder) ---------- */
 [data-theme="insta"] #linksContainer:not(.hidden),
@@ -764,6 +791,7 @@
     [data-theme="insta"] .ig-post:hover { transform: none; }
     [data-theme="insta"] .ig-hl-ico { transition: none; }
     [data-theme="insta"] #linksContainer.ig-switching > * { animation: none; }
+    [data-theme="insta"] .ig-tab-ind, [data-theme="insta"] .ig-tab { transition: none; }
     [data-theme="insta"] #linksLoading > .glass-card { animation: none; }
 }
 
