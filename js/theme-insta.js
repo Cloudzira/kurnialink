@@ -58,7 +58,7 @@ function adminBar(item, { isFolder, drag = true }) {
 }
 
 /* ---------- Kartu link = posting feed ---------- */
-export function createInstaPost(link, { wide = false } = {}) {
+export function createInstaPost(link, { wide = false, feedChild = false } = {}) {
     const card = document.createElement('article');
     const isHidden = link.visible === false;
     const isLocked = link.locked === true;
@@ -70,6 +70,7 @@ export function createInstaPost(link, { wide = false } = {}) {
     const title = escapeHtml(link.title);
 
     card.setAttribute('data-id', link.id);
+    if (feedChild) card.setAttribute('data-feed-child', '1');
     card.className = 'ig-post' + (wide ? ' ig-wide' : '') + (isHidden ? ' is-hidden' : '') + (isLocked ? ' is-locked' : '');
     card.style.setProperty('--h', hue);
     card.style.setProperty('--link-light-color', `hsl(${hue} 92% 64%)`);
@@ -97,7 +98,7 @@ export function createInstaPost(link, { wide = false } = {}) {
                 ${link.desc ? `<p class="ig-desc">${escapeHtml(link.desc)}</p>` : ''}
             </a>
         </div>
-        ${adminBar(link, { isFolder: false })}
+        ${adminBar(link, { isFolder: false, drag: !feedChild })}
     `;
     return card;
 }
@@ -207,7 +208,16 @@ export function renderInstaFeed(container, visibleItems, isSearching) {
     let list;
     if (isSearching) list = visibleItems.filter(i => !i.isFolder);
     else if (folder) list = visibleItems.filter(i => !i.isFolder && i.parentId === folder.id);
-    else list = visibleItems.filter(i => !i.isFolder && !i.parentId);
+    else {
+        // Tab "Feed Link" = SEMUA aplikasi: link di luar folder lebih dulu, lalu isi setiap folder (urut sesuai tab folder).
+        // Folder yang disembunyikan tidak ikut tampil untuk pengunjung (isinya pun tidak).
+        const rootLinks = visibleItems.filter(i => !i.isFolder && !i.parentId);
+        const folderApps = [];
+        currentFolders().forEach(f => {
+            visibleItems.forEach(i => { if (!i.isFolder && i.parentId === f.id) folderApps.push(i); });
+        });
+        list = rootLinks.concat(folderApps);
+    }
 
     if (folder) {
         const bar = document.createElement('div');
@@ -231,7 +241,8 @@ export function renderInstaFeed(container, visibleItems, isSearching) {
         empty.textContent = folder ? 'Folder ini masih kosong.' : 'Belum ada link di feed ini.';
         container.appendChild(empty);
     }
-    list.forEach(item => container.appendChild(createInstaPost(item)));
+    // Di tab Feed Link, aplikasi yang berasal dari folder tidak punya pegangan geser (urutannya diatur di tab foldernya)
+    list.forEach(item => container.appendChild(createInstaPost(item, { feedChild: !folder && !isSearching && !!item.parentId })));
 }
 
 /* ---------- Statistik & sorotan di header profil ---------- */

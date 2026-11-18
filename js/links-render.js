@@ -258,7 +258,11 @@ function initSortable() {
 }
 
 async function updateOrderFromDOM(containerEl) {
-    const orderedIds = Array.from(containerEl.children).map(el => el.getAttribute('data-id')).filter(Boolean);
+    // Aplikasi dari folder yang tampil di tab Feed Link (data-feed-child) tidak ikut diurutkan di sini
+    const orderedIds = Array.from(containerEl.children)
+        .filter(el => !el.hasAttribute('data-feed-child'))
+        .map(el => el.getAttribute('data-id'))
+        .filter(Boolean);
     try {
         const batch = writeBatch(state.db);
         orderedIds.forEach((id, index) => {

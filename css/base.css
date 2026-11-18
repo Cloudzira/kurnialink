@@ -143,3 +143,8 @@ select.glass-input option:hover {
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
 }
+
+/* Lebar tampilan di laptop/tablet: sama di mode neon dan mode Instagram (HP tetap mengikuti lebar layar) */
+@media (min-width: 768px) {
+    #profileShell { max-width: 620px; }
+}
