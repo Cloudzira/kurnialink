@@ -131,7 +131,6 @@
         "avatar name"
         "avatar stats"
         "bio    bio"
-        "social social"
         "hl     hl";
     column-gap: 22px;
     align-items: center;
@@ -204,33 +203,6 @@
     line-height: 1.5;
     color: #c9cfdd;
     text-align: left;
-}
-/* Baris medsos (kiri) + pemutar murottal (kanan) */
-.ig-social-line { display: contents; }
-[data-theme="insta"] .ig-social-line {
-    grid-area: social;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-[data-theme="insta"] #socialMediaRow { justify-content: flex-start; gap: 8px; flex: none; }
-[data-theme="insta"] #murottalRow {
-    width: auto;
-    flex: 1 1 auto;
-    min-width: 0;
-    margin: 0;
-    justify-content: flex-end;
-}
-[data-theme="insta"] #murottalRow .murottal-wrap { min-width: 0; }
-[data-theme="insta"] #murottalRow .murottal-pill { padding-right: 10px; }
-/* panel daftar surat rata kanan agar tidak keluar layar */
-[data-theme="insta"] .murottal-panel { left: auto; right: 0; transform: none; }
-[data-theme="insta"] .murottal-panel.open { animation-name: igMurottalPop; }
-@keyframes igMurottalPop {
-    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Sorotan folder (story highlights) */
