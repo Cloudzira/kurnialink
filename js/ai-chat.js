@@ -409,13 +409,26 @@ function saveFabPos() {
     try { localStorage.setItem(POS_KEY, JSON.stringify(fabPos)); } catch (e) { /* abaikan */ }
 }
 
+// Batas kiri/kanan area gerak tombol = lebar tampilan (#profileShell), bukan seluruh layar.
+// Di HP sama dengan lebar layar; di landscape/laptop tombol berhenti di tepi tampilan.
+function fabBounds() {
+    const vw = window.innerWidth;
+    const shell = document.getElementById('profileShell');
+    if (!shell) return { min: 0, max: vw };
+    const r = shell.getBoundingClientRect();
+    if (!r.width) return { min: 0, max: vw };
+    return { min: Math.max(0, r.left), max: Math.min(vw, r.right) };
+}
+
 // Menempatkan tombol sesuai posisi tersimpan (dipanggil juga saat layar berubah ukuran)
 function placeFab() {
-    if (!fabPos || !els.fab) return;
+    if (!els.fab) return;
     const w = els.fab.offsetWidth, h = els.fab.offsetHeight;
-    const vw = window.innerWidth, vh = window.innerHeight;
-    const left = fabPos.side === 'left' ? EDGE : vw - w - EDGE;
-    const top = clamp(fabPos.y * (vh - h), EDGE, vh - h - EDGE);
+    const vh = window.innerHeight;
+    const b = fabBounds();
+    const pos = fabPos || { side: 'right', y: null };
+    const left = pos.side === 'left' ? b.min + EDGE : b.max - w - EDGE;
+    const top = pos.y === null ? vh - h - 16 : clamp(pos.y * (vh - h), EDGE, vh - h - EDGE);
     els.fab.style.left = left + 'px';
     els.fab.style.top = top + 'px';
     els.fab.style.right = 'auto';
@@ -447,7 +460,8 @@ function initFabDrag() {
             fab.classList.add('is-dragging');
         }
         const w = fab.offsetWidth, h = fab.offsetHeight;
-        fab.style.left = clamp(originLeft + dx, EDGE, window.innerWidth - w - EDGE) + 'px';
+        const b = fabBounds();
+        fab.style.left = clamp(originLeft + dx, b.min + EDGE, b.max - w - EDGE) + 'px';
         fab.style.top = clamp(originTop + dy, EDGE, window.innerHeight - h - EDGE) + 'px';
         fab.style.right = 'auto';
         fab.style.bottom = 'auto';
@@ -466,7 +480,7 @@ function initFabDrag() {
         const r = fab.getBoundingClientRect();
         const range = window.innerHeight - r.height;
         fabPos = {
-            side: r.left + r.width / 2 < window.innerWidth / 2 ? 'left' : 'right',
+            side: r.left + r.width / 2 < (fabBounds().min + fabBounds().max) / 2 ? 'left' : 'right',
             y: range > 0 ? clamp(r.top / range, 0, 1) : 0
         };
         fab.classList.add('is-snapping');

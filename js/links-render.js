@@ -67,7 +67,7 @@ function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClas
 
 // Bentuk kartu folder mode neon: semua folder memakai bentuk yang sama (panah / ujung runcing di kanan).
 // Pilihan lain yang tersedia di css/link-cards.css: 'trapezoid-inv', 'chamfer', 'parallelogram', 'hex', 'trapezoid'.
-const FOLDER_SHAPE = 'arrow';
+const FOLDER_SHAPE = 'skew';
 let folderIntroPlayed = false;   // animasi masuk folder hanya sekali saat halaman dibuka (bukan tiap mengetik pencarian)
 
 function createFolderElement(folder, allVisibleItems, index = 0) {

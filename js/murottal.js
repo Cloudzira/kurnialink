@@ -1,6 +1,6 @@
 /**
  * murottal.js
- * Pemutar murottal: tombol play/pause, pilih surat, pencarian, media session, dan pemutaran otomatis setelah interaksi pertama.
+ * Pemutar murottal: tombol play/pause, pilih surat, pencarian, media session, dan pemutaran hanya setelah tombol play / pilih surat ditekan (tanpa autoplay).
  */
 
 import { bEl, escapeHtml, showToast } from './utils.js';
@@ -9,7 +9,7 @@ import { MUROTTAL_QARI, MUROTTAL_SOURCES, SURAH_ARABIC, SURAH_NAMES } from './mu
 let murottalAudio = null;
 let murottalSurah = 1;
 let murottalSource = 0;
-let murottalWantPlay = true;       // true = ingin memutar (autoplay awal / pilihan tamu)
+let murottalWantPlay = false;      // true hanya setelah tamu menekan play / memilih surat (tidak ada autoplay)
 let murottalUserTouched = false;   // tamu sudah memakai kontrol murottal
 let murottalGestureHandler = null;
 let murottalPanelOpen = false;
@@ -265,7 +265,6 @@ export function initMurottal() {
         Object.keys(handlers).forEach(a => { try { navigator.mediaSession.setActionHandler(a, handlers[a]); } catch (e) {} });
     }
 
-    // Otomatis mulai dari Al-Fatihah
+    // Hanya menyiapkan Al-Fatihah; suara baru berjalan setelah tamu menekan tombol play
     murottalLoad(1, 0);
-    murottalPlay();
 }
