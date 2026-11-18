@@ -65,36 +65,13 @@
     box-shadow: none;
 }
 
-/* ---------- Bilah atas (menempel di atas saat scroll) ---------- */
-[data-theme="insta"] #topBarSentinel { display: block; height: 1px; margin-bottom: -1px; pointer-events: none; }
-[data-theme="insta"] body { overflow-x: clip; }
+/* ---------- Bilah atas (judul + tombol). Menempelnya diatur oleh .app-header di base.css ---------- */
 [data-theme="insta"] .ig-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    min-height: 56px;
-    margin: 0 0 6px;
-    padding: 10px 2px;
+    position: relative;
+    min-height: 44px;
+    margin: 0;
+    padding: 2px 2px;
 }
-/* Latar bilah atas membentang penuh dari tepi kiri sampai tepi kanan layar */
-[data-theme="insta"] .ig-topbar::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 100vw;
-    transform: translateX(-50%);
-    background: rgba(5, 6, 10, 0.72);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    backdrop-filter: blur(16px) saturate(140%);
-    border-bottom: 1px solid var(--ig-line);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-[data-theme="insta"] .ig-topbar.is-stuck::before { opacity: 1; }
 [data-theme="insta"] .ig-topbar > div:last-child { gap: 8px; }
 /* Judul: gaya sama dengan tema neon (font display, huruf kapital, renggang), ukuran menyesuaikan tombol 36px */
 .ig-brand { font-size: 14px; }
@@ -808,8 +785,8 @@
     align-items: center;
     column-gap: 10px;
     width: 100%;
-    margin: 0 0 12px;
-    padding: 0 2px;
+    margin: 0;
+    padding: 0 2px 2px;
 }
 [data-theme="insta"] #headerSubLeft,
 [data-theme="insta"] #headerSubRight { min-width: 0; }

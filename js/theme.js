@@ -39,15 +39,6 @@ export function initTheme() {
     placeMurottal();
     refreshInstaProfile();
 
-    // Bilah atas (tema Instagram): transparan di puncak halaman, berubah jadi kaca saat di-scroll
-    const bar = document.getElementById('topBar');
-    const sentinel = document.getElementById('topBarSentinel');
-    if (bar && sentinel && 'IntersectionObserver' in window) {
-        new IntersectionObserver(([entry]) => {
-            bar.classList.toggle('is-stuck', !entry.isIntersecting);
-        }).observe(sentinel);
-    }
-
     document.addEventListener('kp-themechange', (e) => {
         placeMurottal();
         refreshInstaProfile();

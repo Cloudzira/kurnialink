@@ -4,7 +4,7 @@
    - Aset CDN: stale-while-revalidate
    - Firebase/Firestore/Auth TIDAK di-cache (data selalu fresh)
    Naikkan angka VERSION setiap kali mengganti file ini. */
-const VERSION = 'v41';
+const VERSION = 'v42';
 const SHELL_CACHE = 'kurniapedia-shell-' + VERSION;
 const RUNTIME_CACHE = 'kurniapedia-runtime-' + VERSION;
 
@@ -61,7 +61,8 @@ const SHELL_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(SHELL_CACHE).then((cache) =>
-      Promise.all(SHELL_ASSETS.map((url) => cache.add(url).catch(() => {})))
+      // cache: 'reload' = selalu ambil file TERBARU dari server (lewati cache HTTP browser), supaya semua file satu versi
+      Promise.all(SHELL_ASSETS.map((url) => cache.add(new Request(url, { cache: 'reload' })).catch(() => {})))
     ).then(() => self.skipWaiting())
   );
 });
@@ -82,8 +83,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data === 'GET_VERSION' && event.ports && event.ports[0]) {
     event.ports[0].postMessage(VERSION);
+  } else if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
+
+// Batas tunggu jaringan sebelum memakai salinan tersimpan (HP dengan sinyal lemah)
+const NETWORK_TIMEOUT_MS = 4000;
 
 const NO_CACHE_HOSTS = [
   'firestore.googleapis.com',
@@ -106,7 +112,7 @@ self.addEventListener('fetch', (event) => {
       /\.(mp3|m4a|ogg|wav|mp4)(\?|$)/i.test(url.pathname)) return;
 
   // Halaman utama: ambil dari jaringan (selalu versi terbaru), tetapi jika jaringan lambat
-  // (> 2,5 detik) langsung tampilkan salinan tersimpan agar aplikasi tetap terasa cepat.
+  // (> 4 detik) langsung tampilkan salinan tersimpan agar aplikasi tetap terasa cepat.
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       const cache = await caches.open(SHELL_CACHE);
@@ -119,7 +125,7 @@ self.addEventListener('fetch', (event) => {
       try {
         return await Promise.race([
           network,
-          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), NETWORK_TIMEOUT_MS))
         ]);
       } catch (e) {
         network.catch(() => {}); // biarkan unduhan lanjut di latar belakang & memperbarui cache
@@ -130,7 +136,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // File kode aplikasi (folder js/ dan css/): sama seperti halaman utama, ambil dari jaringan
-  // supaya update selalu terbaru; jika jaringan lambat (> 2,5 detik) / offline, pakai salinan tersimpan.
+  // supaya update selalu terbaru; jika jaringan lambat (> 4 detik) / offline, pakai salinan tersimpan.
   if (url.origin === self.location.origin && /\.(js|css)$/i.test(url.pathname)) {
     event.respondWith((async () => {
       const cache = await caches.open(SHELL_CACHE);
@@ -143,7 +149,7 @@ self.addEventListener('fetch', (event) => {
       try {
         return await Promise.race([
           network,
-          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), NETWORK_TIMEOUT_MS))
         ]);
       } catch (e) {
         network.catch(() => {}); // biarkan unduhan lanjut di latar belakang & memperbarui cache

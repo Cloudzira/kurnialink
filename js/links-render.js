@@ -40,9 +40,10 @@ export function renderLinks(linksToRender) {
         // Tema Instagram: tab "Feed Link" + satu tab per folder; isi tab tampil sebagai posting 2 kolom
         renderInstaFeed(container, visibleItems, isSearching);
     } else {
+        let folderIndex = 0;   // urutan folder -> menentukan bentuk & jeda animasi masuk
         rootItems.forEach(item => {
             if (item.isFolder) {
-                container.appendChild(createFolderElement(item, visibleItems));
+                container.appendChild(createFolderElement(item, visibleItems, folderIndex++));
             } else {
                 container.appendChild(createSingleLinkElement(item));
             }
@@ -51,6 +52,10 @@ export function renderLinks(linksToRender) {
 
     initSortable();
     refreshInstaProfile();
+    if (!isInsta() && container.querySelector('.neon-folder')) {
+        // animasi masuk folder cukup sekali: render ulang berikutnya (pencarian, data berubah) tanpa animasi masuk
+        setTimeout(() => { folderIntroPlayed = true; }, 1500);
+    }
 }
 
 function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClass = '') {
@@ -60,17 +65,22 @@ function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClas
     return `<i class="${escapeHtml(iconValue || defaultFa)} ${customClass}"></i>`;
 }
 
-function createFolderElement(folder, allVisibleItems) {
+// Bentuk folder mode neon (berganti-ganti, bukan hanya kotak). Gaya tiap bentuk ada di css/link-cards.css
+const FOLDER_SHAPES = ['trapezoid-inv', 'arrow', 'chamfer', 'parallelogram', 'hex', 'trapezoid'];
+let folderIntroPlayed = false;   // animasi masuk folder hanya sekali saat halaman dibuka (bukan tiap mengetik pencarian)
+
+function createFolderElement(folder, allVisibleItems, index = 0) {
     const folderWrapper = document.createElement('div');
     const isHidden = folder.visible === false;
     const isOpen = state.openFolders.has(folder.id);
     const childLinks = allVisibleItems.filter(item => item.parentId === folder.id);
 
     folderWrapper.setAttribute('data-id', folder.id);
-    folderWrapper.className = `glass-folder rounded-xl overflow-hidden transition-all duration-300 ${isHidden ? 'opacity-50 border-dashed border-slate-600' : ''}`;
+    folderWrapper.className = `neon-folder nf-${FOLDER_SHAPES[index % FOLDER_SHAPES.length]}${isOpen ? ' is-open' : ''}${isHidden ? ' is-hidden-folder' : ''}${folderIntroPlayed ? '' : ' nf-intro'}`;
+    folderWrapper.style.setProperty('--i', index);
 
     folderWrapper.innerHTML = `
-        <div class="folder-header p-2.5 sm:p-3 flex items-center justify-between cursor-pointer group select-none hover:bg-white/5 transition-colors" onclick="window.toggleFolderOpen('${folder.id}', event)">
+        <div class="folder-header nf-head p-2.5 sm:p-3 flex items-center justify-between cursor-pointer group select-none" onclick="window.toggleFolderOpen('${folder.id}', event)">
             <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1.5">
                 ${state.currentUser ? `
                     <div class="drag-handle text-slate-500 hover:text-neon-cyan px-0.5 py-1 cursor-grab flex items-center" onclick="event.stopPropagation()" title="Tarik untuk merubah urutan">
@@ -78,7 +88,7 @@ function createFolderElement(folder, allVisibleItems) {
                     </div>
                 ` : ''}
 
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                <div class="nf-ico w-8 h-8 sm:w-9 sm:h-9 rounded-lg glass-panel flex items-center justify-center text-neon-purple text-sm flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
                     ${renderIconMarkup(folder.icon, 'fa-solid fa-folder')}
                 </div>
 
@@ -117,7 +127,7 @@ function createFolderElement(folder, allVisibleItems) {
             </div>
         </div>
 
-        <div id="folderContent-${folder.id}" class="folder-content ${isOpen ? 'open' : ''} border-t border-cyan-500/10 bg-black/30 pt-2 pb-2.5 pr-2 pl-5 sm:pl-6 space-y-2 relative">
+        <div id="folderContent-${folder.id}" class="folder-content nf-body ${isOpen ? 'open' : ''} pt-2 pb-2.5 pr-2 pl-5 sm:pl-6 space-y-2 relative">
             <div class="absolute left-3.5 top-2 bottom-3.5 w-0.5 bg-gradient-to-b from-cyan-500/40 via-purple-500/20 to-transparent rounded-full pointer-events-none"></div>
 
             ${childLinks.length === 0 ? `
@@ -127,8 +137,10 @@ function createFolderElement(folder, allVisibleItems) {
     `;
 
     const folderContentDiv = folderWrapper.querySelector(`#folderContent-${folder.id}`);
-    childLinks.forEach(child => {
-        folderContentDiv.appendChild(createSingleLinkElement(child, true));
+    childLinks.forEach((child, k) => {
+        const card = createSingleLinkElement(child, true);
+        card.style.setProperty('--k', k);   // jeda animasi muncul satu per satu saat folder dibuka
+        folderContentDiv.appendChild(card);
     });
 
     return folderWrapper;
@@ -207,13 +219,16 @@ window.toggleFolderOpen = function(folderId, event) {
     if (!folderContentDiv) return;
 
     const chevron = event.currentTarget.querySelector('.chevron-icon');
+    const wrapper = folderContentDiv.closest('.neon-folder');
     if (state.openFolders.has(folderId)) {
         state.openFolders.delete(folderId);
         folderContentDiv.classList.remove('open');
+        if (wrapper) wrapper.classList.remove('is-open');
         if (chevron) chevron.classList.remove('rotate-180');
     } else {
         state.openFolders.add(folderId);
         folderContentDiv.classList.add('open');
+        if (wrapper) wrapper.classList.add('is-open');
         if (chevron) chevron.classList.add('rotate-180');
     }
     event.currentTarget.setAttribute('aria-expanded', String(state.openFolders.has(folderId)));

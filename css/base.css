@@ -148,3 +148,38 @@ select.glass-input option:hover {
 @media (min-width: 768px) {
     #profileShell { max-width: 620px; }
 }
+
+
+/* ===== HEADER TETAP DIAM (mode neon & Instagram) =====
+   Judul, tombol, ikon medsos & murottal menempel di tepi atas layar dan tidak ikut ter-scroll.
+   Isi halaman bergulir di bawahnya. Latar kaca membentang penuh dari tepi kiri ke kanan layar. */
+body.min-h-screen { padding-top: 0; }            /* tanpa celah di atas header */
+#profileShell { padding-top: 0; }
+body { overflow-x: clip; }                       /* latar header selebar 100vw tidak memicu geser samping */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+}
+.app-header::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: rgba(5, 6, 10, 0.9);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+}
+.app-header #topBar { margin-bottom: 8px; }
+/* mode neon: murottal berada tepat di bawah judul, di dalam header */
+.app-header > #murottalRow { margin-bottom: 4px; }

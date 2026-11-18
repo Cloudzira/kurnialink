@@ -450,7 +450,7 @@ window.igJumpFolder = function (id) {
 
     requestAnimationFrame(() => {
         const tabs = document.getElementById('igTabs');
-        const bar = document.getElementById('topBar');
+        const bar = document.getElementById('appHeader');
         if (!tabs) return;
         const offset = (bar ? bar.getBoundingClientRect().height : 56) + 6;
         const top = Math.max(0, Math.round(tabs.getBoundingClientRect().top + window.scrollY - offset));
