@@ -28,7 +28,8 @@
         radial-gradient(50% 30% at 100% 12%, rgba(0, 243, 255, 0.10), transparent 70%),
         var(--ig-bg);
 }
-[data-theme="insta"] .fx-grid,
+/* Grid futuristik tetap tampil di mode Instagram (sama seperti mode neon). Bintang disembunyikan agar lebih tenang;
+   hapus baris .fx-stars di bawah bila ingin bintang ikut tampil. */
 [data-theme="insta"] .fx-stars { display: none; }
 [data-theme="insta"] .fx-orb { opacity: 0.4; }
 
