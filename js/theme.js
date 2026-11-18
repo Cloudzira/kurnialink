@@ -16,7 +16,27 @@ export function isInsta() {
     return getTheme() === 'insta';
 }
 
+// Tema Instagram: ikon medsos di bawah judul (kiri) dan murottal di bawah tombol (kanan).
+// Tema neon: kembali ke susunan semula (murottal di tengah di bawah judul, ikon medsos di bawah bio).
+function placeMurottal() {
+    const row = document.getElementById('murottalRow');
+    const social = document.getElementById('socialMediaRow');
+    const line = document.getElementById('igSocialLine');
+    const home = document.getElementById('murottalHome');
+    const left = document.getElementById('headerSubLeft');
+    const right = document.getElementById('headerSubRight');
+    if (!row || !social || !line || !home || !left || !right) return;
+    if (isInsta()) {
+        if (social.parentElement !== left) left.appendChild(social);
+        if (row.parentElement !== right) right.appendChild(row);
+    } else {
+        if (social.parentElement !== line) line.appendChild(social);
+        if (row.previousElementSibling !== home) home.after(row);
+    }
+}
+
 export function initTheme() {
+    placeMurottal();
     refreshInstaProfile();
 
     // Bilah atas (tema Instagram): transparan di puncak halaman, berubah jadi kaca saat di-scroll
@@ -29,6 +49,7 @@ export function initTheme() {
     }
 
     document.addEventListener('kp-themechange', (e) => {
+        placeMurottal();
         refreshInstaProfile();
         if (e.detail && e.detail.announce) showToast('Tema ' + e.detail.label + ' aktif');
     });

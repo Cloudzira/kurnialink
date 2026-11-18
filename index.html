@@ -155,44 +155,38 @@
             </div>
         </div>
 
-        <!-- Baris di bawah bilah atas: ikon medsos (di bawah judul Kurniapedia, kiri) + murottal (di bawah tombol install/share/tema/login, kanan) -->
+        <!-- (Tema Instagram saja) Baris di bawah bilah atas: ikon medsos di bawah judul (kiri), murottal di bawah tombol (kanan). Diisi oleh js/theme.js; di tema neon kosong & tersembunyi -->
         <div id="headerSub" class="header-sub">
-            <div id="socialMediaRow" class="flex items-center justify-start gap-2.5">
-                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/65 transition-all text-xs" aria-label="Instagram">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="https://tiktok.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple/65 transition-all text-xs" aria-label="TikTok">
-                    <i class="fa-brands fa-tiktok"></i>
-                </a>
-                <a href="https://www.threads.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/65 transition-all text-xs" aria-label="Threads">
-                    <i class="fa-brands fa-threads"></i>
-                </a>
-            </div>
-            <div id="murottalRow" class="flex justify-end">
-                <div id="murottalWrap" class="murottal-wrap">
-                    <div id="murottalPlayer" class="murottal-pill" title="Murottal Syaikh Misyari Rasyid Alafasy">
-                        <button type="button" id="murottalToggle" class="murottal-btn" aria-label="Putar murottal">
-                            <i id="murottalToggleIcon" class="fa-solid fa-play"></i>
-                        </button>
-                        <button type="button" id="murottalTrigger" class="murottal-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="murottalPanel" aria-label="Pilih surat">
-                            <span class="murottal-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-                            <span class="murottal-meta">
-                                <span class="murottal-label">Syaikh Misyari Rasyid</span>
-                                <span id="murottalName" class="murottal-name">1. Al-Fatihah</span>
-                            </span>
-                            <i class="fa-solid fa-chevron-down murottal-chevron"></i>
-                        </button>
-                        <div class="murottal-progress"><span id="murottalProgress"></span></div>
-                    </div>
+            <div id="headerSubLeft"></div>
+            <div id="headerSubRight"></div>
+        </div>
 
-                    <div id="murottalPanel" class="murottal-panel" role="dialog" aria-label="Pilih surat Al-Qur'an">
-                        <div class="murottal-search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="murottalSearch" placeholder="Cari surat atau nomor..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Cari surat">
-                        </div>
-                        <div id="murottalList" class="murottal-list" role="listbox" aria-label="Daftar surat"></div>
-                        <div class="murottal-panel-foot"><i class="fa-solid fa-headphones"></i> Murottal &middot; Syaikh Misyari Rasyid Alafasy</div>
+        <span id="murottalHome" hidden></span> <!-- posisi asal murottal (tema neon); di tema Instagram dipindah ke samping ikon medsos oleh js/theme.js -->
+        <!-- Murottal: pilihan surat (di tengah, di bawah judul Kurniapedia) -->
+        <div id="murottalRow" class="w-full flex justify-center mb-5">
+            <div id="murottalWrap" class="murottal-wrap">
+                <div id="murottalPlayer" class="murottal-pill" title="Murottal Syaikh Misyari Rasyid Alafasy">
+                    <button type="button" id="murottalToggle" class="murottal-btn" aria-label="Putar murottal">
+                        <i id="murottalToggleIcon" class="fa-solid fa-play"></i>
+                    </button>
+                    <button type="button" id="murottalTrigger" class="murottal-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="murottalPanel" aria-label="Pilih surat">
+                        <span class="murottal-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                        <span class="murottal-meta">
+                            <span class="murottal-label">Syaikh Misyari Rasyid</span>
+                            <span id="murottalName" class="murottal-name">1. Al-Fatihah</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down murottal-chevron"></i>
+                    </button>
+                    <div class="murottal-progress"><span id="murottalProgress"></span></div>
+                </div>
+
+                <div id="murottalPanel" class="murottal-panel" role="dialog" aria-label="Pilih surat Al-Qur'an">
+                    <div class="murottal-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="murottalSearch" placeholder="Cari surat atau nomor..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Cari surat">
                     </div>
+                    <div id="murottalList" class="murottal-list" role="listbox" aria-label="Daftar surat"></div>
+                    <div class="murottal-panel-foot"><i class="fa-solid fa-headphones"></i> Murottal &middot; Syaikh Misyari Rasyid Alafasy</div>
                 </div>
             </div>
         </div>
@@ -241,6 +235,21 @@
             <p id="profileBio" class="text-[11px] text-slate-400 max-w-[320px] px-2 mb-4 font-light leading-relaxed">
                 Welcome to My Space
             </p>
+
+            <!-- Social Media Icon Bar (+ murottal di tema Instagram) -->
+            <div id="igSocialLine" class="ig-social-line">
+            <div id="socialMediaRow" class="flex items-center justify-center gap-2.5">
+                <a href="https://instagram.com/kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-pink hover:border-neon-pink/65 transition-all text-xs">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://tiktok.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-purple hover:border-neon-purple/65 transition-all text-xs">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="https://www.threads.com/@kurniapedia" target="_blank" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/65 transition-all text-xs" aria-label="Threads">
+                    <i class="fa-brands fa-threads"></i>
+                </a>
+            </div>
+            </div>
 
             <!-- (Tema Instagram) Sorotan folder -->
             <div id="igHighlights" class="ig-highlights ig-only" role="list" aria-label="Folder"></div>

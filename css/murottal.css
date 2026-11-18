@@ -283,38 +283,3 @@
     color: #64748b;
 }
 .murottal-panel-foot i { color: #b026ff; }
-
-
-/* ===== BARIS DI BAWAH BILAH ATAS =====
-   Kiri : ikon medsos (tepat di bawah judul Kurniapedia)
-   Kanan: pemutar murottal (tepat di bawah tombol install / share / tema / login)
-   Berlaku sama di tema neon maupun Instagram. */
-.header-sub {
-    position: relative;
-    z-index: 30;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 0 0 16px;
-    padding: 0 2px;
-}
-.header-sub #socialMediaRow { flex: none; justify-content: flex-start; gap: 8px; }
-.header-sub #murottalRow { width: auto; flex: 1 1 auto; min-width: 0; margin: 0; justify-content: flex-end; }
-.header-sub .murottal-wrap { min-width: 0; }
-.header-sub .murottal-pill { padding-right: 10px; }
-.header-sub .murottal-trigger,
-.header-sub .murottal-meta { min-width: 0; }
-.header-sub .murottal-label,
-.header-sub .murottal-name { overflow: hidden; text-overflow: ellipsis; }
-/* panel daftar surat rata kanan agar tidak keluar layar */
-.header-sub .murottal-panel { left: auto; right: 0; transform: none; }
-.header-sub .murottal-panel.open { animation-name: murottal-pop-right; }
-@keyframes murottal-pop-right {
-    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-@media (max-width: 380px) {
-    .header-sub .murottal-name { min-width: 0; }
-}
