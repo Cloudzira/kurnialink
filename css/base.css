@@ -151,8 +151,9 @@ select.glass-input option:hover {
 
 
 /* ===== HEADER TETAP DIAM (mode neon & Instagram) =====
-   Judul, tombol, ikon medsos & murottal menempel di tepi atas layar dan tidak ikut ter-scroll.
-   Isi halaman bergulir di bawahnya. Latar kaca membentang penuh dari tepi kiri ke kanan layar. */
+   Hanya berisi judul + tombol (install / share / tema / admin). Menempel di tepi atas layar dan tidak ikut ter-scroll.
+   Di puncak halaman transparan; begitu halaman digulir berubah jadi kaca agak transparan (kelas .is-stuck dari js/theme.js).
+   Ikon medsos & murottal ada di bawah header dan ikut ter-scroll seperti biasa. */
 body.min-h-screen { padding-top: 0; }            /* tanpa celah di atas header */
 #profileShell { padding-top: 0; }
 body { overflow-x: clip; }                       /* latar header selebar 100vw tidak memicu geser samping */
@@ -163,7 +164,7 @@ body { overflow-x: clip; }                       /* latar header selebar 100vw t
     width: 100%;
     padding-top: max(8px, env(safe-area-inset-top));
     padding-bottom: 6px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 .app-header::before {
     content: "";
@@ -174,12 +175,13 @@ body { overflow-x: clip; }                       /* latar header selebar 100vw t
     left: 50%;
     width: 100vw;
     transform: translateX(-50%);
-    background: rgba(5, 6, 10, 0.9);
+    background: rgba(5, 6, 10, 0.72);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
     backdrop-filter: blur(16px) saturate(140%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 0.3s ease;
 }
-.app-header #topBar { margin-bottom: 8px; }
-/* mode neon: murottal berada tepat di bawah judul, di dalam header */
-.app-header > #murottalRow { margin-bottom: 4px; }
+.app-header.is-stuck::before { opacity: 1; }
+.app-header #topBar { margin-bottom: 0; }

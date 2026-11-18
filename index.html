@@ -131,7 +131,7 @@
     <div id="profileShell" class="w-full max-w-[420px] mx-auto flex-1 flex flex-col items-center pt-2 pb-10">
         
         <!-- Top Navigation Bar -->
-        <!-- HEADER TETAP DIAM: judul + tombol, lalu baris medsos/murottal. Menempel di atas layar, tidak ikut ter-scroll -->
+        <!-- HEADER TETAP DIAM: hanya judul + tombol (install/share/tema/admin). Menempel di atas layar, tidak ikut ter-scroll. Medsos & murottal ada di bawahnya dan ikut ter-scroll -->
         <header id="appHeader" class="app-header">
         <div id="topBar" class="ig-topbar w-full flex justify-between items-center mb-2.5">
             <div class="flex items-center gap-2">
@@ -155,6 +155,8 @@
                 </button>
             </div>
         </div>
+
+        </header>
 
         <!-- (Tema Instagram saja) Baris di bawah bilah atas: ikon medsos di bawah judul (kiri), murottal di bawah tombol (kanan). Diisi oleh js/theme.js; di tema neon kosong & tersembunyi -->
         <div id="headerSub" class="header-sub">
@@ -191,8 +193,6 @@
                 </div>
             </div>
         </div>
-        </header>
-
         <!-- Admin Mode Indicator Badge -->
         <div id="adminBadge" class="hidden w-full mb-4 glass-panel rounded-xl p-2.5 border-emerald-500/40 flex items-center justify-between bg-emerald-950/20 box-border">
             <div class="flex items-center gap-2 text-xs text-emerald-300 font-medium">

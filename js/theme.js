@@ -39,6 +39,17 @@ export function initTheme() {
     placeMurottal();
     refreshInstaProfile();
 
+    // Header tetap di tempat; hanya latarnya yang berubah: transparan di puncak halaman, kaca agak transparan saat digulir
+    const header = document.getElementById('appHeader');
+    if (header) {
+        let ticking = false;
+        const sync = () => { ticking = false; header.classList.toggle('is-stuck', window.scrollY > 4); };
+        window.addEventListener('scroll', () => {
+            if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+        }, { passive: true });
+        sync();
+    }
+
     document.addEventListener('kp-themechange', (e) => {
         placeMurottal();
         refreshInstaProfile();

@@ -65,8 +65,9 @@ function renderIconMarkup(iconValue, defaultFa = 'fa-solid fa-globe', customClas
     return `<i class="${escapeHtml(iconValue || defaultFa)} ${customClass}"></i>`;
 }
 
-// Bentuk folder mode neon (berganti-ganti, bukan hanya kotak). Gaya tiap bentuk ada di css/link-cards.css
-const FOLDER_SHAPES = ['trapezoid-inv', 'arrow', 'chamfer', 'parallelogram', 'hex', 'trapezoid'];
+// Bentuk kartu folder mode neon: semua folder memakai bentuk yang sama (panah / ujung runcing di kanan).
+// Pilihan lain yang tersedia di css/link-cards.css: 'trapezoid-inv', 'chamfer', 'parallelogram', 'hex', 'trapezoid'.
+const FOLDER_SHAPE = 'arrow';
 let folderIntroPlayed = false;   // animasi masuk folder hanya sekali saat halaman dibuka (bukan tiap mengetik pencarian)
 
 function createFolderElement(folder, allVisibleItems, index = 0) {
@@ -76,7 +77,7 @@ function createFolderElement(folder, allVisibleItems, index = 0) {
     const childLinks = allVisibleItems.filter(item => item.parentId === folder.id);
 
     folderWrapper.setAttribute('data-id', folder.id);
-    folderWrapper.className = `neon-folder nf-${FOLDER_SHAPES[index % FOLDER_SHAPES.length]}${isOpen ? ' is-open' : ''}${isHidden ? ' is-hidden-folder' : ''}${folderIntroPlayed ? '' : ' nf-intro'}`;
+    folderWrapper.className = `neon-folder nf-${FOLDER_SHAPE}${isOpen ? ' is-open' : ''}${isHidden ? ' is-hidden-folder' : ''}${folderIntroPlayed ? '' : ' nf-intro'}`;
     folderWrapper.style.setProperty('--i', index);
 
     folderWrapper.innerHTML = `
@@ -135,6 +136,14 @@ function createFolderElement(folder, allVisibleItems, index = 0) {
             ` : ''}
         </div>
     `;
+
+    // Cahaya neon berputar mengelilingi tepi folder (sama seperti kartu link; sudutnya digerakkan js/link-light.js)
+    const folderHead = folderWrapper.querySelector('.nf-head');
+    const lightHue = getLinkLightHue(folder.id);
+    folderHead.style.setProperty('--link-light-color', `hsl(${lightHue} 92% 64%)`);
+    folderHead.style.setProperty('--link-light-highlight', `hsl(${(lightHue + 48) % 360} 96% 68%)`);
+    folderWrapper.style.setProperty('--link-light-glow', `hsla(${lightHue} 92% 64% / 0.22)`);
+    registerLinkLightAnimation(folderHead);
 
     const folderContentDiv = folderWrapper.querySelector(`#folderContent-${folder.id}`);
     childLinks.forEach((child, k) => {
