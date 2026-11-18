@@ -3,8 +3,13 @@
    Dasar & komponen umum: latar body, panel kaca (glass), kartu, folder, input, drag & drop, animasi folder, scrollbar.
    ========================================================== */
 
-body {
+html {
     background-color: #05060a;
+}
+
+/* Body transparan agar latar futuristik (.fx-bg) tidak tertutup warna body */
+body {
+    background-color: transparent;
 }
 
 .glass-panel {

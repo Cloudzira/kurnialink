@@ -99,7 +99,7 @@
 }
 [data-theme="insta"] .ig-topbar button:active { transform: scale(0.94); }
 [data-theme="insta"] #themeToggleIcon { transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); }
-[data-theme="insta"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(180deg); }
+[data-theme="insta"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(72deg); }
 
 /* ---------- Header profil (grid: foto kiri, statistik kanan) ---------- */
 [data-theme="insta"] .ig-profile {
@@ -724,7 +724,7 @@
     color: var(--ig-muted);
 }
 [data-theme="insta"] .ig-chev { flex: none; font-size: 13px; color: var(--ig-muted); }
-[data-theme="insta"] .ig-chev.rotate-180 { transform: rotate(180deg); }
+[data-theme="insta"] .ig-chev.rotate-180 { transform: rotate(72deg); }
 [data-theme="insta"] .ig-folder .folder-content { padding: 0 12px; }
 [data-theme="insta"] .ig-folder .folder-content.open {
     max-height: 9000px;

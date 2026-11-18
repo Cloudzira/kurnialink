@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSS KRITIS SPLASH: ditulis langsung di sini supaya splash langsung tampil di frame pertama (tidak menunggu file CSS lain) -->
     <style>
-        html, body { background: #06070b; margin: 0; }
+        html { background: #06070b; }
+        body { margin: 0; background: transparent; }   /* transparan: latar futuristik (.fx-bg, z-index -1) harus terlihat di belakang konten */
         #splashScreen { position: fixed; inset: 0; z-index: 100; background: #06070b; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 1.5rem; box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
         #splashScreen .sp-top { padding-top: 2rem; }
         #splashScreen .sp-badge { display: inline-block; padding: 6px 14px; border-radius: 999px; font: 10px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; color: #00f3ff; background: rgba(15,17,26,.8); border: 1px solid rgba(6,182,212,.3); }
@@ -147,7 +148,7 @@
                     <i class="fa-solid fa-share-nodes text-neon-cyan"></i>
                 </button>
                 <button id="themeToggleBtn" type="button" onclick="toggleTheme()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-cyan-500/50 transition-all" title="Ganti tema" aria-label="Ganti tema">
-                    <i id="themeToggleIcon" class="fa-solid fa-circle-half-stroke text-neon-cyan"></i>
+                    <i id="themeToggleIcon" class="fa-solid fa-star text-neon-cyan"></i>
                 </button>
                 <button id="adminStatusBtn" onclick="handleAdminBtnClick()" class="w-8 h-8 rounded-full text-xs font-semibold glass-panel flex items-center justify-center hover:border-red-500/50 transition-all" title="Cloudzone" aria-label="Cloudzone">
                     <i id="adminStatusIcon" class="fa-solid fa-lock text-red-500 text-[12px]"></i>
