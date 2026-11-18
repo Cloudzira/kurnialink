@@ -197,3 +197,8 @@ body { overflow-x: clip; }                       /* latar header selebar 100vw t
     color: #00f3ff;
     filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.7));
 }
+
+
+/* Tanda centang verifikasi bergaya Instagram: segi bergerigi biru #0095F6 + centang putih */
+.ig-verified { width: 14px; height: 14px; flex-shrink: 0; display: inline-block; }
+.ig-verified.hidden { display: none; }

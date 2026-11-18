@@ -69,15 +69,14 @@
 /* ---------- Bilah atas (judul + tombol). Menempelnya diatur oleh .app-header di base.css ---------- */
 [data-theme="insta"] .ig-topbar {
     position: relative;
-    min-height: 44px;
     margin: 0;
-    padding: 2px 2px;
+    padding: 0;          /* sama dengan tema neon: tinggi bilah ditentukan tombol 32px */
 }
 [data-theme="insta"] .ig-topbar > div:last-child { gap: 8px; }
 /* Judul: gaya sama dengan tema neon (font display, huruf kapital, renggang), ukuran menyesuaikan tombol 36px */
 .ig-brand { font-size: 14px; }
 [data-theme="insta"] .ig-brand {
-    font-size: 15px;
+    font-size: 14px;     /* sama dengan tema neon */
     font-weight: 700;
     letter-spacing: 0.1em;
     line-height: 1;
@@ -86,13 +85,13 @@
     text-shadow: 0 0 22px rgba(0, 243, 255, 0.35);
 }
 [data-theme="insta"] .ig-topbar button {
-    height: 36px;
+    height: 32px;        /* ukuran tombol & ikon sama dengan tema neon (32px / ikon 12px) */
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--ig-line);
-    font-size: 14px;
+    font-size: 12px;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
-[data-theme="insta"] .ig-topbar button:not(#installBtn) { width: 36px; }
+[data-theme="insta"] .ig-topbar button:not(#installBtn) { width: 32px; }
 [data-theme="insta"] .ig-topbar button:hover {
     background: rgba(255, 255, 255, 0.11);
     border-color: rgba(0, 243, 255, 0.35);
@@ -179,7 +178,7 @@
     font-weight: 700;
     letter-spacing: 0;
 }
-[data-theme="insta"] #profileName i { font-size: 13px; }
+[data-theme="insta"] #profileName .ig-verified { width: 15px; height: 15px; }
 [data-theme="insta"] #profileBio {
     grid-area: bio;
     max-width: none;
