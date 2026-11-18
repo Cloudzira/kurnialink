@@ -190,3 +190,10 @@ body { overflow-x: clip; }                       /* latar header selebar 100vw t
 }
 .app-header.is-stuck::before { opacity: 1; }
 .app-header #topBar { margin-bottom: 0; }
+
+
+/* Ikon tombol tema (bintang): mode neon = cyan bercahaya; mode Instagram diatur di css/theme-insta.css */
+#themeToggleIcon {
+    color: #00f3ff;
+    filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.7));
+}
