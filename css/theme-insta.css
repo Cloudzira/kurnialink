@@ -200,8 +200,11 @@
     gap: 10px;
     width: 100%;
     min-width: 0;
-    margin: 0 0 12px;
+    margin: 0;
 }
+/* Jarak seragam (16px) di semua tema: bio -> ikon medsos sama dengan ikon medsos -> banner */
+#profileShell #profileBio { margin-bottom: 16px; }
+#profileShell .ig-profile { margin-bottom: 16px; }
 #socialMediaRow { justify-content: center; gap: 8px; flex: none; }
 #murottalRow {
     width: auto;
@@ -337,16 +340,8 @@
 [data-theme="insta"] .banner-viewport::after { display: none; }
 [data-theme="insta"] .banner-viewport { border-radius: 13px; }
 
-/* ---------- Pencarian ---------- */
-[data-theme="insta"] .ig-search { width: 100%; margin-bottom: 12px; }
-[data-theme="insta"] #searchInput {
-    height: 40px;
-    padding-left: 38px;
-    border-radius: 12px;
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.07);
-    border-color: transparent;
-}
+/* ---------- Pencarian ----------
+   Sama persis dengan tema neon (lebar penuh sama dengan banner, gaya .glass-input bawaan): tidak ada pengaturan khusus Instagram. */
 
 /* ---------- Tab: Feed Link + folder (berjajar ke kanan, bisa digeser) ---------- */
 [data-theme="insta"] .ig-tabs { display: block; width: 100%; margin: 2px 0 12px; }
