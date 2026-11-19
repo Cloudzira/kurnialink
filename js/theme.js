@@ -16,20 +16,14 @@ export function isInsta() {
     return getTheme() === 'insta';
 }
 
-// Tema Instagram: ikon medsos + murottal di bawah bio, keduanya rata tengah (medsos di atas, murottal di bawahnya).
-// Tema neon: kembali ke susunan semula (murottal di tengah di bawah judul, ikon medsos di bawah bio).
+// Semua tema (neon & Instagram): ikon medsos + murottal di bawah bio, bersebelahan dan rata tengah.
 function placeMurottal() {
     const row = document.getElementById('murottalRow');
     const social = document.getElementById('socialMediaRow');
     const line = document.getElementById('igSocialLine');
-    const home = document.getElementById('murottalHome');
-    if (!row || !social || !line || !home) return;
+    if (!row || !social || !line) return;
     if (social.parentElement !== line) line.appendChild(social);
-    if (isInsta()) {
-        if (row.parentElement !== line) line.appendChild(row);
-    } else if (row.previousElementSibling !== home) {
-        home.after(row);
-    }
+    if (row.parentElement !== line) line.appendChild(row);
 }
 
 export function initTheme() {

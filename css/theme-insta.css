@@ -190,10 +190,8 @@
     color: #c9cfdd;
     text-align: left;
 }
-/* Medsos + pemutar murottal: di bawah bio, bersebelahan (kiri-kanan) dan rata tengah. HP sangat sempit: murottal turun ke bawah medsos */
-.ig-social-line { display: contents; }
-[data-theme="insta"] .ig-social-line {
-    grid-area: social;
+/* (Semua tema: neon & Instagram) Medsos + pemutar murottal: di bawah bio, bersebelahan (kiri-kanan) dan rata tengah. HP sangat sempit: murottal turun ke bawah medsos */
+.ig-social-line {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -204,8 +202,8 @@
     min-width: 0;
     margin: 0 0 12px;
 }
-[data-theme="insta"] #socialMediaRow { justify-content: center; gap: 8px; flex: none; }
-[data-theme="insta"] #murottalRow {
+#socialMediaRow { justify-content: center; gap: 8px; flex: none; }
+#murottalRow {
     width: auto;
     max-width: 100%;
     min-width: 0;
@@ -213,23 +211,25 @@
     justify-content: center;
 }
 /* panel daftar surat rata kanan pada pemutar agar tidak keluar layar */
-[data-theme="insta"] #murottalRow .murottal-panel { left: auto; right: 0; transform: none; }
-[data-theme="insta"] #murottalRow .murottal-panel.open { animation-name: igMurottalPop; }
+#murottalRow .murottal-panel { left: auto; right: 0; transform: none; }
+#murottalRow .murottal-panel.open { animation-name: igMurottalPop; }
 @keyframes igMurottalPop {
     from { opacity: 0; transform: translateY(-6px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-[data-theme="insta"] #murottalRow .murottal-wrap { max-width: 100%; min-width: 0; }
-[data-theme="insta"] #murottalRow .murottal-pill { max-width: 100%; padding-right: 12px; }
-[data-theme="insta"] #murottalRow .murottal-trigger { flex: 1 1 auto; min-width: 0; }
-[data-theme="insta"] #murottalRow .murottal-meta { min-width: 0; max-width: 100%; overflow: hidden; }
-[data-theme="insta"] #murottalRow .murottal-label,
-[data-theme="insta"] #murottalRow .murottal-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-[data-theme="insta"] #murottalRow .murottal-name { min-width: 0; }
+#murottalRow .murottal-wrap { max-width: 100%; min-width: 0; }
+#murottalRow .murottal-pill { max-width: 100%; padding-right: 12px; }
+#murottalRow .murottal-trigger { flex: 1 1 auto; min-width: 0; }
+#murottalRow .murottal-meta { min-width: 0; max-width: 100%; overflow: hidden; }
+#murottalRow .murottal-label,
+#murottalRow .murottal-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+#murottalRow .murottal-name { min-width: 0; }
 /* HP sempit: equalizer disembunyikan agar nama surat tetap terbaca */
 @media (max-width: 380px) {
-    [data-theme="insta"] #murottalRow .murottal-eq { display: none; }
+    #murottalRow .murottal-eq { display: none; }
 }
+
+[data-theme="insta"] .ig-social-line { grid-area: social; }
 
 /* Sorotan folder (story highlights): DISEMBUNYIKAN di mode Instagram (kode & datanya tetap ada, tidak dihapus).
    Untuk menampilkannya lagi, hapus aturan "display: none" pada blok berikut. */
