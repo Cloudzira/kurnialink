@@ -12,7 +12,20 @@ import { escapeHtml, safeUrl } from './utils.js';
 import { getLinkLightHue, registerLinkLightAnimation } from './link-light.js';
 
 const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const numberFmt = new Intl.NumberFormat('id-ID', { notation: 'compact', maximumFractionDigits: 1 });
+/* Format angka statistik: di bawah 10000 ditulis lengkap (mis. 9876),
+   mulai 10000 disingkat (10K, 12,5K, 1M). Dibulatkan ke bawah agar tidak melebihi nilai asli. */
+function formatStat(value) {
+    const n = Math.max(0, Math.floor(Number(value) || 0));
+    if (n < 10000) return String(n);
+    const units = [[1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
+    for (const [size, suffix] of units) {
+        if (n >= size) {
+            const short = Math.floor((n / size) * 10) / 10;   // 1 angka desimal, tanpa pembulatan ke atas
+            return short.toString().replace('.', ',') + suffix;
+        }
+    }
+    return String(n);
+}
 
 function isImageIcon(v) {
     return typeof v === 'string' && v.startsWith('data:image/');
@@ -339,9 +352,9 @@ export function refreshInstaProfile() {
     const folders = items.filter(i => i.isFolder);
     const clicks = links.reduce((sum, i) => sum + (Number(i.clicks) || 0), 0);
 
-    setText('igStatLinks', numberFmt.format(links.length));
-    setText('igStatClicks', numberFmt.format(clicks));
-    setText('igStatFolders', numberFmt.format(folders.length));
+    setText('igStatLinks', formatStat(links.length));
+    setText('igStatClicks', formatStat(clicks));
+    setText('igStatFolders', formatStat(folders.length));
 
     renderTabs();
     renderHighlights(folders, items);
