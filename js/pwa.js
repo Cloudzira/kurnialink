@@ -62,7 +62,7 @@ window.handleInstallClick = async function() {
  *     Kartu ini TIDAK hilang sendiri sampai ditutup/diketuk, supaya tidak terlewat.
  *  3) Ketuk [Perbarui] -> halaman dimuat ulang memakai versi terbaru.
  *  4) Setelah dimuat ulang muncul kartu kecil "Aplikasi sudah diperbarui" (hilang otomatis).
- * Penting: setiap kali memperbarui aplikasi, naikkan angka VERSION di sw.js (mis. v42 menjadi v43).
+ * Penting: setiap kali memperbarui aplikasi, ganti nilai VERSION di sw.js (mis. v1.1 menjadi v1.2).
  */
 const VERSION_KEY = 'kp_app_version';   // versi terakhir yang sudah dipakai/dilihat pengunjung
 const CHECK_GAP_MS = 30 * 1000;         // jarak minimum antar pengecekan (hemat baterai/kuota)
