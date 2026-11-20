@@ -150,10 +150,8 @@
     display: flex;
     grid-area: stats;
     align-self: start;
-    justify-content: space-between;   /* jarak antar statistik dilebarkan merata */
-    gap: 28px;                        /* jarak minimum agar tidak pernah rapat */
-    width: 100%;
-    max-width: 340px;
+    justify-content: flex-start;
+    gap: 38px;                        /* jarak antar statistik (ubah angka ini untuk menyesuaikan) */
     text-align: left;
 }
 [data-theme="insta"] .ig-stat b {
@@ -773,7 +771,7 @@
 @media (max-width: 360px) {
     [data-theme="insta"] .ig-profile { column-gap: 14px; }
     [data-theme="insta"] #profileFrame > #profileAvatar { width: 76px; height: 76px; }
-    [data-theme="insta"] .ig-stats { gap: 20px; }
+    [data-theme="insta"] .ig-stats { gap: 26px; }
     [data-theme="insta"] .ig-stat b { font-size: 15px; }
     [data-theme="insta"] .ig-brand { font-size: 14px; }
     [data-theme="insta"] .ig-glyph { width: 52px; height: 52px; font-size: 21px; }
