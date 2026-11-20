@@ -202,3 +202,47 @@ body { overflow-x: clip; }                       /* latar header selebar 100vw t
 /* Tanda centang verifikasi bergaya Instagram: segi bergerigi biru #0095F6 + centang putih */
 .ig-verified { width: 14px; height: 14px; flex-shrink: 0; display: inline-block; }
 .ig-verified.hidden { display: none; }
+
+/* ==========================================================
+   Statistik profil tema Neon (di bawah bio)
+   Tema Instagram punya statistik sendiri (.ig-stats), jadi blok ini disembunyikan di sana.
+   ========================================================== */
+[data-theme="insta"] .neon-only { display: none; }
+
+.neon-stats {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0;
+    margin: 0 0 16px;
+    padding: 9px 6px;
+    border-radius: 14px;
+    background: rgba(15, 17, 26, 0.6);
+    border: 1px solid rgba(0, 243, 255, 0.16);
+    box-shadow: 0 0 18px rgba(0, 243, 255, 0.06), inset 0 0 12px rgba(0, 243, 255, 0.03);
+}
+.neon-stat {
+    min-width: 74px;                 /* lebar minimum tiap kolom = jarak antar statistik */
+    padding: 0 14px;
+    text-align: center;
+}
+.neon-stat + .neon-stat { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+.neon-stat b {
+    display: block;
+    font: 700 17px/1.1 'Outfit', 'Inter', sans-serif;
+    color: #00f3ff;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.45);
+    font-variant-numeric: tabular-nums;
+}
+.neon-stat span {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+@media (max-width: 360px) {
+    .neon-stat { min-width: 62px; padding: 0 10px; }
+    .neon-stat b { font-size: 15px; }
+}

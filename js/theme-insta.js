@@ -2,7 +2,7 @@
  * theme-insta.js
  * Semua yang khusus tema "Instagram":
  *  - kartu link bergaya posting feed (2 kolom) dan folder bergaya koleksi
- *  - statistik profil (jumlah link, total klik, jumlah folder)
+ *  - statistik profil (jumlah link, total klik, jumlah folder) untuk tema Instagram dan Neon
  *  - baris "sorotan" (story highlight) dari folder
  * Seluruh fitur asli tetap ada: hitung klik, kunci link, sembunyikan, edit, hapus, drag & drop urutan, buka-tutup folder.
  */
@@ -345,16 +345,21 @@ function setText(id, text) {
 }
 
 export function refreshInstaProfile() {
-    if (document.documentElement.getAttribute('data-theme') !== 'insta') return;
-
     const items = state.linksList.filter(i => state.currentUser || i.visible !== false);
     const links = items.filter(i => !i.isFolder);
     const folders = items.filter(i => i.isFolder);
     const clicks = links.reduce((sum, i) => sum + (Number(i.clicks) || 0), 0);
 
+    // Statistik diperbarui untuk kedua tema: Instagram (ig...) dan Neon (neon...)
     setText('igStatLinks', formatStat(links.length));
     setText('igStatClicks', formatStat(clicks));
     setText('igStatFolders', formatStat(folders.length));
+    setText('neonStatLinks', formatStat(links.length));
+    setText('neonStatClicks', formatStat(clicks));
+    setText('neonStatFolders', formatStat(folders.length));
+
+    // Sisanya (tab & sorotan) hanya untuk tema Instagram
+    if (document.documentElement.getAttribute('data-theme') !== 'insta') return;
 
     renderTabs();
     renderHighlights(folders, items);
