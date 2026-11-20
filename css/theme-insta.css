@@ -151,7 +151,7 @@
     grid-area: stats;
     align-self: start;
     justify-content: flex-start;
-    gap: 38px;                        /* jarak antar statistik (ubah angka ini untuk menyesuaikan) */
+    gap: 44px;                        /* jarak antar statistik (ubah angka ini untuk menyesuaikan) */
     text-align: left;
 }
 [data-theme="insta"] .ig-stat b {
