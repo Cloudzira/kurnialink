@@ -16,6 +16,7 @@ function dismissSplash() {
     if (splashDismissed) return;
     splashDismissed = true;
     window.__splashDone = true;
+    document.documentElement.classList.remove('kp-booting'); // tampilkan isi halaman (disembunyikan selama splash oleh CSS kritis di index.html)
     window.dispatchEvent(new Event('kp-splash-done')); // memberi tahu modul lain (mis. notifikasi pembaruan)
     const splash = document.getElementById('splashScreen');
     if (splash) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="insta">
+<html lang="id" data-theme="insta" class="kp-booting">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,23 @@
         @keyframes spLoad { 0% { width: 0; } 50% { width: 75%; } 100% { width: 100%; } }
         #splashScreen .splash-logo-anim { animation: spPulse 3s ease-in-out infinite; }
         #splashScreen .splash-loader-bar { animation: spLoad 1.1s cubic-bezier(.4,0,.2,1) forwards; }
+
+        /* ANTI-KEDIP: sebelum file CSS lain selesai dimuat, isi halaman (modal, gambar kosong, dll.) belum bergaya dan sempat terlihat
+           (mis. ikon gambar rusak biru-putih di bagian bawah). Maka semua isi disembunyikan sampai splash mulai menghilang. */
+        .hidden { display: none; }
+        img:not([src]), img[src=""] { display: none; }
+        html.kp-booting body > *:not(#splashScreen):not(.fx-bg) { visibility: hidden; }
     </style>
+    <noscript><style>html.kp-booting body > *:not(#splashScreen):not(.fx-bg) { visibility: visible !important; } #splashScreen { display: none !important; }</style></noscript>
+    <!-- Pengaman: bila skrip utama gagal dimuat (jaringan putus / CDN diblokir), splash tetap dilepas setelah 8 detik supaya halaman tidak macet -->
+    <script>
+        setTimeout(function () {
+            if (window.__splashDone) return;
+            document.documentElement.classList.remove('kp-booting');
+            var sp = document.getElementById('splashScreen');
+            if (sp) { sp.classList.add('fade-out'); setTimeout(function () { sp.remove(); }, 600); }
+        }, 8000);
+    </script>
     <link rel="preload" as="image" href="favicon.png">
     <title>Kurniapedia</title>
     <meta name="description" content="Kurniapedia - kumpulan link, aplikasi, dan murottal dalam satu ruang digital. Dilengkapi asisten Cloudz AI.">
