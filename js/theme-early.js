@@ -4,40 +4,45 @@
  *  1) menerapkan tema tersimpan sebelum halaman digambar (tanpa kedipan)
  *  2) menyediakan window.toggleTheme() SEGERA, tanpa menunggu modul lain,
  *     sehingga tombol tema selalu berfungsi (juga di HP / browser lama).
- * Ada 3 tema, berganti berurutan tiap tombol ditekan: Instagram -> Neon -> Jarvis -> Instagram ...
+ * Ada 4 tema, berganti berurutan tiap tombol ditekan: Instagram -> Neon -> Jarvis -> Orbit -> Instagram ...
  *  - "insta"  (bawaan)  = data-theme="insta" di <html>
  *  - "neon"             = tanpa atribut data-theme
  *  - "jarvis"           = data-theme="jarvis" (font Orbitron & Rajdhani dimuat hanya saat tema ini dipakai)
+ *  - "orbit"            = data-theme="orbit" (font Michroma & Chakra Petch dimuat hanya saat tema ini dipakai)
  * Pilihan disimpan di localStorage (kunci "kp_theme").
  * Modul js/theme.js mendengarkan event "kp-themechange" untuk toast & statistik profil.
  */
 (function () {
     var KEY = 'kp_theme';
     var root = document.documentElement;
-    var ORDER = ['insta', 'neon', 'jarvis'];
-    var LABEL = { neon: 'Neon Futuristik', insta: 'Instagram', jarvis: 'HUD Futuristik' };
-    var COLOR = { neon: '#06070b', insta: '#05060a', jarvis: '#020a10' };
-    var ICON = { neon: 'fa-solid fa-star', insta: 'fa-solid fa-camera-retro', jarvis: 'fa-solid fa-atom' };
-    var FONT_URL = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap';
+    var ORDER = ['insta', 'neon', 'jarvis', 'orbit'];
+    var LABEL = { neon: 'Neon Futuristik', insta: 'Instagram', jarvis: 'HUD Futuristik', orbit: 'Orbit' };
+    var COLOR = { neon: '#06070b', insta: '#05060a', jarvis: '#020a10', orbit: '#030406' };
+    var ICON = { neon: 'fa-solid fa-star', insta: 'fa-solid fa-camera-retro', jarvis: 'fa-solid fa-atom', orbit: 'fa-solid fa-circle-notch' };
+    var FONTS = {
+        jarvis: { id: 'jvFonts', url: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap' },
+        orbit: { id: 'obFonts', url: 'https://fonts.googleapis.com/css2?family=Michroma&family=Chakra+Petch:wght@500;600;700&display=swap' }
+    };
 
-    function normalize(v) { return (v === 'neon' || v === 'jarvis') ? v : 'insta'; }
+    function normalize(v) { return (v === 'neon' || v === 'jarvis' || v === 'orbit') ? v : 'insta'; }
     function current() { return normalize(root.getAttribute('data-theme') === null ? 'neon' : root.getAttribute('data-theme')); }
     function setAttr(target) {
         if (target === 'neon') root.removeAttribute('data-theme');
         else root.setAttribute('data-theme', target);
     }
 
-    // Font tema Jarvis: hanya diunduh bila tema ini dipakai
+    // Font tema Jarvis & Orbit: hanya diunduh bila tema itu dipakai
     function ensureFonts(target) {
-        if (target !== 'jarvis' || document.getElementById('jvFonts')) return;
+        var f = FONTS[target];
+        if (!f || document.getElementById(f.id)) return;
         var link = document.createElement('link');
-        link.id = 'jvFonts';
+        link.id = f.id;
         link.rel = 'stylesheet';
-        link.href = FONT_URL;
+        link.href = f.url;
         (document.head || root).appendChild(link);
     }
 
-    // Bawaan = Instagram. Hanya bila pengunjung pernah memilih neon / jarvis, tema itu yang dipakai.
+    // Bawaan = Instagram. Hanya bila pengunjung pernah memilih neon / jarvis / orbit, tema itu yang dipakai.
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) { /* abaikan */ }
     var start = normalize(saved);

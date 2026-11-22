@@ -1,6 +1,6 @@
 /**
  * theme.js
- * Pendamping modul untuk tema ("insta" bawaan, "neon", dan "jarvis").
+ * Pendamping modul untuk tema ("insta" bawaan, "neon", "jarvis", dan "orbit").
  * Logika ganti tema ada di js/theme-early.js (window.toggleTheme) agar tombol selalu bekerja.
  * Di sini: pembaca tema untuk modul lain, toast, dan pembaruan statistik profil saat tema berganti.
  */
@@ -8,10 +8,11 @@
 import { showToast } from './utils.js';
 import { refreshInstaProfile } from './theme-insta.js';
 import { initJarvis } from './theme-jarvis.js';
+import { initOrbit } from './theme-orbit.js';
 
 export function getTheme() {
     const t = document.documentElement.getAttribute('data-theme');
-    return (t === 'insta' || t === 'jarvis') ? t : 'neon';
+    return (t === 'insta' || t === 'jarvis' || t === 'orbit') ? t : 'neon';
 }
 
 export function isInsta() {
@@ -23,7 +24,12 @@ export function isJarvis() {
     return getTheme() === 'jarvis';
 }
 
-// Semua tema (neon, Instagram & Jarvis): ikon medsos + murottal di bawah bio, bersebelahan dan rata tengah.
+// Tema Orbit juga memakai susunan daftar tema Neon (hanya gaya & panel HUD yang berbeda)
+export function isOrbit() {
+    return getTheme() === 'orbit';
+}
+
+// Semua tema (neon, Instagram, Jarvis & Orbit): ikon medsos + murottal di bawah bio, bersebelahan dan rata tengah.
 function placeMurottal() {
     const row = document.getElementById('murottalRow');
     const social = document.getElementById('socialMediaRow');
@@ -37,6 +43,7 @@ export function initTheme() {
     placeMurottal();
     refreshInstaProfile();
     initJarvis();
+    initOrbit();
 
     // Header tetap di tempat; hanya latarnya yang berubah: transparan di puncak halaman, kaca agak transparan saat digulir
     const header = document.getElementById('appHeader');

@@ -1,0 +1,676 @@
+/* ==========================================================
+   theme-orbit.css
+   TEMA KEEMPAT: "Orbit" (HUD planet: inti oranye membara, cincin putih tipis, orbit teal).
+   Terinspirasi live wallpaper sci-fi: latar hitam, cahaya teal miring dari sudut kiri atas,
+   inti oranye di tengah, kluster heksagon, kurva orbit.
+   Aktif hanya saat <html data-theme="orbit">. Tema Instagram, Neon & Jarvis tidak tersentuh.
+   - Memakai susunan tema Neon (daftar link + folder), hanya gaya & panel HUD yang berbeda.
+   - Panel jam & status (#obHud) dibuat oleh js/theme-orbit.js.
+   Ubah warna utama lewat variabel --ob-* di bawah.
+   ========================================================== */
+
+/* Elemen khusus tema Orbit: tersembunyi di tema lain (aturan dasar ini ada juga di <head> index.html) */
+.ob-only { display: none; }
+
+[data-theme="orbit"] {
+    --ob-bg: #030406;
+    --ob-ember: #ff7a1f;
+    --ob-ember-2: #ffb25a;
+    --ob-hot: #ffdca6;
+    --ob-teal: #22b8d6;
+    --ob-teal-2: #7fe3f5;
+    --ob-white: #eef6f8;
+    --ob-muted: #86a0aa;
+    --ob-panel: rgba(6, 9, 12, 0.88);
+    --ob-panel-2: rgba(13, 18, 23, 0.94);
+    --ob-line: rgba(238, 246, 248, 0.14);
+    --ob-line-2: rgba(238, 246, 248, 0.36);
+    --ob-glow: rgba(255, 122, 31, 0.5);
+    --ob-display: 'Michroma', 'Outfit', 'Inter', sans-serif;
+    --ob-body: 'Chakra Petch', 'Inter', sans-serif;
+}
+
+[data-theme="orbit"] ::selection { background: rgba(255, 122, 31, 0.4); color: #fff; }
+
+/* ---------- Latar: hitam pekat, cahaya teal dari pojok kiri atas, inti oranye, orbit miring ---------- */
+html[data-theme="orbit"] { background-color: var(--ob-bg); }
+[data-theme="orbit"] .fx-bg {
+    background:
+        radial-gradient(64% 38% at 0% 0%, rgba(34, 184, 214, 0.46), transparent 72%),
+        radial-gradient(34% 22% at 50% 24%, rgba(255, 122, 31, 0.24), transparent 72%),
+        radial-gradient(50% 30% at 100% 105%, rgba(34, 184, 214, 0.12), transparent 72%),
+        #030406;
+}
+/* Belahan diagonal: sisi kiri-bawah sedikit lebih terang, sisi kanan hitam (seperti di wallpaper) */
+[data-theme="orbit"] .fx-grid {
+    background-image: linear-gradient(118deg, rgba(34, 184, 214, 0.075) 0 46%, rgba(0, 0, 0, 0.4) 46.15% 100%);
+    background-size: 100% 100%;
+    -webkit-mask: none;
+            mask: none;
+}
+[data-theme="orbit"] .fx-stars { opacity: 0.55; }
+
+/* Skala tick putih halus di belakang profil */
+[data-theme="orbit"] .fx-bg::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 24%;
+    width: min(150vw, 980px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, rgba(238, 246, 248, 0.9) 0 0.35deg, transparent 0.35deg 3deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px), #000 calc(100% - 9px), transparent calc(100% - 8px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px), #000 calc(100% - 9px), transparent calc(100% - 8px));
+    opacity: 0.16;
+    animation: obSpin 180s linear infinite;
+    will-change: transform;
+}
+/* Cincin putus-putus putih, berlawanan arah */
+[data-theme="orbit"] .fx-orb.o1 {
+    display: block;
+    left: 50%;
+    top: 24%;
+    right: auto;
+    bottom: auto;
+    width: min(104vw, 690px);
+    height: min(104vw, 690px);
+    background: none;
+    border: 1px dashed rgba(238, 246, 248, 0.2);
+    transform: translate(-50%, -50%);
+    animation: obSpinRev 140s linear infinite;
+    will-change: transform;
+}
+/* Dua jalur orbit miring: teal (utama) dan oranye (tipis) */
+[data-theme="orbit"] .fx-orb.o2,
+[data-theme="orbit"] .fx-orb.o3 {
+    display: block;
+    left: 50%;
+    top: 24%;
+    right: auto;
+    bottom: auto;
+    background: none;
+    transform: translate(-50%, -50%) rotate(-24deg);
+    will-change: transform;
+}
+[data-theme="orbit"] .fx-orb.o2 {
+    width: min(150vw, 940px);
+    height: min(44vw, 270px);
+    border: 1px solid rgba(34, 184, 214, 0.55);
+    box-shadow: 0 0 16px rgba(34, 184, 214, 0.28), inset 0 0 18px rgba(34, 184, 214, 0.14);
+    animation: obTilt 70s ease-in-out infinite alternate;
+}
+[data-theme="orbit"] .fx-orb.o3 {
+    width: min(126vw, 800px);
+    height: min(36vw, 230px);
+    border: 1px solid rgba(255, 122, 31, 0.3);
+    transform: translate(-50%, -50%) rotate(20deg);
+    animation: obTiltRev 90s ease-in-out infinite alternate;
+}
+[data-theme="orbit"] .fx-vignette {
+    background: radial-gradient(ellipse at 50% 38%, transparent 38%, rgba(0, 0, 0, 0.82) 100%);
+}
+[data-theme="orbit"] .fx-cursor {
+    background: radial-gradient(circle closest-side, rgba(255, 122, 31, 0.16), rgba(34, 184, 214, 0.05) 55%, transparent 100%);
+}
+
+@keyframes obSpin { to { transform: translate(-50%, -50%) rotate(1turn); } }
+@keyframes obSpinRev { to { transform: translate(-50%, -50%) rotate(-1turn); } }
+@keyframes obTilt { from { transform: translate(-50%, -50%) rotate(-24deg); } to { transform: translate(-50%, -50%) rotate(-36deg); } }
+@keyframes obTiltRev { from { transform: translate(-50%, -50%) rotate(20deg); } to { transform: translate(-50%, -50%) rotate(31deg); } }
+@keyframes obSpinPlain { to { transform: rotate(1turn); } }
+@keyframes obBlink { 50% { opacity: 0; } }
+@keyframes obPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes obBreathe { 0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 122, 31, 0.55)); } 50% { filter: drop-shadow(0 0 16px rgba(255, 122, 31, 0.9)); } }
+
+/* ---------- Komponen umum: kaca -> panel gelap bergaris putih tipis ---------- */
+[data-theme="orbit"] .glass-panel {
+    background: var(--ob-panel);
+    border: 1px solid var(--ob-line);
+    box-shadow: inset 0 0 18px rgba(34, 184, 214, 0.035);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+[data-theme="orbit"] #loginModal .glass-panel,
+[data-theme="orbit"] #editModal .glass-panel,
+[data-theme="orbit"] #profileModal .glass-panel,
+[data-theme="orbit"] #bannerModal .glass-panel,
+[data-theme="orbit"] #infoModal .glass-panel,
+[data-theme="orbit"] #toast.glass-panel {
+    border-radius: 10px;
+    background: rgba(5, 8, 11, 0.97);
+    border-color: var(--ob-line-2);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75), 0 0 28px rgba(255, 122, 31, 0.1);
+}
+[data-theme="orbit"] .glass-input {
+    background: rgba(238, 246, 248, 0.04);
+    border: 1px solid var(--ob-line);
+    color: var(--ob-white);
+}
+[data-theme="orbit"] .glass-input:focus {
+    border-color: var(--ob-ember);
+    box-shadow: 0 0 0 3px rgba(255, 122, 31, 0.15), 0 0 14px rgba(255, 122, 31, 0.22);
+}
+[data-theme="orbit"] select.glass-input option,
+[data-theme="orbit"] select.glass-input optgroup { background-color: #0a0e12; }
+[data-theme="orbit"] select.glass-input option:checked,
+[data-theme="orbit"] select.glass-input option:hover { background-color: #3a1d0a; }
+[data-theme="orbit"] ::-webkit-scrollbar-thumb { background: rgba(255, 122, 31, 0.38); }
+[data-theme="orbit"] .sortable-ghost {
+    background: rgba(255, 122, 31, 0.1) !important;
+    border: 2px dashed var(--ob-ember) !important;
+}
+
+/* ---------- Bilah atas ---------- */
+[data-theme="orbit"] .app-header::before {
+    background: rgba(3, 4, 6, 0.8);
+    border-bottom: 1px solid var(--ob-line);
+}
+[data-theme="orbit"] .app-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(34, 184, 214, 0.8), rgba(238, 246, 248, 0.25) 45%, rgba(255, 122, 31, 0.7) 85%, transparent);
+    pointer-events: none;
+}
+[data-theme="orbit"] .ig-brand {
+    font-family: var(--ob-display);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    line-height: 1;
+    color: var(--ob-white);
+    text-shadow: 0 0 14px rgba(34, 184, 214, 0.45);
+}
+[data-theme="orbit"] .ig-brand::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+    vertical-align: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--ob-hot), var(--ob-ember) 60%, #7a2a05);
+    box-shadow: 0 0 10px var(--ob-ember);
+    animation: obPulse 2.8s ease-in-out infinite;
+}
+[data-theme="orbit"] .ig-topbar { margin: 0; padding: 0; }
+[data-theme="orbit"] .ig-topbar > div:last-child { gap: 8px; }
+[data-theme="orbit"] .ig-topbar button {
+    height: 32px;
+    background: rgba(238, 246, 248, 0.04);
+    border: 1px solid var(--ob-line-2);
+    box-shadow: none;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+[data-theme="orbit"] .ig-topbar button:not(#installBtn) { width: 32px; border-radius: 50%; }
+[data-theme="orbit"] #installBtn { border-radius: 16px; font-family: var(--ob-body); font-weight: 600; letter-spacing: 0.06em; }
+[data-theme="orbit"] .ig-topbar button:hover {
+    background: rgba(255, 122, 31, 0.1);
+    border-color: var(--ob-ember);
+    box-shadow: 0 0 14px rgba(255, 122, 31, 0.32);
+}
+[data-theme="orbit"] .ig-topbar button:active { transform: scale(0.94); }
+[data-theme="orbit"] #themeToggleIcon {
+    color: var(--ob-ember-2);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    filter: drop-shadow(0 0 4px rgba(255, 122, 31, 0.7));
+    transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+[data-theme="orbit"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(180deg); }
+
+/* ---------- Profil: foto sebagai inti planet, dikelilingi cincin ---------- */
+[data-theme="orbit"] .ig-profile { margin-bottom: 14px; }
+[data-theme="orbit"] #profileFrame { margin: 24px 0 28px; }
+[data-theme="orbit"] #profileFrame > div:first-child { display: none; }
+[data-theme="orbit"] #profileFrame > #profileAvatar {
+    width: 92px;
+    height: 92px;
+    border: 2px solid #0a0503;
+    box-shadow: 0 0 30px rgba(255, 122, 31, 0.5), inset 0 0 14px rgba(255, 178, 90, 0.35);
+}
+/* cincin luar: skala tick putih berputar pelan */
+[data-theme="orbit"] #profileFrame::before {
+    inset: -16px;
+    background: repeating-conic-gradient(from 0deg, var(--ob-white) 0 1.2deg, transparent 1.2deg 6deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    opacity: 0.6;
+    animation: obSpinPlain 60s linear infinite reverse;
+}
+/* cincin dalam: busur oranye membara */
+[data-theme="orbit"] #profileFrame::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--ob-ember-2);
+    border-right-color: var(--ob-ember);
+    box-shadow: 0 0 16px rgba(255, 122, 31, 0.35);
+    pointer-events: none;
+    animation: obSpinPlain 9s linear infinite;
+}
+[data-theme="orbit"] #profileFrame > span {
+    right: 4px;
+    bottom: 4px;
+    background: var(--ob-teal);
+    border-color: #05080b;
+    box-shadow: 0 0 8px var(--ob-teal);
+}
+[data-theme="orbit"] #profileName {
+    font-family: var(--ob-display);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ob-white);
+    text-shadow: 0 0 18px rgba(255, 122, 31, 0.35);
+}
+[data-theme="orbit"] .ig-verified path:first-of-type { fill: var(--ob-teal); }
+[data-theme="orbit"] .ig-verified path:last-of-type { stroke: #031015; }
+[data-theme="orbit"] #profileBio {
+    font-family: var(--ob-body);
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 4px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    color: #9fb6bf;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+[data-theme="orbit"] #profileBio::before { content: "\25E6  "; color: var(--ob-ember); }
+[data-theme="orbit"] #profileBio::after { content: "_"; color: var(--ob-teal-2); animation: obBlink 1s steps(1) infinite; }
+
+/* Statistik: tiga pembacaan dengan garis bawah oranye */
+[data-theme="orbit"] .neon-stats { gap: 6px; margin: 0 0 16px; }
+[data-theme="orbit"] .neon-stat {
+    min-width: 88px;
+    padding: 8px 12px 9px;
+    border-bottom: 1px solid var(--ob-line);
+    background: linear-gradient(180deg, transparent, rgba(255, 122, 31, 0.06));
+    position: relative;
+}
+[data-theme="orbit"] .neon-stat::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: 22px;
+    height: 2px;
+    transform: translateX(-50%);
+    background: var(--ob-ember);
+    box-shadow: 0 0 8px var(--ob-ember);
+}
+[data-theme="orbit"] .neon-stat + .neon-stat { border-left: 0; }
+[data-theme="orbit"] .neon-stat b {
+    font-family: var(--ob-display);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ob-ember-2);
+    text-shadow: 0 0 12px rgba(255, 122, 31, 0.55);
+}
+[data-theme="orbit"] .neon-stat span {
+    font-family: var(--ob-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--ob-muted);
+}
+@media (max-width: 360px) {
+    [data-theme="orbit"] .neon-stat { min-width: 76px; padding: 7px 8px 8px; }
+    [data-theme="orbit"] .neon-stat b { font-size: 13px; }
+}
+
+/* Ikon medsos */
+[data-theme="orbit"] #socialMediaRow a.glass-panel {
+    border-color: var(--ob-line-2);
+    background: rgba(238, 246, 248, 0.04);
+}
+[data-theme="orbit"] #socialMediaRow a.glass-panel:hover { border-color: var(--ob-ember); box-shadow: 0 0 14px rgba(255, 122, 31, 0.32); }
+
+/* ---------- Pemutar murottal ---------- */
+[data-theme="orbit"] .murottal-pill {
+    background: var(--ob-panel);
+    border-color: var(--ob-line-2);
+    border-radius: 999px;
+    box-shadow: none;
+}
+[data-theme="orbit"] .murottal-wrap.is-playing .murottal-pill {
+    border-color: var(--ob-ember);
+    box-shadow: 0 0 18px rgba(255, 122, 31, 0.28);
+}
+[data-theme="orbit"] .murottal-btn {
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--ob-hot), var(--ob-ember) 55%, #8a3207);
+    box-shadow: 0 0 10px rgba(255, 122, 31, 0.6);
+}
+[data-theme="orbit"] .murottal-label {
+    font-family: var(--ob-body);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+[data-theme="orbit"] .murottal-name { font-family: var(--ob-body); font-weight: 600; letter-spacing: 0.03em; }
+[data-theme="orbit"] .murottal-panel {
+    background: rgba(5, 8, 11, 0.98);
+    border-color: var(--ob-line-2);
+    border-radius: 10px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7), 0 0 22px rgba(255, 122, 31, 0.1);
+}
+
+/* ---------- Banner ---------- */
+[data-theme="orbit"] .banner-frame {
+    border-radius: 8px;
+    background: var(--ob-panel);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 0 24px rgba(34, 184, 214, 0.1);
+}
+[data-theme="orbit"] .banner-frame::before {
+    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 38%, var(--ob-teal) 50%, var(--ob-ember) 66%, transparent 80% 100%);
+}
+[data-theme="orbit"] .banner-viewport { border-radius: 7px; }
+[data-theme="orbit"] .banner-viewport::after {
+    border-radius: 2px;
+    background:
+        linear-gradient(var(--ob-white), var(--ob-white)) top left / 16px 1px no-repeat,
+        linear-gradient(var(--ob-white), var(--ob-white)) top left / 1px 16px no-repeat,
+        linear-gradient(var(--ob-ember), var(--ob-ember)) bottom right / 16px 1.5px no-repeat,
+        linear-gradient(var(--ob-ember), var(--ob-ember)) bottom right / 1.5px 16px no-repeat;
+}
+
+/* ---------- Pencarian ---------- */
+[data-theme="orbit"] .ig-search .glass-input {
+    border-radius: 999px;
+    font-family: var(--ob-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+[data-theme="orbit"] .ig-search > i { color: var(--ob-ember-2); }
+
+/* ---------- Panel admin ---------- */
+[data-theme="orbit"] #adminPanel { border-color: var(--ob-line-2); border-radius: 10px; }
+[data-theme="orbit"] #adminPanel::before {
+    background: linear-gradient(90deg, transparent, var(--ob-teal), var(--ob-ember), transparent);
+    background-size: 260% 100%;
+}
+
+/* ---------- Daftar link ---------- */
+[data-theme="orbit"] #linksContainer:not(.hidden)::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin: 0 auto 14px;
+    max-width: 70%;
+    background: linear-gradient(90deg, transparent, rgba(238, 246, 248, 0.4), transparent);
+}
+
+/* Kartu link: panel gelap, garis ember di kiri, skala tick tipis di kanan */
+[data-theme="orbit"] #linksContainer .glass-card,
+[data-theme="orbit"] #linksLoading .glass-card {
+    transform: none;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 6px;
+    border: 1px solid var(--ob-line);
+    background-color: var(--ob-panel);
+    background-image:
+        linear-gradient(180deg, transparent, var(--ob-ember) 30% 70%, transparent),
+        repeating-linear-gradient(180deg, rgba(238, 246, 248, 0.28) 0 1px, transparent 1px 5px);
+    background-repeat: no-repeat;
+    background-position: left center, right 6px center;
+    background-size: 2px 62%, 5px 50%;
+}
+[data-theme="orbit"] #linksContainer .glass-card > * { transform: none; }
+[data-theme="orbit"] #linksContainer .glass-card:hover {
+    transform: translateX(3px);
+    background-color: var(--ob-panel-2);
+    border-color: rgba(255, 122, 31, 0.55);
+    box-shadow: 0 0 20px rgba(255, 122, 31, 0.16), inset 0 0 14px rgba(255, 122, 31, 0.05);
+}
+[data-theme="orbit"] #linksContainer .glass-card.sortable-drag { transform: scale(1.02) !important; }
+[data-theme="orbit"] #linksContainer .glass-card::before { opacity: 0.34; }
+[data-theme="orbit"] #linksContainer .glass-card:hover::before { opacity: 0.85; }
+
+/* cahaya berputar di tepi: teal -> ember, seragam untuk semua link */
+[data-theme="orbit"] #linksContainer .glass-card,
+[data-theme="orbit"] #linksContainer .nf-head,
+[data-theme="orbit"] #linksContainer .neon-folder {
+    --link-light-color: #22b8d6 !important;
+    --link-light-highlight: #ff7a1f !important;
+    --link-light-glow: rgba(255, 122, 31, 0.2) !important;
+}
+
+[data-theme="orbit"] #linksContainer .glass-card h3 {
+    font-family: var(--ob-body);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ob-white);
+}
+[data-theme="orbit"] #linksContainer .glass-card p,
+[data-theme="orbit"] #linksContainer .neon-folder p {
+    font-family: var(--ob-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ob-muted);
+}
+/* kotak ikon: bulat seperti planet kecil */
+[data-theme="orbit"] #linksContainer .glass-card .glass-panel,
+[data-theme="orbit"] #linksContainer .nf-head .glass-panel {
+    border-radius: 50%;
+    background: rgba(255, 122, 31, 0.08);
+    border-color: rgba(255, 178, 90, 0.4);
+}
+/* hitungan klik */
+[data-theme="orbit"] #linksContainer .glass-card .font-mono {
+    border-radius: 999px;
+    font-family: var(--ob-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ob-teal-2);
+}
+/* link terkunci / disembunyikan */
+[data-theme="orbit"] #linksContainer .glass-card.link-locked { border-color: rgba(255, 122, 31, 0.34); }
+[data-theme="orbit"] #linksContainer .glass-card.link-locked:hover {
+    border-color: rgba(255, 122, 31, 0.75);
+    box-shadow: 0 0 18px rgba(255, 122, 31, 0.2), inset 0 0 14px rgba(255, 122, 31, 0.07);
+}
+
+/* ---------- Folder: bilah heksagon memanjang ---------- */
+[data-theme="orbit"] .neon-folder {
+    --hx: 16px;
+    --clip: polygon(var(--hx) 0, calc(100% - var(--hx)) 0, 100% 50%, calc(100% - var(--hx)) 100%, var(--hx) 100%, 0 50%);
+}
+[data-theme="orbit"] .nf-skew .nf-head {
+    clip-path: var(--clip);
+    border-radius: 0;
+    transform: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    background:
+        conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--ob-teal) 65%, var(--ob-ember) 72%, transparent 80% 100%),
+        linear-gradient(120deg, rgba(238, 246, 248, 0.4), rgba(255, 122, 31, 0.3));
+}
+[data-theme="orbit"] .nf-skew .nf-head::before {
+    clip-path: var(--clip);
+    border-radius: 0;
+    background: #070a0d;
+}
+[data-theme="orbit"] .neon-folder:hover .nf-head::before { background: #1a0f08; }
+[data-theme="orbit"] .nf-skew .nf-head > * { transform: none; }
+[data-theme="orbit"] .nf-head .nf-ico { border-radius: 50%; color: var(--ob-ember-2); border-color: rgba(255, 178, 90, 0.45); background: rgba(255, 122, 31, 0.1); }
+[data-theme="orbit"] .nf-head .text-neon-purple { color: var(--ob-ember-2); }
+[data-theme="orbit"] .nf-head h3 {
+    font-family: var(--ob-body);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ob-white);
+}
+[data-theme="orbit"] .nf-head [class*="bg-purple-950"] {
+    background: rgba(255, 122, 31, 0.12);
+    border-color: rgba(255, 178, 90, 0.45);
+    color: #ffd7a8;
+    border-radius: 999px;
+    font-family: var(--ob-body);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+[data-theme="orbit"] .nf-body {
+    border-color: var(--ob-line);
+    border-radius: 6px;
+    background: rgba(2, 3, 5, 0.6);
+}
+
+/* ---------- Cloudz AI ---------- */
+[data-theme="orbit"] .cz-fab {
+    border-color: rgba(255, 122, 31, 0.6);
+    background: linear-gradient(135deg, rgba(255, 122, 31, 0.24), rgba(34, 184, 214, 0.14)), rgba(5, 8, 11, 0.94);
+    font-family: var(--ob-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    animation-name: obFabGlow;
+}
+[data-theme="orbit"] .cz-fab::before { border-color: rgba(255, 178, 90, 0.6); }
+[data-theme="orbit"] .cz-fab-icon { color: var(--ob-ember-2); }
+@keyframes obFabGlow {
+    0%, 100% { box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 0 14px rgba(255, 122, 31, 0.28); }
+    50%      { box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 0 26px rgba(34, 184, 214, 0.34); }
+}
+[data-theme="orbit"] .cz-panel {
+    border-radius: 14px;
+    border-color: rgba(238, 246, 248, 0.3);
+    background: rgba(5, 8, 11, 0.97);
+}
+[data-theme="orbit"] .cz-panel::before {
+    background: conic-gradient(from var(--cz-angle), transparent 0 60%, rgba(34, 184, 214, 0.85) 78%, rgba(255, 122, 31, 0.8) 90%, transparent 100%);
+}
+[data-theme="orbit"] .cz-head { background: linear-gradient(135deg, rgba(255, 122, 31, 0.13), rgba(34, 184, 214, 0.06)); }
+[data-theme="orbit"] .cz-title strong { font-family: var(--ob-body); font-size: 13px; letter-spacing: 0.08em; }
+
+/* ==========================================================
+   PANEL JAM & STATUS (#obHud) — diisi js/theme-orbit.js
+   Reticle jam analog dengan inti oranye + kluster heksagon status
+   ========================================================== */
+[data-theme="orbit"] .ob-hud {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 16px;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin: 0 0 18px;
+    padding: 14px 14px 26px;
+    border: 1px solid var(--ob-line);
+    border-radius: 8px;
+    background:
+        radial-gradient(70% 90% at 0% 0%, rgba(34, 184, 214, 0.14), transparent 70%),
+        rgba(5, 8, 11, 0.82);
+    box-sizing: border-box;
+}
+.ob-reticle { position: relative; width: 112px; height: 112px; flex: none; }
+.ob-reticle svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.ob-r-gap { fill: none; stroke: rgba(238, 246, 248, 0.85); stroke-width: 0.7; stroke-dasharray: 30 3 12 3 44 3 7 3; transform-origin: 50px 50px; animation: obSpinPlain 80s linear infinite; }
+.ob-r-faint { fill: none; stroke: rgba(238, 246, 248, 0.22); stroke-width: 0.5; }
+.ob-r-ticks line { stroke: rgba(238, 246, 248, 0.38); stroke-width: 0.6; }
+.ob-r-ticks line.is-major { stroke: rgba(238, 246, 248, 0.9); stroke-width: 1; }
+.ob-r-arc { fill: none; stroke: #ff7a1f; stroke-width: 2; stroke-linecap: round; filter: drop-shadow(0 0 3px #ff7a1f); transition: stroke-dashoffset 1s linear; }
+.ob-r-core { animation: obBreathe 4s ease-in-out infinite; }
+.ob-r-hand { stroke: #eef6f8; stroke-linecap: round; }
+.ob-r-hand.h { stroke-width: 2.4; }
+.ob-r-hand.m { stroke-width: 1.5; }
+.ob-r-pin { fill: #eef6f8; }
+
+.ob-hud-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.ob-time { font-family: var(--ob-display); font-size: 22px; line-height: 1; letter-spacing: 0.04em; color: var(--ob-white); text-shadow: 0 0 16px rgba(255, 122, 31, 0.45); font-variant-numeric: tabular-nums; }
+.ob-time small { font-size: 11px; margin-left: 4px; color: var(--ob-ember-2); letter-spacing: 0.1em; }
+.ob-greet { font-family: var(--ob-body); font-size: 13px; font-weight: 600; letter-spacing: 0.14em; color: var(--ob-teal-2); }
+.ob-date { font-family: var(--ob-body); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; color: var(--ob-white); line-height: 1.2; }
+.ob-days { display: flex; gap: 3px; margin-top: 4px; }
+.ob-days span {
+    flex: 1;
+    padding: 3px 0 2px;
+    text-align: center;
+    font-family: var(--ob-body);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ob-muted);
+    border-bottom: 1px solid var(--ob-line);
+}
+.ob-days span.is-today { color: #1a0a00; background: var(--ob-ember); border-bottom-color: var(--ob-ember); box-shadow: 0 0 10px rgba(255, 122, 31, 0.5); border-radius: 2px 2px 0 0; }
+
+/* kluster heksagon: sel genap turun setengah baris, seperti sarang lebah */
+.ob-hexes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 8px; }
+.ob-hex {
+    --hex: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+    position: relative;
+    aspect-ratio: 1.12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    clip-path: var(--hex);
+    background: rgba(238, 246, 248, 0.42);
+    text-align: center;
+}
+.ob-hex:nth-child(even) { transform: translateY(14px); }
+.ob-hex::before { content: ""; position: absolute; inset: 1px; clip-path: var(--hex); background: #06090c; }
+.ob-hex > * { position: relative; z-index: 1; }
+.ob-hex i { font-size: 11px; color: var(--ob-teal-2); }
+.ob-hex b { font-family: var(--ob-body); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--ob-white); line-height: 1.1; }
+.ob-hex span { font-family: var(--ob-body); font-size: 8.5px; font-weight: 600; letter-spacing: 0.1em; color: var(--ob-muted); }
+.ob-hex.is-ok { background: rgba(34, 184, 214, 0.7); }
+.ob-hex.is-ok i { color: #7bffc4; }
+.ob-hex.is-warn { background: rgba(255, 122, 31, 0.85); }
+.ob-hex.is-warn i, .ob-hex.is-warn b { color: var(--ob-ember-2); }
+.ob-hex.is-live { background: rgba(255, 122, 31, 0.9); }
+.ob-hex.is-live::before { background: #1a0b03; }
+.ob-hex.is-live i, .ob-hex.is-live b { color: var(--ob-ember-2); }
+.ob-hex.is-live i { animation: obPulse 1.2s ease-in-out infinite; }
+
+@media (max-width: 380px) {
+    [data-theme="orbit"] .ob-hud { gap: 4px 10px; padding: 12px 10px 26px; }
+    .ob-reticle { width: 92px; height: 92px; }
+    .ob-time { font-size: 18px; }
+    .ob-date { font-size: 13px; }
+    .ob-hex b { font-size: 9px; }
+    .ob-hex span { font-size: 7.5px; letter-spacing: 0.06em; }
+}
+
+/* ---------- Hormati "kurangi animasi" ---------- */
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="orbit"] .fx-bg::before,
+    [data-theme="orbit"] .fx-orb.o1,
+    [data-theme="orbit"] .fx-orb.o2,
+    [data-theme="orbit"] .fx-orb.o3,
+    [data-theme="orbit"] #profileFrame::before,
+    [data-theme="orbit"] #profileFrame::after,
+    [data-theme="orbit"] .ig-brand::before,
+    [data-theme="orbit"] #profileBio::after,
+    [data-theme="orbit"] .cz-fab,
+    .ob-r-gap,
+    .ob-r-core,
+    .ob-hex.is-live i { animation: none; }
+    .ob-r-arc { transition: none; }
+}

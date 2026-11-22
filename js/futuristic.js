@@ -21,6 +21,12 @@ function bootText() {
         const sub = document.querySelector('#splashScreen .sp-sub');
         if (sub) sub.textContent = 'Menginisialisasi sistem HUD...';
     }
+    // Tema Orbit: teks boot bergaya sistem navigasi orbit
+    if (document.documentElement.getAttribute('data-theme') === 'orbit') {
+        lines = ['> menyalakan inti...', '> menyambung ke cloud...', '> memetakan jalur orbit...', '> orbit stabil. selamat datang'];
+        const sub = document.querySelector('#splashScreen .sp-sub');
+        if (sub) sub.textContent = 'Menstabilkan orbit...';
+    }
     let i = 0;
     el.textContent = lines[0];
     const timer = setInterval(() => {

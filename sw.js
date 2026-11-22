@@ -27,6 +27,7 @@ const SHELL_ASSETS = [
   './css/futuristic.css',
   './css/theme-insta.css',
   './css/theme-jarvis.css',
+  './css/theme-orbit.css',
   './css/update-banner.css',
   './js/admin-form.js',
   './js/admin-ui.js',
@@ -57,6 +58,7 @@ const SHELL_ASSETS = [
   './js/theme-early.js',
   './js/theme-insta.js',
   './js/theme-jarvis.js',
+  './js/theme-orbit.js',
   './js/utils.js'
 ];
 
