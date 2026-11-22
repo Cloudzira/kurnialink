@@ -260,10 +260,18 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
 [data-theme="jarvis"] .ig-verified path:last-of-type { stroke: #02131c; }
 [data-theme="jarvis"] #profileBio {
     font-family: var(--jv-body);
-    font-size: 14px;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 4px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.04em;
-    color: #9fd0dd;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+    color: #8fc0cd;
+    white-space: nowrap;          /* satu kalimat = satu baris */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 [data-theme="jarvis"] #profileBio::before { content: "> "; color: var(--jv-amber); }
 [data-theme="jarvis"] #profileBio::after { content: "_"; color: var(--jv-cyan); animation: jvBlink 1s steps(1) infinite; }

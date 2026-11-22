@@ -15,11 +15,11 @@ function bootText() {
     const el = document.getElementById('splashStatusText');
     if (!el) return;
     let lines = ['> memuat modul...', '> menyambung ke cloud...', '> sinkron data link...', '> sistem siap'];
-    // Tema Jarvis: teks boot bergaya asisten AI
+    // Tema HUD futuristik: teks boot bergaya asisten AI
     if (document.documentElement.getAttribute('data-theme') === 'jarvis') {
-        lines = ['> J.A.R.V.I.S. memuat inti...', '> menyambung ke cloud...', '> memindai modul link...', '> sistem online. selamat datang'];
+        lines = ['> memuat inti sistem...', '> menyambung ke cloud...', '> memindai modul link...', '> sistem online. selamat datang'];
         const sub = document.querySelector('#splashScreen .sp-sub');
-        if (sub) sub.textContent = 'Menginisialisasi J.A.R.V.I.S...';
+        if (sub) sub.textContent = 'Menginisialisasi sistem HUD...';
     }
     let i = 0;
     el.textContent = lines[0];

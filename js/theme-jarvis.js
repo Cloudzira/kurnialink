@@ -10,8 +10,8 @@
 
 import { state } from './state.js';
 
-const DAYS_SHORT = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
-const DAYS_FULL = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const DAYS_SHORT = ['AHD', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
+const DAYS_FULL = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 const RADIUS = 44;
@@ -72,7 +72,7 @@ function build() {
             </svg>
         </div>
         <div class="jv-hud-info">
-            <div class="jv-kicker">J.A.R.V.I.S &middot; KURNIAPEDIA</div>
+            <div class="jv-kicker">KURNIAPEDIA &middot; SISTEM ONLINE</div>
             <div class="jv-greet" id="jvGreet">SELAMAT DATANG</div>
             <div class="jv-date" id="jvDate">&nbsp;</div>
             <div class="jv-days" id="jvDays">${DAYS_SHORT.map((d, i) => `<span data-d="${i}">${d}</span>`).join('')}</div>

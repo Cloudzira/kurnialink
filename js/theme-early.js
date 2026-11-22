@@ -15,9 +15,9 @@
     var KEY = 'kp_theme';
     var root = document.documentElement;
     var ORDER = ['insta', 'neon', 'jarvis'];
-    var LABEL = { neon: 'Neon Futuristik', insta: 'Instagram', jarvis: 'Jarvis Futuristik' };
+    var LABEL = { neon: 'Neon Futuristik', insta: 'Instagram', jarvis: 'HUD Futuristik' };
     var COLOR = { neon: '#06070b', insta: '#05060a', jarvis: '#020a10' };
-    var ICON = { neon: 'fa-solid fa-star', insta: 'fa-solid fa-star', jarvis: 'fa-solid fa-atom' };
+    var ICON = { neon: 'fa-solid fa-star', insta: 'fa-solid fa-camera-retro', jarvis: 'fa-solid fa-atom' };
     var FONT_URL = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap';
 
     function normalize(v) { return (v === 'neon' || v === 'jarvis') ? v : 'insta'; }
