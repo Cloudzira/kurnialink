@@ -2,7 +2,7 @@
  * theme-orbit.js
  * Semua yang khusus tema "Orbit":
  *  - panel #obHud: reticle jam analog dengan inti oranye, jam digital, sapaan, tanggal, penanda hari
- *  - kluster 4 heksagon status yang terhubung ke isi app: jaringan, jumlah link, Cloudz AI, murottal
+ *  - empat bulatan orbit status yang terhubung ke isi app: jaringan, jumlah link, Cloudz AI, murottal
  * Daftar link & folder memakai susunan tema Neon (js/links-render.js), hanya gayanya yang beda (css/theme-orbit.css).
  * Jam hanya berjalan saat tema Orbit aktif dan tab terlihat, jadi tidak membebani tema lain.
  */
@@ -86,11 +86,11 @@ function build() {
             <div class="ob-date" id="obDate">&nbsp;</div>
             <div class="ob-days" id="obDays">${DAYS_SHORT.map((d, i) => `<span data-d="${i}">${d}</span>`).join('')}</div>
         </div>
-        <div class="ob-hexes" aria-label="Status sistem">
-            <div class="ob-hex" id="obNet"><i class="fa-solid fa-wifi" aria-hidden="true"></i><b id="obNetVal">--</b><span>Jaringan</span></div>
-            <div class="ob-hex"><i class="fa-solid fa-link" aria-hidden="true"></i><b id="obModules">0</b><span>Link</span></div>
-            <div class="ob-hex is-ok"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><b>Siaga</b><span>Cloudz AI</span></div>
-            <div class="ob-hex" id="obAudio"><i class="fa-solid fa-headphones" aria-hidden="true"></i><b id="obAudioVal">Standby</b><span>Murottal</span></div>
+        <div class="ob-orbs" aria-label="Status sistem">
+            <div class="ob-orb" id="obNet"><div class="ob-orb-ring"><i class="fa-solid fa-wifi" aria-hidden="true"></i><b id="obNetVal">--</b></div><span>Jaringan</span></div>
+            <div class="ob-orb"><div class="ob-orb-ring"><i class="fa-solid fa-link" aria-hidden="true"></i><b id="obModules">0</b></div><span>Link</span></div>
+            <div class="ob-orb is-ok"><div class="ob-orb-ring"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><b>Siaga</b></div><span>Cloudz AI</span></div>
+            <div class="ob-orb" id="obAudio"><div class="ob-orb-ring"><i class="fa-solid fa-headphones" aria-hidden="true"></i><b id="obAudioVal">Standby</b></div><span>Murottal</span></div>
         </div>`;
 
     els.arc = host.querySelector('#obArc');

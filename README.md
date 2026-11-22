@@ -147,7 +147,7 @@ Tema bawaan = Instagram. Tombol di sebelah tombol Bagikan mengganti tema berurut
 | `css/theme-insta.css` | seluruh gaya tema Instagram (aktif hanya bila `<html data-theme="insta">`) |
 | `js/theme-jarvis.js` | panel HUD tema Jarvis: jam cincin, tanggal, chip status (jaringan, jumlah link, Cloudz AI, murottal) |
 | `css/theme-jarvis.css` | seluruh gaya tema Jarvis (aktif hanya bila `<html data-theme="jarvis">`) |
-| `js/theme-orbit.js` | panel tema Orbit: reticle jam analog berinti oranye, jam digital, kluster heksagon status |
+| `js/theme-orbit.js` | panel tema Orbit: reticle jam analog berinti oranye, jam digital, empat bulatan orbit status |
 | `css/theme-orbit.css` | seluruh gaya tema Orbit (aktif hanya bila `<html data-theme="orbit">`) |
 
 Tema Instagram memakai data yang sama persis dengan tema neon (Firestore tidak berubah). Mengubah warna: variabel `--ig-*` di bagian atas `css/theme-insta.css`.
@@ -164,7 +164,7 @@ HUD ala asisten AI: cyan dingin + aksen amber, cincin reaktor di foto profil, no
 
 ### Tema Orbit
 
-HUD planet ala live wallpaper sci-fi: latar hitam dengan cahaya teal miring dari pojok kiri atas, foto profil sebagai inti oranye membara dengan cincin putih tipis, dua jalur orbit miring yang bergerak pelan, kartu link bergaris ember, folder berbentuk bilah heksagon, dan panel jam analog + 4 heksagon status. Susunan daftar sama dengan tema Neon, jadi semua fitur admin tetap jalan.
+HUD planet ala live wallpaper sci-fi: latar hitam dengan cahaya teal miring dari pojok kiri atas, foto profil sebagai inti oranye membara dengan cincin putih tipis, dua jalur orbit miring yang bergerak pelan, kartu link bergaris ember, folder berbentuk bilah heksagon, dan panel jam analog + 4 bulatan orbit status. Susunan daftar sama dengan tema Neon, jadi semua fitur admin tetap jalan.
 
 - Urutan tombol tema: Instagram -> Neon -> Jarvis -> Orbit -> Instagram.
 - Warna: variabel `--ob-*` di bagian atas `css/theme-orbit.css` (`--ob-ember`, `--ob-teal`, dst.).
