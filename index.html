@@ -28,10 +28,19 @@
         @keyframes spLoad { 0% { width: 0; } 50% { width: 75%; } 100% { width: 100%; } }
         #splashScreen .splash-logo-anim { animation: spPulse 3s ease-in-out infinite; }
         #splashScreen .splash-loader-bar { animation: spLoad 1.1s cubic-bezier(.4,0,.2,1) forwards; }
+        /* Splash tema Jarvis: cyan dingin + amber */
+        html[data-theme="jarvis"], html[data-theme="jarvis"] #splashScreen { background: #020a10; }
+        html[data-theme="jarvis"] #splashScreen .sp-glow { background: linear-gradient(90deg, #19e6ff, #0a8ba3, #ffb02e); }
+        html[data-theme="jarvis"] #splashScreen .sp-badge { color: #19e6ff; border-color: rgba(25,230,255,.4); }
+        html[data-theme="jarvis"] #splashScreen .sp-badge i { color: #ffb02e; }
+        html[data-theme="jarvis"] #splashScreen .sp-logo { border-color: rgba(25,230,255,.7); }
+        html[data-theme="jarvis"] #splashScreen .sp-title { letter-spacing: .3em; color: #eaffff; }
+        html[data-theme="jarvis"] #splashScreen .sp-bar > div { background: linear-gradient(90deg, #19e6ff, #ffb02e); }
 
         /* ANTI-KEDIP: sebelum file CSS lain selesai dimuat, isi halaman (modal, gambar kosong, dll.) belum bergaya dan sempat terlihat
            (mis. ikon gambar rusak biru-putih di bagian bawah). Maka semua isi disembunyikan sampai splash mulai menghilang. */
         .hidden { display: none; }
+        .jv-only { display: none; }   /* panel khusus tema Jarvis: tersembunyi di tema lain (ditampilkan css/theme-jarvis.css) */
         img:not([src]), img[src=""] { display: none; }
         html.kp-booting body > *:not(#splashScreen):not(.fx-bg) { visibility: hidden; }
     </style>
@@ -106,7 +115,8 @@
     <link rel="stylesheet" href="css/futuristic.css" media="print" onload="this.media='all'"> <!-- Lapisan efek futuristik tambahan -->
     <link rel="stylesheet" href="css/update-banner.css" media="print" onload="this.media='all'"> <!-- Notifikasi pembaruan aplikasi -->
     <link rel="stylesheet" href="css/theme-insta.css" media="print" onload="this.media='all'"> <!-- Tema kedua: profil Instagram (aktif bila data-theme="insta") -->
-    <noscript><link rel="stylesheet" href="css/tailwind.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/profile-admin.css"><link rel="stylesheet" href="css/link-cards.css"><link rel="stylesheet" href="css/murottal.css"><link rel="stylesheet" href="css/banner.css"><link rel="stylesheet" href="css/splash.css"><link rel="stylesheet" href="css/background.css"><link rel="stylesheet" href="css/ai-chat.css"><link rel="stylesheet" href="css/futuristic.css"><link rel="stylesheet" href="css/update-banner.css"><link rel="stylesheet" href="css/theme-insta.css"></noscript>
+    <link rel="stylesheet" href="css/theme-jarvis.css" media="print" onload="this.media='all'"> <!-- Tema ketiga: Jarvis Futuristik (aktif bila data-theme="jarvis") -->
+    <noscript><link rel="stylesheet" href="css/tailwind.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/profile-admin.css"><link rel="stylesheet" href="css/link-cards.css"><link rel="stylesheet" href="css/murottal.css"><link rel="stylesheet" href="css/banner.css"><link rel="stylesheet" href="css/splash.css"><link rel="stylesheet" href="css/background.css"><link rel="stylesheet" href="css/ai-chat.css"><link rel="stylesheet" href="css/futuristic.css"><link rel="stylesheet" href="css/update-banner.css"><link rel="stylesheet" href="css/theme-insta.css"><link rel="stylesheet" href="css/theme-jarvis.css"></noscript>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center justify-between px-3 sm:px-4 py-6 font-sans">
 
@@ -280,6 +290,9 @@
             <!-- (Tema Instagram) Sorotan folder -->
             <div id="igHighlights" class="ig-highlights ig-only" role="list" aria-label="Folder"></div>
         </div>
+
+        <!-- (Tema Jarvis) Panel HUD: jam, tanggal, status sistem. Diisi js/theme-jarvis.js; tersembunyi di tema lain -->
+        <section id="jvHud" class="jv-only" aria-label="Panel status Jarvis"></section>
 
         <!-- Banner Slider (di bawah ikon medsos) -->
         <div id="bannerSection" class="w-full mb-5 hidden" role="region" aria-label="Banner">

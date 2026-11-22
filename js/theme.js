@@ -1,22 +1,29 @@
 /**
  * theme.js
- * Pendamping modul untuk tema ("neon" bawaan dan "insta").
+ * Pendamping modul untuk tema ("insta" bawaan, "neon", dan "jarvis").
  * Logika ganti tema ada di js/theme-early.js (window.toggleTheme) agar tombol selalu bekerja.
  * Di sini: pembaca tema untuk modul lain, toast, dan pembaruan statistik profil saat tema berganti.
  */
 
 import { showToast } from './utils.js';
 import { refreshInstaProfile } from './theme-insta.js';
+import { initJarvis } from './theme-jarvis.js';
 
 export function getTheme() {
-    return document.documentElement.getAttribute('data-theme') === 'insta' ? 'insta' : 'neon';
+    const t = document.documentElement.getAttribute('data-theme');
+    return (t === 'insta' || t === 'jarvis') ? t : 'neon';
 }
 
 export function isInsta() {
     return getTheme() === 'insta';
 }
 
-// Semua tema (neon & Instagram): ikon medsos + murottal di bawah bio, bersebelahan dan rata tengah.
+// Tema Jarvis memakai susunan daftar yang sama dengan tema Neon (hanya gaya & panel HUD yang berbeda)
+export function isJarvis() {
+    return getTheme() === 'jarvis';
+}
+
+// Semua tema (neon, Instagram & Jarvis): ikon medsos + murottal di bawah bio, bersebelahan dan rata tengah.
 function placeMurottal() {
     const row = document.getElementById('murottalRow');
     const social = document.getElementById('socialMediaRow');
@@ -29,6 +36,7 @@ function placeMurottal() {
 export function initTheme() {
     placeMurottal();
     refreshInstaProfile();
+    initJarvis();
 
     // Header tetap di tempat; hanya latarnya yang berubah: transparan di puncak halaman, kaca agak transparan saat digulir
     const header = document.getElementById('appHeader');

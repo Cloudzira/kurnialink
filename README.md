@@ -134,9 +134,9 @@ lalu commit `css/tailwind.css` yang baru.
 - Di Cloudflare: matikan Rocket Loader, dan buat aturan Rate Limiting untuk `/api/chat`.
 
 
-## Tema (baru): Neon & Instagram
+## Tema: Instagram, Neon & Jarvis
 
-Tema bawaan = Instagram. Tombol di sebelah tombol Bagikan mengganti ke tema Neon (dan sebaliknya). Pilihan tersimpan di perangkat pengunjung (`localStorage` kunci `kp_theme`).
+Tema bawaan = Instagram. Tombol di sebelah tombol Bagikan mengganti tema berurutan: Instagram → Neon → Jarvis → Instagram. Pilihan tersimpan di perangkat pengunjung (`localStorage` kunci `kp_theme`).
 
 | Berkas | Fungsi |
 |---|---|
@@ -145,5 +145,17 @@ Tema bawaan = Instagram. Tombol di sebelah tombol Bagikan mengganti ke tema Neon
 | `js/theme.js` | toast & statistik profil saat tema berganti |
 | `js/theme-insta.js` | kartu posting 2 kolom, folder koleksi, statistik profil, sorotan folder |
 | `css/theme-insta.css` | seluruh gaya tema Instagram (aktif hanya bila `<html data-theme="insta">`) |
+| `js/theme-jarvis.js` | panel HUD tema Jarvis: jam cincin, tanggal, chip status (jaringan, jumlah link, Cloudz AI, murottal) |
+| `css/theme-jarvis.css` | seluruh gaya tema Jarvis (aktif hanya bila `<html data-theme="jarvis">`) |
 
 Tema Instagram memakai data yang sama persis dengan tema neon (Firestore tidak berubah). Mengubah warna: variabel `--ig-*` di bagian atas `css/theme-insta.css`.
+
+### Tema Jarvis Futuristik
+
+HUD ala asisten AI: cyan dingin + aksen amber, cincin reaktor di foto profil, nomor modul otomatis (01, 02, 02.01 untuk isi folder), braket sudut di kartu, folder bersudut potong, dan panel jam/status di bawah profil. Daftar link & folder memakai susunan tema Neon (data Firestore tetap sama), jadi semua fitur admin (urut, kunci, sembunyikan, edit, hapus) tetap jalan.
+
+- Warna: variabel `--jv-*` di bagian atas `css/theme-jarvis.css` (`--jv-cyan`, `--jv-amber`, dst.).
+- Font Orbitron & Rajdhani hanya diunduh saat tema Jarvis dipakai (lihat `ensureFonts` di `js/theme-early.js`).
+- Chip status membaca isi app: jumlah link yang terlihat, status jaringan, dan murottal (AKTIF saat diputar).
+- Jam hanya berjalan saat tema Jarvis aktif dan tab terlihat; animasi mati bila perangkat memilih "kurangi gerakan".
+- `sw.js` dinaikkan ke `v1.3` supaya file baru ikut ter-cache.

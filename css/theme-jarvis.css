@@ -1,0 +1,682 @@
+/* ==========================================================
+   theme-jarvis.css
+   TEMA KETIGA: "Jarvis Futuristik" (HUD ala asisten AI: cyan dingin + aksen amber).
+   Aktif hanya saat <html data-theme="jarvis">. Tema Instagram & Neon tidak tersentuh.
+   - Memakai susunan tema Neon (daftar link + folder), tetapi dengan gaya HUD:
+     sudut siku ber-braket, nomor modul otomatis, folder bersudut potong, cincin reaktor di foto profil.
+   - Panel jam & status (#jvHud) dibuat oleh js/theme-jarvis.js: jam, tanggal, jumlah link, Cloudz AI, murottal.
+   Ubah warna utama lewat variabel --jv-* di bawah.
+   ========================================================== */
+
+/* Elemen khusus tema Jarvis: tersembunyi di tema lain (aturan dasar ini ada juga di <head> index.html) */
+.jv-only { display: none; }
+
+[data-theme="jarvis"] {
+    --jv-cyan: #19e6ff;
+    --jv-cyan-2: #7df3ff;
+    --jv-amber: #ffb02e;
+    --jv-bg: #020a10;
+    --jv-panel: rgba(3, 18, 27, 0.86);
+    --jv-panel-2: rgba(6, 30, 44, 0.92);
+    --jv-line: rgba(25, 230, 255, 0.2);
+    --jv-line-2: rgba(25, 230, 255, 0.45);
+    --jv-text: #e6fbff;
+    --jv-muted: #6fa3b3;
+    --jv-br: var(--jv-cyan);                 /* warna braket sudut kartu (amber untuk link terkunci) */
+    --jv-display: 'Orbitron', 'Outfit', 'Inter', sans-serif;
+    --jv-body: 'Rajdhani', 'Inter', sans-serif;
+}
+
+[data-theme="jarvis"] ::selection { background: rgba(25, 230, 255, 0.35); color: #fff; }
+
+/* ---------- Latar: ruang gelap kebiruan, cincin reaktor berputar pelan, grid halus, garis pindai ---------- */
+html[data-theme="jarvis"] { background-color: var(--jv-bg); }
+[data-theme="jarvis"] .fx-bg {
+    background:
+        radial-gradient(70% 46% at 50% 16%, rgba(25, 230, 255, 0.17), transparent 70%),
+        radial-gradient(60% 36% at 50% 112%, rgba(255, 176, 46, 0.07), transparent 70%),
+        linear-gradient(180deg, #020a10 0%, #031420 55%, #020a10 100%);
+}
+[data-theme="jarvis"] .fx-stars,
+[data-theme="jarvis"] .fx-orb.o2,
+[data-theme="jarvis"] .fx-orb.o3 { display: none; }
+
+/* Cincin tick (skala) di belakang header profil */
+[data-theme="jarvis"] .fx-bg::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 24%;
+    width: min(150vw, 980px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, rgba(25, 230, 255, 0.55) 0 0.5deg, transparent 0.5deg 5deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 21px), #000 calc(100% - 12px), transparent calc(100% - 11px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 21px), #000 calc(100% - 12px), transparent calc(100% - 11px));
+    opacity: 0.22;
+    animation: jvSpin 140s linear infinite;
+    will-change: transform;
+}
+/* Cincin putus-putus berlawanan arah */
+[data-theme="jarvis"] .fx-orb.o1 {
+    display: block;
+    left: 50%;
+    top: 24%;
+    width: min(112vw, 740px);
+    height: min(112vw, 740px);
+    background: none;
+    border: 1px dashed rgba(25, 230, 255, 0.2);
+    transform: translate(-50%, -50%);
+    animation: jvSpinRev 90s linear infinite;
+    will-change: transform;
+}
+[data-theme="jarvis"] .fx-grid {
+    background-image:
+        linear-gradient(rgba(25, 230, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 230, 255, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+            mask: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+}
+[data-theme="jarvis"] .fx-vignette {
+    background:
+        repeating-linear-gradient(180deg, rgba(25, 230, 255, 0.022) 0 1px, transparent 1px 4px),
+        radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(1, 5, 9, 0.8) 100%);
+}
+/* Garis pindai yang turun pelan */
+[data-theme="jarvis"] .fx-vignette::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 160px;
+    background: linear-gradient(180deg, transparent, rgba(25, 230, 255, 0.05), transparent);
+    animation: jvScan 11s linear infinite;
+    will-change: transform;
+}
+[data-theme="jarvis"] .fx-cursor {
+    background: radial-gradient(circle closest-side, rgba(25, 230, 255, 0.16), rgba(255, 176, 46, 0.04) 55%, transparent 100%);
+}
+
+@keyframes jvSpin { to { transform: translate(-50%, -50%) rotate(1turn); } }
+@keyframes jvSpinRev { to { transform: translate(-50%, -50%) rotate(-1turn); } }
+@keyframes jvScan { from { transform: translateY(-160px); } to { transform: translateY(100vh); } }
+@keyframes jvSpinPlain { to { transform: rotate(1turn); } }
+@keyframes jvBlink { 50% { opacity: 0; } }
+@keyframes jvPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ---------- Komponen umum: kaca -> panel HUD ---------- */
+[data-theme="jarvis"] .glass-panel {
+    background: var(--jv-panel);
+    border: 1px solid var(--jv-line);
+    box-shadow: inset 0 0 18px rgba(25, 230, 255, 0.04);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+[data-theme="jarvis"] #loginModal .glass-panel,
+[data-theme="jarvis"] #editModal .glass-panel,
+[data-theme="jarvis"] #profileModal .glass-panel,
+[data-theme="jarvis"] #bannerModal .glass-panel,
+[data-theme="jarvis"] #infoModal .glass-panel,
+[data-theme="jarvis"] #toast.glass-panel {
+    border-radius: 10px;
+    background: rgba(2, 12, 19, 0.97);
+    border-color: var(--jv-line-2);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 26px rgba(25, 230, 255, 0.12);
+}
+[data-theme="jarvis"] .glass-input {
+    background: rgba(25, 230, 255, 0.05);
+    border: 1px solid var(--jv-line);
+    color: var(--jv-text);
+}
+[data-theme="jarvis"] .glass-input:focus {
+    border-color: var(--jv-cyan);
+    box-shadow: 0 0 0 3px rgba(25, 230, 255, 0.14), 0 0 14px rgba(25, 230, 255, 0.2);
+}
+[data-theme="jarvis"] select.glass-input option,
+[data-theme="jarvis"] select.glass-input optgroup { background-color: #04141d; }
+[data-theme="jarvis"] select.glass-input option:checked,
+[data-theme="jarvis"] select.glass-input option:hover { background-color: #0b3a4d; }
+[data-theme="jarvis"] ::-webkit-scrollbar-thumb { background: rgba(25, 230, 255, 0.3); }
+[data-theme="jarvis"] .sortable-ghost {
+    background: rgba(25, 230, 255, 0.1) !important;
+    border: 2px dashed var(--jv-cyan) !important;
+}
+
+/* ---------- Bilah atas ---------- */
+[data-theme="jarvis"] .app-header::before {
+    background: rgba(2, 10, 16, 0.8);
+    border-bottom: 1px solid var(--jv-line);
+}
+/* garis energi tipis di bawah header (selalu tampil) */
+[data-theme="jarvis"] .app-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(25, 230, 255, 0.65) 30%, rgba(255, 176, 46, 0.55) 70%, transparent);
+    pointer-events: none;
+}
+[data-theme="jarvis"] .ig-brand {
+    font-family: var(--jv-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    line-height: 1;
+    color: var(--jv-cyan-2);
+    text-shadow: 0 0 14px rgba(25, 230, 255, 0.55);
+}
+[data-theme="jarvis"] .ig-brand::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 9px;
+    vertical-align: 1px;
+    background: var(--jv-amber);
+    box-shadow: 0 0 8px var(--jv-amber);
+    animation: jvPulse 2.4s ease-in-out infinite;
+}
+[data-theme="jarvis"] .ig-topbar { margin: 0; padding: 0; }
+[data-theme="jarvis"] .ig-topbar > div:last-child { gap: 8px; }
+[data-theme="jarvis"] .ig-topbar button {
+    height: 32px;
+    background: rgba(25, 230, 255, 0.06);
+    border: 1px solid rgba(25, 230, 255, 0.4);
+    box-shadow: inset 0 0 10px rgba(25, 230, 255, 0.1);
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+[data-theme="jarvis"] .ig-topbar button:not(#installBtn) { width: 32px; border-radius: 50%; }
+[data-theme="jarvis"] #installBtn { border-radius: 4px; font-family: var(--jv-display); letter-spacing: 0.08em; }
+[data-theme="jarvis"] .ig-topbar button:hover {
+    background: rgba(25, 230, 255, 0.14);
+    border-color: var(--jv-cyan);
+    box-shadow: 0 0 14px rgba(25, 230, 255, 0.35), inset 0 0 10px rgba(25, 230, 255, 0.15);
+}
+[data-theme="jarvis"] .ig-topbar button:active { transform: scale(0.94); }
+[data-theme="jarvis"] #themeToggleIcon {
+    color: var(--jv-amber);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    filter: drop-shadow(0 0 4px rgba(255, 176, 46, 0.7));
+    transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+[data-theme="jarvis"] #themeToggleBtn:hover #themeToggleIcon { transform: rotate(120deg); }
+
+/* ---------- Profil: foto di dalam cincin reaktor ---------- */
+[data-theme="jarvis"] .ig-profile { margin-bottom: 14px; }
+[data-theme="jarvis"] #profileFrame { margin: 22px 0 26px; }
+[data-theme="jarvis"] #profileFrame > div:first-child { display: none; }   /* kabut cahaya neon dimatikan */
+[data-theme="jarvis"] #profileFrame > #profileAvatar {
+    width: 92px;
+    height: 92px;
+    border: 2px solid #031018;
+    box-shadow: 0 0 26px rgba(25, 230, 255, 0.4), inset 0 0 12px rgba(25, 230, 255, 0.25);
+}
+/* cincin 1: skala tick berputar */
+[data-theme="jarvis"] #profileFrame::before {
+    inset: -13px;
+    background: repeating-conic-gradient(from 0deg, var(--jv-cyan) 0 2deg, transparent 2deg 6deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+    opacity: 0.75;
+    animation: jvSpinPlain 26s linear infinite;
+}
+/* cincin 2: dua busur cyan & amber berputar terbalik */
+[data-theme="jarvis"] #profileFrame::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--jv-cyan);
+    border-bottom-color: var(--jv-amber);
+    box-shadow: 0 0 14px rgba(25, 230, 255, 0.3);
+    pointer-events: none;
+    animation: jvSpinPlain 6s linear infinite reverse;
+}
+[data-theme="jarvis"] #profileFrame > span {
+    right: 4px;
+    bottom: 4px;
+    background: var(--jv-cyan);
+    border-color: #031018;
+    box-shadow: 0 0 8px var(--jv-cyan);
+}
+[data-theme="jarvis"] #profileName {
+    font-family: var(--jv-display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #eaffff;
+    text-shadow: 0 0 16px rgba(25, 230, 255, 0.5);
+}
+[data-theme="jarvis"] .ig-verified path:first-of-type { fill: var(--jv-cyan); }
+[data-theme="jarvis"] .ig-verified path:last-of-type { stroke: #02131c; }
+[data-theme="jarvis"] #profileBio {
+    font-family: var(--jv-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #9fd0dd;
+}
+[data-theme="jarvis"] #profileBio::before { content: "> "; color: var(--jv-amber); }
+[data-theme="jarvis"] #profileBio::after { content: "_"; color: var(--jv-cyan); animation: jvBlink 1s steps(1) infinite; }
+
+/* Statistik: tiga pembacaan HUD */
+[data-theme="jarvis"] .neon-stats { gap: 8px; margin: 0 0 16px; }
+[data-theme="jarvis"] .neon-stat {
+    min-width: 88px;
+    padding: 8px 12px 7px;
+    border: 1px solid rgba(25, 230, 255, 0.14);
+    border-radius: 2px;
+    background:
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) left top / 8px 1px no-repeat,
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) left top / 1px 8px no-repeat,
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) right bottom / 8px 1px no-repeat,
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) right bottom / 1px 8px no-repeat,
+        rgba(25, 230, 255, 0.05);
+}
+[data-theme="jarvis"] .neon-stat + .neon-stat { border-left: 1px solid rgba(25, 230, 255, 0.14); }
+[data-theme="jarvis"] .neon-stat b {
+    font-family: var(--jv-display);
+    font-size: 17px;
+    color: var(--jv-cyan-2);
+    text-shadow: 0 0 12px rgba(25, 230, 255, 0.6);
+}
+[data-theme="jarvis"] .neon-stat span {
+    font-family: var(--jv-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--jv-muted);
+}
+@media (max-width: 360px) {
+    [data-theme="jarvis"] .neon-stat { min-width: 76px; padding: 7px 8px 6px; }
+    [data-theme="jarvis"] .neon-stat b { font-size: 15px; }
+}
+
+/* Ikon medsos: cincin tipis */
+[data-theme="jarvis"] #socialMediaRow a.glass-panel {
+    border-color: rgba(25, 230, 255, 0.35);
+    background: rgba(25, 230, 255, 0.05);
+}
+[data-theme="jarvis"] #socialMediaRow a.glass-panel:hover { box-shadow: 0 0 14px rgba(25, 230, 255, 0.3); }
+
+/* ---------- Pemutar murottal ---------- */
+[data-theme="jarvis"] .murottal-pill {
+    background: var(--jv-panel);
+    border-color: var(--jv-line-2);
+    border-radius: 6px;
+    box-shadow: inset 0 0 14px rgba(25, 230, 255, 0.06);
+}
+[data-theme="jarvis"] .murottal-wrap.is-playing .murottal-pill {
+    border-color: var(--jv-cyan);
+    box-shadow: 0 0 18px rgba(25, 230, 255, 0.25), inset 0 0 14px rgba(25, 230, 255, 0.08);
+}
+[data-theme="jarvis"] .murottal-btn {
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--jv-cyan), #0a8ba3);
+    box-shadow: 0 0 10px rgba(25, 230, 255, 0.5);
+}
+[data-theme="jarvis"] .murottal-label {
+    font-family: var(--jv-display);
+    font-size: 7.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+[data-theme="jarvis"] .murottal-name { font-family: var(--jv-body); font-weight: 600; letter-spacing: 0.04em; }
+[data-theme="jarvis"] .murottal-panel {
+    background: rgba(2, 12, 19, 0.98);
+    border-color: var(--jv-line-2);
+    border-radius: 8px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65), 0 0 22px rgba(25, 230, 255, 0.12);
+}
+
+/* ---------- Banner: bingkai HUD siku, sudut cyan & amber ---------- */
+[data-theme="jarvis"] .banner-frame {
+    border-radius: 6px;
+    background: var(--jv-panel);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 24px rgba(25, 230, 255, 0.1);
+}
+[data-theme="jarvis"] .banner-frame::before {
+    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 38%, var(--jv-cyan) 50%, var(--jv-amber) 66%, transparent 80% 100%);
+}
+[data-theme="jarvis"] .banner-viewport { border-radius: 5px; }
+[data-theme="jarvis"] .banner-viewport::after {
+    border-radius: 2px;
+    background:
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) top left / 16px 1.5px no-repeat,
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) top left / 1.5px 16px no-repeat,
+        linear-gradient(var(--jv-amber), var(--jv-amber)) bottom right / 16px 1.5px no-repeat,
+        linear-gradient(var(--jv-amber), var(--jv-amber)) bottom right / 1.5px 16px no-repeat;
+}
+
+/* ---------- Pencarian: baris perintah ---------- */
+[data-theme="jarvis"] .ig-search::before,
+[data-theme="jarvis"] .ig-search::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 2;
+}
+[data-theme="jarvis"] .ig-search::before { left: -4px; top: -4px; border-left: 2px solid var(--jv-cyan); border-top: 2px solid var(--jv-cyan); }
+[data-theme="jarvis"] .ig-search::after { right: -4px; bottom: -4px; border-right: 2px solid var(--jv-amber); border-bottom: 2px solid var(--jv-amber); }
+[data-theme="jarvis"] .ig-search .glass-input {
+    border-radius: 3px;
+    font-family: var(--jv-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+[data-theme="jarvis"] .ig-search > i { color: var(--jv-cyan); }
+
+/* ---------- Panel admin ---------- */
+[data-theme="jarvis"] #adminPanel { border-color: var(--jv-line-2); border-radius: 8px; }
+[data-theme="jarvis"] #adminPanel::before {
+    background: linear-gradient(90deg, transparent, var(--jv-cyan), var(--jv-amber), transparent);
+    background-size: 260% 100%;
+}
+
+/* ---------- Daftar modul: judul bagian + nomor otomatis ---------- */
+[data-theme="jarvis"] #linksContainer { counter-reset: jv; }
+[data-theme="jarvis"] #linksContainer:not(.hidden)::before {
+    content: "\25E2  DIREKTORI MODUL  \25E3";
+    display: block;
+    margin-bottom: 12px;
+    padding-bottom: 7px;
+    text-align: center;
+    font-family: var(--jv-display);
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: var(--jv-muted);
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, transparent, rgba(25, 230, 255, 0.45), transparent) 1;
+}
+[data-theme="jarvis"] #linksContainer > .glass-card,
+[data-theme="jarvis"] #linksContainer > .neon-folder { counter-increment: jv; }
+[data-theme="jarvis"] #linksContainer .nf-body { counter-reset: jvk; }
+[data-theme="jarvis"] #linksContainer .nf-body > .glass-card { counter-increment: jvk; }
+
+/* ---------- Kartu link: panel siku dengan braket sudut ---------- */
+[data-theme="jarvis"] #linksContainer .glass-card,
+[data-theme="jarvis"] #linksLoading .glass-card {
+    transform: none;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 3px;
+    border: 1px solid rgba(25, 230, 255, 0.16);
+    background-color: var(--jv-panel);
+    background-image:
+        linear-gradient(var(--jv-br), var(--jv-br)),
+        linear-gradient(var(--jv-br), var(--jv-br)),
+        linear-gradient(var(--jv-br), var(--jv-br)),
+        linear-gradient(var(--jv-br), var(--jv-br));
+    background-repeat: no-repeat;
+    background-position: left top, left top, right bottom, right bottom;
+    background-size: 9px 1px, 1px 9px, 9px 1px, 1px 9px;
+}
+[data-theme="jarvis"] #linksContainer .glass-card > * { transform: none; }
+[data-theme="jarvis"] #linksContainer .glass-card:hover {
+    transform: translateX(3px);
+    background-color: var(--jv-panel-2);
+    border-color: var(--jv-line-2);
+    box-shadow: 0 0 18px rgba(25, 230, 255, 0.16), inset 0 0 14px rgba(25, 230, 255, 0.06);
+}
+[data-theme="jarvis"] #linksContainer .glass-card.sortable-drag { transform: scale(1.02) !important; }
+[data-theme="jarvis"] #linksContainer .glass-card::before { opacity: 0.38; }
+[data-theme="jarvis"] #linksContainer .glass-card:hover::before { opacity: 0.85; }
+
+/* cahaya yang berputar di tepi: hanya cyan -> amber (bukan warna acak per link seperti tema Neon) */
+[data-theme="jarvis"] #linksContainer .glass-card,
+[data-theme="jarvis"] #linksContainer .nf-head,
+[data-theme="jarvis"] #linksContainer .neon-folder {
+    --link-light-color: #19e6ff !important;
+    --link-light-highlight: #ffb02e !important;
+    --link-light-glow: rgba(25, 230, 255, 0.2) !important;
+}
+
+[data-theme="jarvis"] #linksContainer .glass-card h3 {
+    font-family: var(--jv-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--jv-text);
+}
+[data-theme="jarvis"] #linksContainer .glass-card h3::before {
+    content: counter(jv, decimal-leading-zero);
+    margin-right: 7px;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--jv-amber);
+    text-shadow: 0 0 8px rgba(255, 176, 46, 0.55);
+}
+[data-theme="jarvis"] #linksContainer .nf-body .glass-card h3::before {
+    content: counter(jv, decimal-leading-zero) "." counter(jvk, decimal-leading-zero);
+}
+[data-theme="jarvis"] #linksContainer .glass-card p,
+[data-theme="jarvis"] #linksContainer .neon-folder p {
+    font-family: var(--jv-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--jv-muted);
+}
+/* kotak ikon */
+[data-theme="jarvis"] #linksContainer .glass-card .glass-panel,
+[data-theme="jarvis"] #linksContainer .nf-head .glass-panel {
+    border-radius: 3px;
+    background: rgba(25, 230, 255, 0.08);
+    border-color: rgba(25, 230, 255, 0.32);
+}
+/* hitungan klik */
+[data-theme="jarvis"] #linksContainer .glass-card .font-mono {
+    border-radius: 2px;
+    font-family: var(--jv-display);
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+    color: var(--jv-cyan-2);
+}
+/* link terkunci / disembunyikan */
+[data-theme="jarvis"] #linksContainer .glass-card.link-locked { --jv-br: var(--jv-amber); border-color: rgba(255, 176, 46, 0.34); }
+[data-theme="jarvis"] #linksContainer .glass-card.link-locked:hover {
+    border-color: rgba(255, 176, 46, 0.7);
+    box-shadow: 0 0 18px rgba(255, 176, 46, 0.18), inset 0 0 14px rgba(255, 176, 46, 0.06);
+}
+
+/* ---------- Folder: panel bersudut potong ---------- */
+[data-theme="jarvis"] .neon-folder {
+    --fc: 12px;
+    --clip: polygon(0 0, calc(100% - var(--fc)) 0, 100% var(--fc), 100% 100%, var(--fc) 100%, 0 calc(100% - var(--fc)));
+}
+[data-theme="jarvis"] .nf-skew .nf-head {
+    clip-path: var(--clip);
+    border-radius: 0;
+    transform: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    background:
+        conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--jv-cyan) 65%, var(--jv-amber) 72%, transparent 80% 100%),
+        linear-gradient(120deg, rgba(25, 230, 255, 0.35), rgba(255, 176, 46, 0.25));
+}
+[data-theme="jarvis"] .nf-skew .nf-head::before {
+    clip-path: var(--clip);
+    border-radius: 0;
+    background: #04141d;
+}
+[data-theme="jarvis"] .neon-folder:hover .nf-head::before { background: #08273a; }
+[data-theme="jarvis"] .nf-skew .nf-head > * { transform: none; }
+[data-theme="jarvis"] .nf-head .nf-ico { border-radius: 3px; color: var(--jv-amber); border-color: rgba(255, 176, 46, 0.4); background: rgba(255, 176, 46, 0.08); }
+[data-theme="jarvis"] .nf-head .text-neon-purple { color: var(--jv-amber); }
+[data-theme="jarvis"] .nf-head h3 {
+    font-family: var(--jv-display);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--jv-text);
+}
+[data-theme="jarvis"] .nf-head h3::before {
+    content: counter(jv, decimal-leading-zero);
+    margin-right: 7px;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    color: var(--jv-amber);
+    text-shadow: 0 0 8px rgba(255, 176, 46, 0.55);
+}
+[data-theme="jarvis"] .nf-head [class*="bg-purple-950"] {
+    background: rgba(255, 176, 46, 0.1);
+    border-color: rgba(255, 176, 46, 0.4);
+    color: #ffd085;
+    border-radius: 2px;
+    font-family: var(--jv-display);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+}
+[data-theme="jarvis"] .nf-body {
+    border-color: rgba(25, 230, 255, 0.18);
+    border-radius: 3px;
+    background: rgba(1, 8, 13, 0.55);
+}
+
+/* ---------- Cloudz AI: tombol & jendela bernuansa Jarvis ---------- */
+[data-theme="jarvis"] .cz-fab {
+    border-color: rgba(25, 230, 255, 0.6);
+    background: linear-gradient(135deg, rgba(25, 230, 255, 0.26), rgba(255, 176, 46, 0.16)), rgba(2, 12, 19, 0.94);
+    font-family: var(--jv-display);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    animation-name: jvFabGlow;
+}
+[data-theme="jarvis"] .cz-fab::before { border-color: rgba(25, 230, 255, 0.6); }
+[data-theme="jarvis"] .cz-fab-icon { color: var(--jv-cyan); }
+@keyframes jvFabGlow {
+    0%, 100% { box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5), 0 0 14px rgba(25, 230, 255, 0.25); }
+    50%      { box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5), 0 0 26px rgba(255, 176, 46, 0.35); }
+}
+[data-theme="jarvis"] .cz-panel {
+    border-radius: 12px;
+    border-color: rgba(25, 230, 255, 0.4);
+    background: rgba(2, 12, 19, 0.97);
+}
+[data-theme="jarvis"] .cz-panel::before {
+    background: conic-gradient(from var(--cz-angle), transparent 0 60%, rgba(25, 230, 255, 0.85) 78%, rgba(255, 176, 46, 0.7) 90%, transparent 100%);
+}
+[data-theme="jarvis"] .cz-head { background: linear-gradient(135deg, rgba(25, 230, 255, 0.13), rgba(255, 176, 46, 0.06)); }
+[data-theme="jarvis"] .cz-title strong { font-family: var(--jv-display); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ==========================================================
+   PANEL JAM & STATUS (#jvHud) — diisi js/theme-jarvis.js
+   ========================================================== */
+[data-theme="jarvis"] .jv-hud {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 14px;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 12px 14px 11px;
+    border: 1px solid var(--jv-line);
+    border-radius: 4px;
+    background:
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) left top / 14px 1.5px no-repeat,
+        linear-gradient(var(--jv-cyan), var(--jv-cyan)) left top / 1.5px 14px no-repeat,
+        linear-gradient(var(--jv-amber), var(--jv-amber)) right bottom / 14px 1.5px no-repeat,
+        linear-gradient(var(--jv-amber), var(--jv-amber)) right bottom / 1.5px 14px no-repeat,
+        linear-gradient(135deg, rgba(25, 230, 255, 0.08), rgba(3, 16, 24, 0.88) 60%);
+    box-sizing: border-box;
+}
+.jv-ring { position: relative; width: 96px; height: 96px; flex: none; }
+.jv-ring svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.jv-ring-track { fill: none; stroke: rgba(25, 230, 255, 0.14); stroke-width: 3; }
+.jv-ring-arc {
+    fill: none;
+    stroke: #19e6ff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 3px #19e6ff);
+    transition: stroke-dashoffset 1s linear;
+}
+.jv-ring-inner { fill: none; stroke: rgba(255, 176, 46, 0.5); stroke-width: 0.8; stroke-dasharray: 2 3.2; transform-origin: 50px 50px; animation: jvSpinPlain 30s linear infinite; }
+.jv-ring-ticks line { stroke: rgba(25, 230, 255, 0.4); stroke-width: 0.8; }
+.jv-ring-ticks line.is-major { stroke: rgba(25, 230, 255, 0.85); stroke-width: 1.2; }
+.jv-time { font: 700 17px 'Orbitron', 'Outfit', sans-serif; fill: #eaffff; text-anchor: middle; letter-spacing: 0.02em; }
+.jv-sec { font: 700 7px 'Orbitron', 'Outfit', sans-serif; fill: #ffb02e; text-anchor: middle; letter-spacing: 0.2em; }
+
+.jv-hud-info { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.jv-kicker { font-family: var(--jv-display); font-size: 7.5px; font-weight: 700; letter-spacing: 0.22em; color: var(--jv-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jv-greet { font-family: var(--jv-display); font-size: 11.5px; font-weight: 700; letter-spacing: 0.2em; color: var(--jv-cyan-2); text-shadow: 0 0 12px rgba(25, 230, 255, 0.55); }
+.jv-date { font-family: var(--jv-body); font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jv-text); line-height: 1.1; }
+.jv-days { display: flex; gap: 3px; margin-top: 2px; }
+.jv-days span {
+    flex: 1;
+    padding: 3px 0 2px;
+    text-align: center;
+    font-family: var(--jv-display);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--jv-muted);
+    border-bottom: 1px solid rgba(25, 230, 255, 0.2);
+}
+.jv-days span.is-today { color: #1a1000; background: var(--jv-amber); border-bottom-color: var(--jv-amber); box-shadow: 0 0 10px rgba(255, 176, 46, 0.5); }
+
+.jv-status { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; padding-top: 9px; border-top: 1px solid rgba(25, 230, 255, 0.12); }
+.jv-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid rgba(25, 230, 255, 0.22);
+    border-radius: 2px;
+    background: rgba(25, 230, 255, 0.05);
+    font-family: var(--jv-display);
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--jv-muted);
+    white-space: nowrap;
+}
+.jv-chip i { font-size: 9px; color: var(--jv-cyan); }
+.jv-chip b { font-weight: 700; color: var(--jv-cyan-2); }
+.jv-chip.is-ok b { color: #5dffb0; }
+.jv-chip.is-warn b, .jv-chip.is-warn i { color: var(--jv-amber); }
+.jv-chip.is-live { border-color: rgba(255, 176, 46, 0.5); background: rgba(255, 176, 46, 0.08); }
+.jv-chip.is-live b, .jv-chip.is-live i { color: var(--jv-amber); }
+.jv-chip.is-live i { animation: jvPulse 1.2s ease-in-out infinite; }
+
+@media (max-width: 380px) {
+    [data-theme="jarvis"] .jv-hud { gap: 8px 10px; padding: 10px 10px 9px; }
+    .jv-ring { width: 80px; height: 80px; }
+    .jv-date { font-size: 13.5px; }
+    .jv-chip { padding: 4px 6px; letter-spacing: 0.08em; }
+}
+
+/* ---------- Hormati "kurangi animasi" ---------- */
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="jarvis"] .fx-bg::before,
+    [data-theme="jarvis"] .fx-orb.o1,
+    [data-theme="jarvis"] .fx-vignette::after,
+    [data-theme="jarvis"] #profileFrame::before,
+    [data-theme="jarvis"] #profileFrame::after,
+    [data-theme="jarvis"] .ig-brand::before,
+    [data-theme="jarvis"] #profileBio::after,
+    [data-theme="jarvis"] .cz-fab,
+    .jv-ring-inner,
+    .jv-chip.is-live i { animation: none; }
+    .jv-ring-arc { transition: none; }
+}

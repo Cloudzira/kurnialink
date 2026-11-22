@@ -14,7 +14,13 @@ const FINE_POINTER = window.matchMedia && window.matchMedia('(hover: hover) and 
 function bootText() {
     const el = document.getElementById('splashStatusText');
     if (!el) return;
-    const lines = ['> memuat modul...', '> menyambung ke cloud...', '> sinkron data link...', '> sistem siap'];
+    let lines = ['> memuat modul...', '> menyambung ke cloud...', '> sinkron data link...', '> sistem siap'];
+    // Tema Jarvis: teks boot bergaya asisten AI
+    if (document.documentElement.getAttribute('data-theme') === 'jarvis') {
+        lines = ['> J.A.R.V.I.S. memuat inti...', '> menyambung ke cloud...', '> memindai modul link...', '> sistem online. selamat datang'];
+        const sub = document.querySelector('#splashScreen .sp-sub');
+        if (sub) sub.textContent = 'Menginisialisasi J.A.R.V.I.S...';
+    }
     let i = 0;
     el.textContent = lines[0];
     const timer = setInterval(() => {
