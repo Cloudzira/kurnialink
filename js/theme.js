@@ -2,10 +2,9 @@
  * theme.js
  * Pendamping modul untuk tema ("insta" bawaan, "neon", "jarvis", dan "orbit").
  * Logika ganti tema ada di js/theme-early.js (window.toggleTheme) agar tombol selalu bekerja.
- * Di sini: pembaca tema untuk modul lain, toast, dan pembaruan statistik profil saat tema berganti.
+ * Di sini: pembaca tema untuk modul lain, dan pembaruan statistik profil saat tema berganti.
  */
 
-import { showToast } from './utils.js';
 import { refreshInstaProfile } from './theme-insta.js';
 import { initJarvis } from './theme-jarvis.js';
 import { initOrbit } from './theme-orbit.js';
@@ -59,6 +58,5 @@ export function initTheme() {
     document.addEventListener('kp-themechange', (e) => {
         placeMurottal();
         refreshInstaProfile();
-        if (e.detail && e.detail.announce) showToast('Tema ' + e.detail.label + ' aktif');
     });
 }

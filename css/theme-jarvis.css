@@ -33,9 +33,9 @@
 html[data-theme="jarvis"] { background-color: var(--jv-bg); }
 [data-theme="jarvis"] .fx-bg {
     background:
-        radial-gradient(70% 46% at 50% 16%, rgba(25, 230, 255, 0.17), transparent 70%),
+        radial-gradient(70% 46% at 50% 16%, rgba(25, 230, 255, 0.13), transparent 70%),
         radial-gradient(60% 36% at 50% 112%, rgba(255, 176, 46, 0.07), transparent 70%),
-        linear-gradient(180deg, #020a10 0%, #031420 55%, #020a10 100%);
+        linear-gradient(180deg, #03080d 0%, #040f18 55%, #03080d 100%);
 }
 [data-theme="jarvis"] .fx-stars,
 [data-theme="jarvis"] .fx-orb.o2,
@@ -54,7 +54,7 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     background: repeating-conic-gradient(from 0deg, rgba(25, 230, 255, 0.55) 0 0.5deg, transparent 0.5deg 5deg);
     -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 21px), #000 calc(100% - 12px), transparent calc(100% - 11px));
             mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 21px), #000 calc(100% - 12px), transparent calc(100% - 11px));
-    opacity: 0.22;
+    opacity: 0.14;
     animation: jvSpin 140s linear infinite;
     will-change: transform;
 }
@@ -66,23 +66,21 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     width: min(112vw, 740px);
     height: min(112vw, 740px);
     background: none;
-    border: 1px dashed rgba(25, 230, 255, 0.2);
+    border: 1px dashed rgba(25, 230, 255, 0.12);
     transform: translate(-50%, -50%);
     animation: jvSpinRev 90s linear infinite;
     will-change: transform;
 }
 [data-theme="jarvis"] .fx-grid {
     background-image:
-        linear-gradient(rgba(25, 230, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(25, 230, 255, 0.05) 1px, transparent 1px);
-    background-size: 44px 44px;
-    -webkit-mask: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
-            mask: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+        linear-gradient(rgba(25, 230, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 230, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;   /* sama dengan grid Neon: garis 0.04, ukuran 40px, tanpa pudar di bawah */
 }
 [data-theme="jarvis"] .fx-vignette {
     background:
-        repeating-linear-gradient(180deg, rgba(25, 230, 255, 0.022) 0 1px, transparent 1px 4px),
-        radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(1, 5, 9, 0.8) 100%);
+        repeating-linear-gradient(180deg, rgba(25, 230, 255, 0.015) 0 1px, transparent 1px 4px),
+        radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(3, 4, 8, 0.75) 100%);
 }
 /* Garis pindai yang turun pelan */
 [data-theme="jarvis"] .fx-vignette::after {
@@ -92,12 +90,12 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     right: 0;
     top: 0;
     height: 160px;
-    background: linear-gradient(180deg, transparent, rgba(25, 230, 255, 0.05), transparent);
+    background: linear-gradient(180deg, transparent, rgba(25, 230, 255, 0.03), transparent);
     animation: jvScan 11s linear infinite;
     will-change: transform;
 }
 [data-theme="jarvis"] .fx-cursor {
-    background: radial-gradient(circle closest-side, rgba(25, 230, 255, 0.16), rgba(255, 176, 46, 0.04) 55%, transparent 100%);
+    background: radial-gradient(circle closest-side, rgba(25, 230, 255, 0.14), rgba(255, 176, 46, 0.06) 55%, transparent 100%);
 }
 
 @keyframes jvSpin { to { transform: translate(-50%, -50%) rotate(1turn); } }
