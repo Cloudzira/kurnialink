@@ -573,13 +573,16 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
    ========================================================== */
 [data-theme="orbit"] .ob-hud {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 4px 16px;
+    --rw: 112px;                                  /* lebar reticle jam; kolom dibuat tetap agar baris heksagon tidak melebarkannya */
+    grid-template-columns: var(--rw) minmax(0, 340px);
+    justify-content: center;
+    gap: 6px 18px;
     align-items: center;
     position: relative;
     width: 100%;
-    margin: 0 0 18px;
-    padding: 14px 14px 26px;
+    max-width: 500px;                              /* di laptop panel tidak melebar kosong */
+    margin: 0 auto 18px;
+    padding: 16px 14px 16px;
     border: 1px solid var(--ob-line);
     border-radius: 8px;
     background:
@@ -587,7 +590,7 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
         rgba(5, 8, 11, 0.82);
     box-sizing: border-box;
 }
-.ob-reticle { position: relative; width: 112px; height: 112px; flex: none; }
+.ob-reticle { position: relative; width: var(--rw, 112px); height: var(--rw, 112px); flex: none; }
 .ob-reticle svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .ob-r-gap { fill: none; stroke: rgba(238, 246, 248, 0.85); stroke-width: 0.7; stroke-dasharray: 30 3 12 3 44 3 7 3; transform-origin: 50px 50px; animation: obSpinPlain 80s linear infinite; }
 .ob-r-faint { fill: none; stroke: rgba(238, 246, 248, 0.22); stroke-width: 0.5; }
@@ -619,12 +622,25 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
 }
 .ob-days span.is-today { color: #1a0a00; background: var(--ob-ember); border-bottom-color: var(--ob-ember); box-shadow: 0 0 10px rgba(255, 122, 31, 0.5); border-radius: 2px 2px 0 0; }
 
-/* kluster heksagon: sel genap turun setengah baris, seperti sarang lebah */
-.ob-hexes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 8px; }
+/* kluster heksagon: heksagon beraturan (tinggi = 0,866 x lebar), tersusun zig-zag seperti sarang lebah.
+   Lebar satu sel = --hw; sel berikutnya menempel 3/4 lebar dan bergantian naik-turun setengah tinggi. */
+.ob-hexes {
+    --hw: clamp(74px, 23vw, 96px);
+    --gap: 3px;
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 6px;
+    padding-bottom: calc(var(--hw) * 0.433);   /* ruang untuk sel yang turun */
+}
 .ob-hex {
-    --hex: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+    --hex: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
     position: relative;
-    aspect-ratio: 1.12;
+    flex: none;
+    width: var(--hw);
+    height: calc(var(--hw) * 0.866);
+    margin-left: calc(var(--hw) * -0.25 + var(--gap));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -634,13 +650,14 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
     background: rgba(238, 246, 248, 0.42);
     text-align: center;
 }
-.ob-hex:nth-child(even) { transform: translateY(14px); }
+.ob-hex:first-child { margin-left: 0; }
+.ob-hex:nth-child(even) { transform: translateY(calc(var(--hw) * 0.433 + var(--gap) * 0.5)); }
 .ob-hex::before { content: ""; position: absolute; inset: 1px; clip-path: var(--hex); background: #06090c; }
 .ob-hex > * { position: relative; z-index: 1; }
-.ob-hex i { font-size: 11px; color: var(--ob-teal-2); }
-.ob-hex b { font-family: var(--ob-body); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--ob-white); line-height: 1.1; }
-.ob-hex span { font-family: var(--ob-body); font-size: 8.5px; font-weight: 600; letter-spacing: 0.1em; color: var(--ob-muted); }
-.ob-hex.is-ok { background: rgba(34, 184, 214, 0.7); }
+.ob-hex i { font-size: 11px; line-height: 1; color: var(--ob-teal-2); margin-bottom: 2px; }
+.ob-hex b { font-family: var(--ob-body); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--ob-white); line-height: 1.1; white-space: nowrap; }
+.ob-hex span { font-family: var(--ob-body); font-size: 8.5px; font-weight: 600; letter-spacing: 0.06em; color: var(--ob-muted); line-height: 1.1; white-space: nowrap; }
+.ob-hex.is-ok { background: rgba(34, 184, 214, 0.75); }
 .ob-hex.is-ok i { color: #7bffc4; }
 .ob-hex.is-warn { background: rgba(255, 122, 31, 0.85); }
 .ob-hex.is-warn i, .ob-hex.is-warn b { color: var(--ob-ember-2); }
@@ -650,12 +667,19 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
 .ob-hex.is-live i { animation: obPulse 1.2s ease-in-out infinite; }
 
 @media (max-width: 380px) {
-    [data-theme="orbit"] .ob-hud { gap: 4px 10px; padding: 12px 10px 26px; }
-    .ob-reticle { width: 92px; height: 92px; }
+    [data-theme="orbit"] .ob-hud { gap: 6px 10px; padding: 12px 10px 12px; }
+    [data-theme="orbit"] .ob-hud { --rw: 88px; }
     .ob-time { font-size: 18px; }
     .ob-date { font-size: 13px; }
-    .ob-hex b { font-size: 9px; }
-    .ob-hex span { font-size: 7.5px; letter-spacing: 0.06em; }
+    .ob-hex b { font-size: 9.5px; }
+    .ob-hex span { font-size: 7.5px; letter-spacing: 0.03em; }
+}
+@media (min-width: 640px) {
+    [data-theme="orbit"] .ob-hud { --rw: 128px; }
+    .ob-time { font-size: 26px; }
+    .ob-hex b { font-size: 11px; }
+    .ob-hex span { font-size: 9px; }
+    .ob-hex i { font-size: 12px; }
 }
 
 /* ---------- Hormati "kurangi animasi" ---------- */
