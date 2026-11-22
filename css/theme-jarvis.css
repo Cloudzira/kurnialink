@@ -641,35 +641,10 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
 }
 .jv-days span.is-today { color: #1a1000; background: var(--jv-amber); border-bottom-color: var(--jv-amber); box-shadow: 0 0 10px rgba(255, 176, 46, 0.5); }
 
-.jv-status { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; padding-top: 9px; border-top: 1px solid rgba(25, 230, 255, 0.12); }
-.jv-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
-    border: 1px solid rgba(25, 230, 255, 0.22);
-    border-radius: 2px;
-    background: rgba(25, 230, 255, 0.05);
-    font-family: var(--jv-display);
-    font-size: 7.5px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--jv-muted);
-    white-space: nowrap;
-}
-.jv-chip i { font-size: 9px; color: var(--jv-cyan); }
-.jv-chip b { font-weight: 700; color: var(--jv-cyan-2); }
-.jv-chip.is-ok b { color: #5dffb0; }
-.jv-chip.is-warn b, .jv-chip.is-warn i { color: var(--jv-amber); }
-.jv-chip.is-live { border-color: rgba(255, 176, 46, 0.5); background: rgba(255, 176, 46, 0.08); }
-.jv-chip.is-live b, .jv-chip.is-live i { color: var(--jv-amber); }
-.jv-chip.is-live i { animation: jvPulse 1.2s ease-in-out infinite; }
-
 @media (max-width: 380px) {
     [data-theme="jarvis"] .jv-hud { gap: 8px 10px; padding: 10px 10px 9px; }
     .jv-ring { width: 80px; height: 80px; }
     .jv-date { font-size: 13.5px; }
-    .jv-chip { padding: 4px 6px; letter-spacing: 0.08em; }
 }
 
 /* ---------- Hormati "kurangi animasi" ---------- */
@@ -683,6 +658,5 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     [data-theme="jarvis"] #profileBio::after,
     [data-theme="jarvis"] .cz-fab,
     .jv-ring-inner,
-    .jv-chip.is-live i { animation: none; }
     .jv-ring-arc { transition: none; }
 }

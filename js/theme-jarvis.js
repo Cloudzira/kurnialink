@@ -2,13 +2,11 @@
  * theme-jarvis.js
  * Semua yang khusus tema "Jarvis Futuristik":
  *  - panel HUD (#jvHud): jam cincin, tanggal, penanda hari, sapaan sesuai jam
- *  - chip status yang terhubung ke isi app: jaringan, jumlah link, Cloudz AI, murottal (aktif / standby)
  *  - kolom pencarian berubah jadi "baris perintah"
  * Daftar link & folder memakai susunan tema Neon (js/links-render.js), hanya gayanya saja yang beda (css/theme-jarvis.css).
  * Jam hanya berjalan saat tema Jarvis aktif dan tab terlihat, jadi tidak membebani tema lain.
  */
 
-import { state } from './state.js';
 
 const DAYS_SHORT = ['AHD', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
 const DAYS_FULL = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -77,12 +75,7 @@ function build() {
             <div class="jv-date" id="jvDate">&nbsp;</div>
             <div class="jv-days" id="jvDays">${DAYS_SHORT.map((d, i) => `<span data-d="${i}">${d}</span>`).join('')}</div>
         </div>
-        <div class="jv-status" aria-label="Status sistem">
-            <span class="jv-chip" id="jvNet"><i class="fa-solid fa-wifi" aria-hidden="true"></i> JARINGAN <b id="jvNetVal">--</b></span>
-            <span class="jv-chip"><i class="fa-solid fa-link" aria-hidden="true"></i> MODUL <b id="jvModules">0</b></span>
-            <span class="jv-chip is-ok"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> CLOUDZ AI <b>SIAGA</b></span>
-            <span class="jv-chip" id="jvAudio"><i class="fa-solid fa-headphones" aria-hidden="true"></i> MUROTTAL <b id="jvAudioVal">STANDBY</b></span>
-        </div>`;
+`;
 
     els.arc = host.querySelector('#jvArc');
     els.time = host.querySelector('#jvTime');
@@ -90,29 +83,6 @@ function build() {
     els.greet = host.querySelector('#jvGreet');
     els.date = host.querySelector('#jvDate');
     els.days = host.querySelectorAll('#jvDays span');
-    els.net = host.querySelector('#jvNet');
-    els.netVal = host.querySelector('#jvNetVal');
-    els.modules = host.querySelector('#jvModules');
-    els.audio = host.querySelector('#jvAudio');
-    els.audioVal = host.querySelector('#jvAudioVal');
-}
-
-function updateStatus() {
-    // jaringan
-    const online = navigator.onLine !== false;
-    setText(els.netVal, online ? 'ONLINE' : 'OFFLINE');
-    els.net.classList.toggle('is-ok', online);
-    els.net.classList.toggle('is-warn', !online);
-
-    // jumlah link yang terlihat (admin melihat semuanya, pengunjung hanya yang tidak disembunyikan)
-    const list = Array.isArray(state.linksList) ? state.linksList : [];
-    const count = list.filter(i => !i.isFolder && (state.currentUser || i.visible !== false)).length;
-    setText(els.modules, String(count));
-
-    // murottal: ikut status pemutar
-    const playing = !!document.querySelector('.murottal-wrap.is-playing');
-    setText(els.audioVal, playing ? 'AKTIF' : 'STANDBY');
-    els.audio.classList.toggle('is-live', playing);
 }
 
 function tick() {
@@ -142,7 +112,6 @@ function tick() {
         els.days.forEach((el) => el.classList.toggle('is-today', Number(el.getAttribute('data-d')) === d.getDay()));
     }
 
-    updateStatus();
 }
 
 // Kolom pencarian jadi "baris perintah" di tema Jarvis; dikembalikan seperti semula di tema lain
@@ -175,6 +144,4 @@ export function initJarvis() {
     sync();
     document.addEventListener('kp-themechange', sync);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
-    window.addEventListener('online', tick);
-    window.addEventListener('offline', tick);
 }

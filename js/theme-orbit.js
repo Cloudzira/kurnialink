@@ -2,12 +2,10 @@
  * theme-orbit.js
  * Semua yang khusus tema "Orbit":
  *  - panel #obHud: reticle jam analog dengan inti oranye, jam digital, sapaan, tanggal, penanda hari
- *  - empat bulatan orbit status yang terhubung ke isi app: jaringan, jumlah link, Cloudz AI, murottal
  * Daftar link & folder memakai susunan tema Neon (js/links-render.js), hanya gayanya yang beda (css/theme-orbit.css).
  * Jam hanya berjalan saat tema Orbit aktif dan tab terlihat, jadi tidak membebani tema lain.
  */
 
-import { state } from './state.js';
 
 const DAYS_SHORT = ['Ahd', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 const DAYS_FULL = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -85,12 +83,6 @@ function build() {
             <div class="ob-greet" id="obGreet">Selamat datang</div>
             <div class="ob-date" id="obDate">&nbsp;</div>
             <div class="ob-days" id="obDays">${DAYS_SHORT.map((d, i) => `<span data-d="${i}">${d}</span>`).join('')}</div>
-        </div>
-        <div class="ob-orbs" aria-label="Status sistem">
-            <div class="ob-orb" id="obNet"><div class="ob-orb-ring"><i class="fa-solid fa-wifi" aria-hidden="true"></i><b id="obNetVal">--</b></div><span>Jaringan</span></div>
-            <div class="ob-orb"><div class="ob-orb-ring"><i class="fa-solid fa-link" aria-hidden="true"></i><b id="obModules">0</b></div><span>Link</span></div>
-            <div class="ob-orb is-ok"><div class="ob-orb-ring"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><b>Siaga</b></div><span>Cloudz AI</span></div>
-            <div class="ob-orb" id="obAudio"><div class="ob-orb-ring"><i class="fa-solid fa-headphones" aria-hidden="true"></i><b id="obAudioVal">Standby</b></div><span>Murottal</span></div>
         </div>`;
 
     els.arc = host.querySelector('#obArc');
@@ -101,27 +93,6 @@ function build() {
     els.greet = host.querySelector('#obGreet');
     els.date = host.querySelector('#obDate');
     els.days = host.querySelectorAll('#obDays span');
-    els.net = host.querySelector('#obNet');
-    els.netVal = host.querySelector('#obNetVal');
-    els.modules = host.querySelector('#obModules');
-    els.audio = host.querySelector('#obAudio');
-    els.audioVal = host.querySelector('#obAudioVal');
-}
-
-function updateStatus() {
-    const online = navigator.onLine !== false;
-    setText(els.netVal, online ? 'Online' : 'Offline');
-    els.net.classList.toggle('is-ok', online);
-    els.net.classList.toggle('is-warn', !online);
-
-    // jumlah link yang terlihat (admin melihat semuanya, pengunjung hanya yang tidak disembunyikan)
-    const list = Array.isArray(state.linksList) ? state.linksList : [];
-    const count = list.filter(i => !i.isFolder && (state.currentUser || i.visible !== false)).length;
-    setText(els.modules, String(count));
-
-    const playing = !!document.querySelector('.murottal-wrap.is-playing');
-    setText(els.audioVal, playing ? 'Aktif' : 'Standby');
-    els.audio.classList.toggle('is-live', playing);
 }
 
 function tick() {
@@ -161,7 +132,6 @@ function tick() {
         els.days.forEach((el) => el.classList.toggle('is-today', Number(el.getAttribute('data-d')) === d.getDay()));
     }
 
-    updateStatus();
 }
 
 function sync() {
@@ -179,6 +149,4 @@ export function initOrbit() {
     sync();
     document.addEventListener('kp-themechange', sync);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
-    window.addEventListener('online', tick);
-    window.addEventListener('offline', tick);
 }

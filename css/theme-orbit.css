@@ -623,64 +623,14 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
 }
 .ob-days span.is-today { color: #1a0a00; background: var(--ob-ember); border-bottom-color: var(--ob-ember); box-shadow: 0 0 10px rgba(255, 122, 31, 0.5); border-radius: 2px 2px 0 0; }
 
-/* empat bulatan orbit status, berjejer rata satu baris penuh */
-.ob-orbs {
-    --ow: clamp(60px, 18vw, 76px);
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-top: 4px;
-    padding-top: 14px;
-    border-top: 1px solid var(--ob-line);
-}
-.ob-orb { --c: rgba(238, 246, 248, 0.6); display: flex; flex-direction: column; align-items: center; gap: 9px; min-width: 0; }
-.ob-orb.is-ok { --c: #22b8d6; }
-.ob-orb.is-warn, .ob-orb.is-live { --c: #ff7a1f; }
-.ob-orb-ring {
-    position: relative;
-    width: var(--ow);
-    height: var(--ow);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    border: 1px solid rgba(238, 246, 248, 0.3);
-    background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.05), rgba(3, 5, 7, 0.9) 70%);
-    box-sizing: border-box;
-}
-/* busur orbit yang berputar mengelilingi bulatan; warnanya ikut status */
-.ob-orb-ring::after {
-    content: "";
-    position: absolute;
-    inset: -5px;
-    border-radius: 50%;
-    border: 1.5px solid transparent;
-    border-top-color: var(--c);
-    border-right-color: color-mix(in srgb, var(--c) 35%, transparent);
-    pointer-events: none;
-    animation: obSpinPlain 9s linear infinite;
-}
-.ob-orb.is-live .ob-orb-ring::after { animation-duration: 2.4s; filter: drop-shadow(0 0 4px #ff7a1f); }
-.ob-orb-ring i { font-size: 13px; line-height: 1; color: var(--c); }
-.ob-orb.is-ok i { color: #7bffc4; }
-.ob-orb-ring b { font-family: var(--ob-body); font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--ob-white); line-height: 1.1; white-space: nowrap; }
-.ob-orb.is-warn b, .ob-orb.is-live b { color: var(--ob-ember-2); }
-.ob-orb > span { font-family: var(--ob-body); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--ob-muted); line-height: 1.1; white-space: nowrap; }
-
 @media (max-width: 380px) {
     [data-theme="orbit"] .ob-hud { --rw: 88px; gap: 8px 12px; padding: 12px 10px 12px; }
     .ob-time { font-size: 18px; }
     .ob-date { font-size: 13px; }
-    .ob-orb-ring b { font-size: 9.5px; }
-    .ob-orb > span { font-size: 9px; letter-spacing: 0.03em; }
 }
 @media (min-width: 640px) {
     [data-theme="orbit"] .ob-hud { --rw: 128px; }
     .ob-time { font-size: 26px; }
-    .ob-orbs { --ow: 78px; }
 }
 
 /* ---------- Hormati "kurangi animasi" ---------- */
@@ -695,7 +645,6 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
     [data-theme="orbit"] #profileBio::after,
     [data-theme="orbit"] .cz-fab,
     .ob-r-gap,
-    .ob-r-core,
-    .ob-orb-ring::after { animation: none; }
+    .ob-r-core { animation: none; }
     .ob-r-arc { transition: none; }
 }
