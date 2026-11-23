@@ -1,0 +1,38 @@
+/* ==========================================================
+   perf-lite.css
+   "Mode ringan": aktif bila <html> punya class "perf-lite" (diatur js/perf-guard.js).
+   Tujuan: menghilangkan kedip / bagian yang hilang di tablet & laptop dengan GPU lemah,
+   dengan mematikan efek yang paling berat: animasi layar penuh, blur latar (backdrop-filter),
+   dan cahaya neon berputar di tepi kartu. Tampilan tetap sama, hanya lebih statis.
+   ========================================================== */
+
+/* Latar: semua animasi & layer GPU khusus dimatikan */
+html.perf-lite .fx-stars i { animation: none !important; will-change: auto !important; opacity: 0.55; }
+html.perf-lite .fx-bg::before,
+html.perf-lite .fx-orb,
+html.perf-lite .fx-vignette::after { animation: none !important; will-change: auto !important; }
+html.perf-lite .fx-cursor { display: none !important; }
+
+/* Blur latar (backdrop-filter) diganti warna pekat */
+html.perf-lite .app-header::before { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(5, 6, 10, 0.95); }
+html.perf-lite .glass-panel { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(15, 17, 26, 0.94); }
+html.perf-lite .kp-update,
+html.perf-lite [class*="murottal"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+/* Kartu link: cahaya berputar (conic-gradient + mask) diganti garis tepi statis */
+html.perf-lite #linksContainer .glass-card::before { display: none; }
+html.perf-lite #linksContainer .glass-card { border-color: rgba(0, 243, 255, 0.2); }
+
+/* Hiasan animasi kecil yang berjalan terus-menerus */
+html.perf-lite .nf-ico,
+html.perf-lite .cz-fab::before,
+html.perf-lite .cz-fab-icon,
+html.perf-lite .cz-panel::before,
+html.perf-lite .cz-fx::before,
+html.perf-lite .cz-fx::after,
+html.perf-lite .cz-head::after,
+html.perf-lite .cz-avatar,
+html.perf-lite .cz-avatar::before,
+html.perf-lite .cz-avatar i,
+html.perf-lite .cz-title strong,
+html.perf-lite .cz-dot { animation: none !important; }
