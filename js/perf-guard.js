@@ -6,12 +6,12 @@
  * Urutan keputusan:
  *  1) Pilihan manual: buka halaman dengan  ?lite=1 (paksa ringan)  atau  ?lite=0 (paksa penuh). Tersimpan di perangkat itu.
  *  2) Hasil deteksi sebelumnya (tersimpan) -> dipakai langsung, tidak kedip dulu baru berubah.
- *  3) Perangkat lemah (RAM <= 4 GB atau CPU <= 2 inti) -> langsung ringan.
- *  4) Selain itu: pantau kelancaran ~3 detik setelah halaman tampil; bila banyak frame tersendat -> ringan & diingat.
+ *  3) Pantau kelancaran setelah halaman tampil; bila SANGAT banyak frame tersendat -> mode ringan & diingat.
+ *     Mode ringan otomatis tetap menampilkan cahaya kartu/folder (hanya lebih hemat). Hanya ?lite=1 yang mematikannya.
  */
 (function () {
     var KEY = 'kp_perf';          // 'lite' | 'full'   (pilihan manual lewat ?lite=)
-    var AUTO_KEY = 'kp_perf_auto'; // 'lite'            (hasil deteksi otomatis)
+    var AUTO_KEY = 'kp_perf_auto2'; // 'lite'           (hasil deteksi otomatis; nama baru agar keputusan lama yang terlalu agresif ter-reset)
     var root = document.documentElement;
 
     function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -25,17 +25,13 @@
         if (m[1] === '0') { try { localStorage.removeItem(AUTO_KEY); } catch (e) {} }
     }
     var manual = get(KEY);
-    if (manual === 'lite') { lite(true); return; }
+    if (manual === 'lite') { lite(true); root.classList.add('perf-strict'); return; }
     if (manual === 'full') { return; }
 
     // 2) Hasil deteksi otomatis sebelumnya
     if (get(AUTO_KEY) === 'lite') { lite(true); return; }
 
-    // 3) Perangkat lemah
-    var mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency;
-    if ((mem && mem <= 4) || (cores && cores <= 2)) { lite(true); put(AUTO_KEY, 'lite'); return; }
-
-    // 4) Pantau kelancaran setelah splash selesai
+    // 3) Pantau kelancaran setelah splash selesai
     function monitor() {
         var last = 0, frames = 0, slow = 0, TOTAL = 150;
         function tick(t) {
@@ -44,14 +40,14 @@
                 var dt = t - last;
                 if (dt < 1000) {                 // abaikan jeda besar (ganti tab dll.)
                     frames++;
-                    if (dt > 45) slow++;         // < ~22 fps
+                    if (dt > 66) slow++;         // < ~15 fps
                 }
             }
             last = t;
             if (frames < TOTAL) { requestAnimationFrame(tick); return; }
-            if (slow / frames >= 0.2) { lite(true); put(AUTO_KEY, 'lite'); }
+            if (slow / frames >= 0.4) { lite(true); put(AUTO_KEY, 'lite'); }
         }
         requestAnimationFrame(tick);
     }
-    window.addEventListener('load', function () { setTimeout(monitor, 2500); }, { once: true });
+    window.addEventListener('load', function () { setTimeout(monitor, 5000); }, { once: true });
 })();

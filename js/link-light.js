@@ -38,15 +38,16 @@ const linkLightObserver = ('IntersectionObserver' in window)
     }, { rootMargin: '80px' })
     : null;
 
-const linkLightLite = () => document.documentElement.classList.contains('perf-lite');
+const linkLightStrict = () => document.documentElement.classList.contains('perf-strict');   // dipaksa manual lewat ?lite=1
+const linkLightLite = () => document.documentElement.classList.contains('perf-lite');       // ringan otomatis: cahaya tetap jalan, lebih hemat
 
 function updateLinkLights(now) {
     linkLightAnimFrame = null;
-    // Mode ringan: hentikan animasi cahaya kartu sepenuhnya (cara paling efektif menghilangkan kedip di perangkat lemah)
-    if (linkLightLite()) { linkLightCards.clear(); return; }
+    // Mode paling ringan (manual ?lite=1): cahaya dimatikan sepenuhnya
+    if (linkLightStrict()) { linkLightCards.clear(); return; }
 
     // batasi ~20 fps (putaran 10 detik, jadi tetap terlihat mulus) dan jeda saat scroll / tab tidak terlihat
-    if (!linkLightScrolling && !document.hidden && now - linkLightLastDraw >= 50) {
+    if (!linkLightScrolling && !document.hidden && now - linkLightLastDraw >= (linkLightLite() ? 90 : 50)) {
         linkLightLastDraw = now;
         const elapsed = now - linkLightStartTime;
         linkLightCards.forEach((anim, card) => {
@@ -67,7 +68,7 @@ function updateLinkLights(now) {
 }
 
 export function registerLinkLightAnimation(card) {
-    if (linkLightLite()) return;
+    if (linkLightStrict()) return;
     const duration = 10000; // 10 detik per putaran
     const phase = Math.random() * duration;
 

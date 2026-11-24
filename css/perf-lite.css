@@ -19,12 +19,12 @@ html.perf-lite .glass-panel { -webkit-backdrop-filter: none; backdrop-filter: no
 html.perf-lite .kp-update,
 html.perf-lite [class*="murottal"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 
-/* Kartu link: cahaya berputar (conic-gradient + mask) diganti garis tepi statis */
-html.perf-lite #linksContainer .glass-card::before { display: none; }
-html.perf-lite #linksContainer .glass-card { border-color: rgba(0, 243, 255, 0.2); }
+/* Kartu link: cahaya berputar hanya dimatikan pada mode paling ringan (?lite=1); mode otomatis tetap menampilkannya */
+html.perf-strict #linksContainer .glass-card::before { display: none; }
+html.perf-strict #linksContainer .glass-card { border-color: rgba(0, 243, 255, 0.2); }
 
 /* Hiasan animasi kecil yang berjalan terus-menerus */
-html.perf-lite .nf-ico,
+html.perf-strict .nf-ico,
 html.perf-lite .cz-fab::before,
 html.perf-lite .cz-fab-icon,
 html.perf-lite .cz-panel::before,
