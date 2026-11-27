@@ -50,7 +50,7 @@ kurnialink-main/
     ├── links-render.js     menampilkan link & folder, drag & drop urutan
     ├── links-actions.js    tambah / edit / hapus / sembunyikan link, hitung klik
     ├── link-lock.js        kunci link & jendela info
-    ├── link-light.js       animasi cahaya neon di tepi kartu
+    ├── link-light.js       cahaya neon di tepi kartu (putaran dikerjakan CSS/GPU, lihat css/link-cards.css)
     ├── search.js           pencarian link
     ├── share.js            tombol bagikan
     │

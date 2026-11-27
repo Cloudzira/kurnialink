@@ -1,16 +1,19 @@
 /**
  * link-light.js
- * Animasi cahaya neon yang berputar di tepi kartu link (jalan di laptop & HP, hanya menganimasikan kartu yang terlihat).
+ * Cahaya neon yang berputar di tepi kartu link, folder, dan banner.
+ *
+ * Mesin LAMA: sudut gradasi diubah lewat JavaScript puluhan kali per detik pada setiap kartu, lalu dipotong
+ * dengan mask-composite. Pada GPU / browser tertentu ini memaksa gambar ulang terus-menerus -> tampilan kedip & hilang.
+ *
+ * Mesin BARU: file ini hanya menyisipkan elemen hiasan ke setiap kartu:
+ *   - kartu & banner : <span class="ll-ring"><i></i></span>  (bingkai diam, lapisan <i> yang berputar)
+ *   - kepala folder  : <i class="ll-spin"></i>
+ * Putarannya dikerjakan CSS (transform, di GPU) - lihat css/link-cards.css. Tidak ada lagi requestAnimationFrame / setProperty per frame.
+ * File ini juga menjeda putaran kartu yang berada di luar layar.
  */
-
 
 const linkLightHues = new Map();
 let nextLinkLightHue = Math.random() * 360;
-
-// --- CROSS-BROWSER ANIMATION ENGINE (Jalan di Laptop & HP) ---
-const linkLightCards = new Map();
-let linkLightAnimFrame = null;
-let linkLightStartTime = 0;
 
 export function getLinkLightHue(linkId) {
     const key = String(linkId);
@@ -21,62 +24,47 @@ export function getLinkLightHue(linkId) {
     return linkLightHues.get(key);
 }
 
-let linkLightLastDraw = 0;
+const DURATION_MS = 10000;   // 10 detik per putaran
 
-// Saat halaman sedang di-scroll, animasi cahaya dijeda sebentar supaya scroll tetap mulus (terutama di HP)
-let linkLightScrolling = false;
-let linkLightScrollTimer = null;
-window.addEventListener('scroll', () => {
-    linkLightScrolling = true;
-    clearTimeout(linkLightScrollTimer);
-    linkLightScrollTimer = setTimeout(() => { linkLightScrolling = false; }, 140);
-}, { passive: true });
-// Kartu di luar layar tidak dianimasikan (hemat CPU/baterai)
+// Mode paling ringan (manual ?lite=1): cahaya dimatikan sepenuhnya
+const linkLightStrict = () => document.documentElement.classList.contains('perf-strict');
+
+// Kartu di luar layar: putaran dijeda
 const linkLightObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
-        entries.forEach(e => { e.target.__lightInView = e.isIntersecting; });
+        entries.forEach((e) => e.target.classList.toggle('ll-off', !e.isIntersecting));
     }, { rootMargin: '80px' })
     : null;
 
-const linkLightStrict = () => document.documentElement.classList.contains('perf-strict');   // dipaksa manual lewat ?lite=1
-const linkLightLite = () => document.documentElement.classList.contains('perf-lite');       // ringan otomatis: cahaya tetap jalan, lebih hemat
+function attachDecor(host) {
+    if (!host.isConnected && !host.parentNode) { /* belum dipasang ke halaman: tetap boleh disisipi */ }
+    if (host.querySelector(':scope > .ll-ring, :scope > .ll-spin')) return;   // sudah ada
 
-function updateLinkLights(now) {
-    linkLightAnimFrame = null;
-    // Mode paling ringan (manual ?lite=1): cahaya dimatikan sepenuhnya
-    if (linkLightStrict()) { linkLightCards.clear(); return; }
-
-    // batasi ~20 fps (putaran 10 detik, jadi tetap terlihat mulus) dan jeda saat scroll / tab tidak terlihat
-    if (!linkLightScrolling && !document.hidden && now - linkLightLastDraw >= (linkLightLite() ? 90 : 50)) {
-        linkLightLastDraw = now;
-        const elapsed = now - linkLightStartTime;
-        linkLightCards.forEach((anim, card) => {
-            if (!card.isConnected) {
-                if (linkLightObserver) linkLightObserver.unobserve(card);
-                linkLightCards.delete(card);
-                return;
-            }
-            if (card.__lightInView === false) return;
-            const progress = ((elapsed + anim.phase) % anim.duration) / anim.duration;
-            card.style.setProperty('--link-light-angle', `${progress * 360}deg`);
-        });
+    const isFolderHead = host.classList.contains('nf-head');
+    let decor;
+    if (isFolderHead) {
+        decor = document.createElement('i');
+        decor.className = 'll-spin';
+    } else {
+        decor = document.createElement('span');
+        decor.className = 'll-ring';
+        decor.appendChild(document.createElement('i'));
     }
-
-    if (linkLightCards.size > 0) {
-        linkLightAnimFrame = requestAnimationFrame(updateLinkLights);
-    }
+    decor.setAttribute('aria-hidden', 'true');
+    host.appendChild(decor);
 }
 
-export function registerLinkLightAnimation(card) {
-    if (linkLightStrict()) return;
-    const duration = 10000; // 10 detik per putaran
-    const phase = Math.random() * duration;
+export function registerLinkLightAnimation(host) {
+    if (!host || linkLightStrict()) return;
 
-    if (linkLightCards.size === 0) linkLightStartTime = performance.now();
-    linkLightCards.set(card, { duration, phase });
-    card.__lightInView = true;
-    if (linkLightObserver) linkLightObserver.observe(card);
-    if (linkLightAnimFrame === null) {
-        linkLightAnimFrame = requestAnimationFrame(updateLinkLights);
-    }
+    // Fase acak: setiap kartu mulai dari sudut berbeda (sama seperti sebelumnya)
+    host.style.setProperty('--ll-dur', (DURATION_MS / 1000) + 's');
+    host.style.setProperty('--ll-delay', '-' + (Math.random() * DURATION_MS / 1000).toFixed(2) + 's');
+
+    // Pemanggil kadang mengisi ulang isi kartu (innerHTML) SETELAH fungsi ini dipanggil, sehingga elemen hiasan
+    // baru disisipkan sesudah pemanggil selesai (microtask).
+    queueMicrotask(() => {
+        attachDecor(host);
+        if (linkLightObserver) linkLightObserver.observe(host);
+    });
 }

@@ -350,8 +350,8 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     background: var(--jv-panel);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 24px rgba(25, 230, 255, 0.1);
 }
-[data-theme="jarvis"] .banner-frame::before {
-    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 38%, var(--jv-cyan) 50%, var(--jv-amber) 66%, transparent 80% 100%);
+[data-theme="jarvis"] .banner-frame > .ll-ring > i {
+    background: conic-gradient(from 0deg, transparent 0 38%, var(--jv-cyan) 50%, var(--jv-amber) 66%, transparent 80% 100%);
 }
 [data-theme="jarvis"] .banner-viewport { border-radius: 5px; }
 [data-theme="jarvis"] .banner-viewport::after {
@@ -438,8 +438,8 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     box-shadow: 0 0 18px rgba(25, 230, 255, 0.16), inset 0 0 14px rgba(25, 230, 255, 0.06);
 }
 [data-theme="jarvis"] #linksContainer .glass-card.sortable-drag { transform: scale(1.02) !important; }
-[data-theme="jarvis"] #linksContainer .glass-card::before { opacity: 0.38; }
-[data-theme="jarvis"] #linksContainer .glass-card:hover::before { opacity: 0.85; }
+[data-theme="jarvis"] #linksContainer .glass-card > .ll-ring { opacity: 0.38; }
+[data-theme="jarvis"] #linksContainer .glass-card:hover > .ll-ring { opacity: 0.85; }
 
 /* cahaya yang berputar di tepi: hanya cyan -> amber (bukan warna acak per link seperti tema Neon) */
 [data-theme="jarvis"] #linksContainer .glass-card,
@@ -513,9 +513,10 @@ html[data-theme="jarvis"] { background-color: var(--jv-bg); }
     margin-right: 0;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-    background:
-        conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--jv-cyan) 65%, var(--jv-amber) 72%, transparent 80% 100%),
-        linear-gradient(120deg, rgba(25, 230, 255, 0.35), rgba(255, 176, 46, 0.25));
+    background: linear-gradient(120deg, rgba(25, 230, 255, 0.35), rgba(255, 176, 46, 0.25));
+}
+[data-theme="jarvis"] .nf-skew .nf-head > .ll-spin {
+    background: conic-gradient(from 0deg, transparent 0 58%, var(--jv-cyan) 65%, var(--jv-amber) 72%, transparent 80% 100%);
 }
 [data-theme="jarvis"] .nf-skew .nf-head::before {
     clip-path: var(--clip);

@@ -8,6 +8,7 @@
     position: fixed;
     inset: 0;
     z-index: -1;
+    contain: strict;   /* latar berdiri sendiri: perubahan di halaman tidak memicu gambar ulang latar */
     overflow: hidden;
     pointer-events: none;
     background:
@@ -25,7 +26,6 @@
     inset: 0;
     background-repeat: repeat;
     opacity: 0.2;
-    will-change: opacity;
 }
 .fx-stars .s1 {
     background-image:
@@ -84,6 +84,11 @@
 }
 
 @keyframes fxTwinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+
+/* Tinggi latar tetap (tidak ikut naik-turun saat bilah alamat HP bergerak) -> tidak kedip saat scroll */
+@supports (height: 100lvh) {
+    .fx-bg { bottom: auto; height: 100lvh; }
+}
 
 @media (max-width: 640px) {
     .fx-grid { background-size: 32px 32px; }

@@ -31,9 +31,18 @@
     // 2) Hasil deteksi otomatis sebelumnya
     if (get(AUTO_KEY) === 'lite') { lite(true); return; }
 
+    // 2b) Perangkat yang jelas lemah dikenali SEBELUM halaman digambar (RAM <= 2 GB, CPU <= 2 inti, mode hemat data)
+    //     Mode ringan hanya menghentikan kerlip bintang latar; cahaya neon kartu tetap berputar.
+    try {
+        var nav = navigator, conn = nav.connection || {};
+        if ((nav.deviceMemory && nav.deviceMemory <= 2) ||
+            (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2) ||
+            conn.saveData) { lite(true); return; }
+    } catch (e) {}
+
     // 3) Pantau kelancaran setelah splash selesai
     function monitor() {
-        var last = 0, frames = 0, slow = 0, TOTAL = 150;
+        var last = 0, frames = 0, slow = 0, TOTAL = 120;
         function tick(t) {
             if (document.hidden) { last = 0; requestAnimationFrame(tick); return; }   // tab di latar: jangan dihitung
             if (last) {
@@ -45,9 +54,9 @@
             }
             last = t;
             if (frames < TOTAL) { requestAnimationFrame(tick); return; }
-            if (slow / frames >= 0.4) { lite(true); put(AUTO_KEY, 'lite'); }
+            if (slow / frames >= 0.3) { lite(true); put(AUTO_KEY, 'lite'); }
         }
         requestAnimationFrame(tick);
     }
-    window.addEventListener('load', function () { setTimeout(monitor, 5000); }, { once: true });
+    window.addEventListener('load', function () { setTimeout(monitor, 3500); }, { once: true });
 })();

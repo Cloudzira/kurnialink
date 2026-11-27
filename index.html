@@ -124,6 +124,18 @@
             if (sp) { sp.classList.add('fade-out'); setTimeout(function () { sp.remove(); }, 600); }
         }, 8000);
     </script>
+    <!-- Pengaman CSS: file CSS dimuat tidak-menghalangi (media="print" lalu diganti "all" saat selesai). Di browser / WebView tertentu
+         pergantian itu bisa gagal sehingga tampilan polos / hilang. Bila setelah halaman selesai dimuat masih ada yang tertinggal, paksa aktif. -->
+    <script>
+        (function () {
+            function fix() {
+                var l = document.querySelectorAll('link[rel="stylesheet"][media="print"]');
+                for (var i = 0; i < l.length; i++) l[i].media = 'all';
+            }
+            window.addEventListener('load', function () { setTimeout(fix, 300); setTimeout(fix, 2500); });
+            setTimeout(fix, 4000);
+        })();
+    </script>
     <link rel="preload" as="image" href="favicon.png">
     <title>Kurniapedia</title>
     <meta name="description" content="Kurniapedia - kumpulan link, aplikasi, dan murottal dalam satu ruang digital. Dilengkapi asisten Cloudz AI.">

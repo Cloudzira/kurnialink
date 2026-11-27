@@ -380,8 +380,8 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
     background: var(--ob-panel);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 0 24px rgba(34, 184, 214, 0.1);
 }
-[data-theme="orbit"] .banner-frame::before {
-    background: conic-gradient(from var(--link-light-angle, 0deg), transparent 0 38%, var(--ob-teal) 50%, var(--ob-ember) 66%, transparent 80% 100%);
+[data-theme="orbit"] .banner-frame > .ll-ring > i {
+    background: conic-gradient(from 0deg, transparent 0 38%, var(--ob-teal) 50%, var(--ob-ember) 66%, transparent 80% 100%);
 }
 [data-theme="orbit"] .banner-viewport { border-radius: 7px; }
 [data-theme="orbit"] .banner-viewport::after {
@@ -444,8 +444,8 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
     box-shadow: 0 0 20px rgba(255, 122, 31, 0.16), inset 0 0 14px rgba(255, 122, 31, 0.05);
 }
 [data-theme="orbit"] #linksContainer .glass-card.sortable-drag { transform: scale(1.02) !important; }
-[data-theme="orbit"] #linksContainer .glass-card::before { opacity: 0.34; }
-[data-theme="orbit"] #linksContainer .glass-card:hover::before { opacity: 0.85; }
+[data-theme="orbit"] #linksContainer .glass-card > .ll-ring { opacity: 0.34; }
+[data-theme="orbit"] #linksContainer .glass-card:hover > .ll-ring { opacity: 0.85; }
 
 /* cahaya berputar di tepi: teal -> ember, seragam untuk semua link */
 [data-theme="orbit"] #linksContainer .glass-card,
@@ -507,9 +507,10 @@ html[data-theme="orbit"] { background-color: var(--ob-bg); }
     margin-right: 0;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    background:
-        conic-gradient(from var(--link-light-angle, 0deg), transparent 0 58%, var(--ob-teal) 65%, var(--ob-ember) 72%, transparent 80% 100%),
-        linear-gradient(120deg, rgba(238, 246, 248, 0.4), rgba(255, 122, 31, 0.3));
+    background: linear-gradient(120deg, rgba(238, 246, 248, 0.4), rgba(255, 122, 31, 0.3));
+}
+[data-theme="orbit"] .nf-skew .nf-head > .ll-spin {
+    background: conic-gradient(from 0deg, transparent 0 58%, var(--ob-teal) 65%, var(--ob-ember) 72%, transparent 80% 100%);
 }
 [data-theme="orbit"] .nf-skew .nf-head::before {
     clip-path: var(--clip);
